@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="WA Intel">
+    <title>West Asia Intel</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0f1117; --card: #1a1d2e; --card2: #1e2235;
+            --border: rgba(255,255,255,0.07);
+            --primary: #2563eb; --uae: #10b981; --gcc: #f59e0b;
+            --global: #ef4444; --text: #e2e8f0; --muted: #94a3b8;
+            --critical: #dc2626;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg); color: var(--text);
+            padding-top: env(safe-area-inset-top); min-height: 100vh;
+        }
+
+```
+    /* ── HEADER ── */
+    header {
+        background: rgba(15,17,23,0.97);
+        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        padding: 14px 16px 10px;
+        position: sticky; top: 0; z-index: 100;
+        border-bottom: 1px solid var(--border);
+    }
+    .header-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    header h1 { font-size:1rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#fff; }
+    .day-badge { display:flex; align-items:center; gap:5px; font-size:0.65rem; color:var(--global); font-weight:700; letter-spacing:1px; }
+    .live-dot { width:6px;height:6px;background:var(--global);border-radius:50%;animation:pulseDot 1.4s ease infinite; }
+    @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+    .alert-banner { background:var(--critical);border-radius:6px;padding:7px 12px;font-size:0.75rem;font-weight:600;color:#fff;line-height:1.4;margin-bottom:8px;display:none; }
+    .alert-banner.show { display:block; }
+
+    .meta-row { display:flex;justify-content:space-between;align-items:center;font-size:0.65rem;color:var(--muted);gap:8px;flex-wrap:wrap; }
+    .status-dot { display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--uae);margin-right:4px;vertical-align:middle; }
+
+    /* ── FILTER NAV ── */
+    .filter-nav {
+        display:flex;gap:6px;
+        background:rgba(15,17,23,0.97);backdrop-filter:blur(12px);
+        padding:10px 16px;
+        position:sticky;top:96px;z-index:99;
+        border-bottom:1px solid var(--border);
+        overflow-x:auto;-webkit-overflow-scrolling:touch;
+    }
+    .filter-nav::-webkit-scrollbar { display:none; }
+    .filter-btn {
+        background:rgba(255,255,255,0.05);border:1px solid var(--border);
+        color:var(--muted);font-size:0.8rem;font-weight:600;
+        padding:6px 16px;border-radius:20px;cursor:pointer;
+        white-space:nowrap;transition:all 0.2s;
+        -webkit-tap-highlight-color:transparent;flex-shrink:0;
+    }
+    .filter-btn.active { color:#fff; }
+    .filter-btn[data-cat="All"].active    { background:var(--primary);border-color:var(--primary); }
+    .filter-btn[data-cat="UAE"].active    { background:var(--uae);border-color:var(--uae); }
+    .filter-btn[data-cat="GCC"].active    { background:var(--gcc);border-color:var(--gcc);color:#000; }
+    .filter-btn[data-cat="Global"].active { background:var(--global);border-color:var(--global); }
+
+    /* ── REFRESH BAR ── */
+    .refresh-bar {
+        display:flex;align-items:center;justify-content:space-between;gap:10px;
+        padding:10px 16px;
+        background:rgba(15,17,23,0.97);
+        border-bottom:1px solid var(--border);
+        flex-wrap:wrap;
+    }
+    .refresh-left { flex:1;min-width:0; }
+    .refresh-label { font-size:0.7rem;color:var(--muted);margin-bottom:2px; }
+    .refresh-status { font-size:0.72rem;color:var(--muted); }
+    .refresh-status.error { color:var(--global); }
+    .refresh-status.ok    { color:var(--uae); }
+
+    .refresh-btn {
+        display:flex;align-items:center;gap:6px;
+        background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.45);
+        color:#60a5fa;font-size:0.78rem;font-weight:600;
+        padding:8px 18px;border-radius:20px;cursor:pointer;
+        white-space:nowrap;transition:all 0.2s;
+        -webkit-tap-highlight-color:transparent;flex-shrink:0;
+    }
+    .refresh-btn:disabled { opacity:0.4;cursor:not-allowed; }
+    .refresh-btn:not(:disabled):active { background:rgba(37,99,235,0.3); }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .spinning { animation:spin 0.9s linear infinite;display:inline-block; }
+
+    /* ── API KEY SETTINGS ── */
+    .settings-bar {
+        padding:10px 16px;
+        background:rgba(10,12,20,0.8);
+        border-bottom:1px solid var(--border);
+        display:none;
+    }
+    .settings-bar.open { display:block; }
+    .settings-label { font-size:0.65rem;letter-spacing:1px;color:var(--muted);margin-bottom:6px;text-transform:uppercase; }
+    .key-input {
+        width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border);
+        color:var(--text);font-size:0.8rem;padding:8px 12px;border-radius:8px;
+        outline:none;font-family:monospace;
+    }
+    .key-input:focus { border-color:rgba(37,99,235,0.5); }
+    .settings-note { font-size:0.65rem;color:var(--muted);margin-top:5px;line-height:1.5; }
+    .settings-toggle { background:none;border:none;color:var(--muted);font-size:0.65rem;cursor:pointer;padding:0;letter-spacing:1px;-webkit-tap-highlight-color:transparent; }
+
+    /* ── CARDS ── */
+    #news-feed { padding:14px 14px 100px; }
+    @keyframes slideIn { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
+    .news-card { background:var(--card);border-radius:12px;padding:15px;margin-bottom:12px;border-left:4px solid var(--primary);animation:slideIn 0.25s ease; }
+    .news-card.uae    { border-left-color:var(--uae); }
+    .news-card.gcc    { border-left-color:var(--gcc); }
+    .news-card.global { border-left-color:var(--global); }
+    .news-card.urgent { border-left-color:var(--critical);background:rgba(220,38,38,0.08); }
+    .card-top { display:flex;justify-content:space-between;align-items:center;margin-bottom:8px; }
+    .tag { font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:var(--muted); }
+    .tag.uae    { color:var(--uae); }
+    .tag.gcc    { color:var(--gcc); }
+    .tag.global { color:var(--global); }
+    .tag.urgent { color:#fff;background:var(--critical); }
+    .card-time { font-size:0.6rem;color:var(--muted); }
+    .news-title { font-size:0.95rem;font-weight:700;color:#fff;margin:0 0 7px;line-height:1.35; }
+    .news-content { font-size:0.85rem;color:var(--muted);line-height:1.6; }
+    .read-more { display:inline-block;margin-top:8px;font-size:0.75rem;color:#60a5fa;text-decoration:none; }
+    .read-more:hover { text-decoration:underline; }
+
+    /* ── SPECIAL CARDS ── */
+    .deadline-card { background:rgba(220,38,38,0.12);border:1px solid rgba(220,38,38,0.35);border-radius:12px;padding:14px;margin-bottom:12px; }
+    .deadline-label { font-size:0.65rem;font-weight:700;letter-spacing:2px;color:var(--global);margin-bottom:6px; }
+    .deadline-text  { font-size:0.9rem;color:#fff;font-weight:600;line-height:1.4; }
+    .countdown { font-size:1.5rem;font-weight:800;color:var(--global);font-variant-numeric:tabular-nums;letter-spacing:2px;margin-top:8px;font-family:monospace; }
+    .countdown.expired { color:var(--muted);font-size:1rem; }
+
+    .brent-card { background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.25);border-radius:12px;padding:14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center; }
+    .brent-label { font-size:0.7rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase; }
+    .brent-price { font-size:1.6rem;font-weight:800;color:#60a5fa;font-family:monospace; }
+    .brent-note  { font-size:0.68rem;color:var(--muted);margin-top:2px; }
+
+    /* ── SKELETON LOADER ── */
+    .skeleton { background:linear-gradient(90deg,var(--card) 25%,var(--card2) 50%,var(--card) 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite;border-radius:12px;margin-bottom:12px; }
+    .skeleton-card { height:110px; }
+    @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
+
+    .empty { text-align:center;padding:40px 20px;color:var(--muted);font-size:0.9rem;line-height:1.8; }
+    .sources-footer { text-align:center;font-size:0.65rem;color:rgba(148,163,184,0.35);padding:14px 10px;line-height:1.9; }
+</style>
+```
+
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <h1>⚡ West Asia Intel</h1>
+        <div class="day-badge"><div class="live-dot"></div> <span id="day-label">LIVE</span></div>
+    </div>
+    <div id="alert-banner" class="alert-banner"></div>
+    <div class="meta-row">
+        <span><span class="status-dot" id="status-dot"></span><span id="meta-source">AJZ · BBC · Reuters</span></span>
+        <span id="last-updated">–</span>
+    </div>
+</header>
+
+<nav class="filter-nav">
+    <button class="filter-btn active" data-cat="All"    onclick="doFilter(this,'All')">All</button>
+    <button class="filter-btn"        data-cat="UAE"    onclick="doFilter(this,'UAE')">🇦🇪 UAE</button>
+    <button class="filter-btn"        data-cat="GCC"    onclick="doFilter(this,'GCC')">🛢 Gulf</button>
+    <button class="filter-btn"        data-cat="Global" onclick="doFilter(this,'Global')">🌐 Global</button>
+</nav>
+
+<div class="refresh-bar">
+    <div class="refresh-left">
+        <div class="refresh-label">Live news · Al Jazeera · BBC · Reuters</div>
+        <div class="refresh-status" id="refresh-status">Loading latest news…</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+        <button class="settings-toggle" onclick="toggleSettings()" id="settings-toggle">⚙ API KEY</button>
+        <button class="refresh-btn" id="refresh-btn" onclick="doRefresh()" disabled>
+            <span id="refresh-icon">↺</span> Refresh
+        </button>
+    </div>
+</div>
+
+<div class="settings-bar" id="settings-bar">
+    <div class="settings-label">Anthropic API Key (optional — for Claude AI analysis)</div>
+    <input type="password" class="key-input" id="api-key-input" placeholder="sk-ant-api03-..." oninput="saveKey()">
+    <div class="settings-note">
+        Without a key: shows raw RSS headlines.<br>
+        With a key: Claude analyses & categorises headlines intelligently.<br>
+        Your key is stored only in your browser (localStorage). Never sent anywhere except api.anthropic.com.
+    </div>
+</div>
+
+<main id="news-feed"></main>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+
+const DEADLINE_MS = new Date('2026-03-23T23:44:00+04:00').getTime(); // Trump Hormuz deadline
+
+const KEYWORDS = ['iran','israel','west asia','hormuz','gulf','hezbollah','tehran',
+    'hamas','gaza','lebanon','missile','strike','war','crude','brent','trump',
+    'netanyahu','irgc','natanz','ras laffan','strait','nuclear','ceasefire',
+    'qatar','bahrain','kuwait','houthi','saudi','riyadh','biden','pentagon'];
+
+// rss2json.com: free CORS proxy for RSS feeds. No API key. 10k req/day.
+const RSS_FEEDS = [
+    'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.aljazeera.com%2Fxml%2Frss%2Fall.xml&count=20',
+    'https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Ffeeds.bbci.co.uk%2Fnews%2Fworld%2Fmiddle_east%2Frss.xml&count=20',
+    'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.theguardian.com%2Fworld%2Fmiddleeast%2Frss&count=15',
+];
+
+const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+
+let currentFilter = 'All';
+let currentCards  = [];
+let countdownTimer = null;
+
+// ── API KEY ───────────────────────────────────────────────────────────────────
+
+function getKey()  { return document.getElementById('api-key-input').value.trim() || localStorage.getItem('wa_intel_api_key') || ''; }
+function saveKey() { const k = document.getElementById('api-key-input').value.trim(); if (k) localStorage.setItem('wa_intel_api_key', k); }
+function toggleSettings() {
+    const bar = document.getElementById('settings-bar');
+    bar.classList.toggle('open');
+    if (bar.classList.contains('open')) {
+        const saved = localStorage.getItem('wa_intel_api_key');
+        if (saved) document.getElementById('api-key-input').value = saved;
+    }
+}
+
+// ── COUNTDOWN ─────────────────────────────────────────────────────────────────
+
+function updateCountdown() {
+    const el = document.getElementById('countdown');
+    if (!el) return;
+    const rem = DEADLINE_MS - Date.now();
+    if (rem <= 0) { el.textContent = 'DEADLINE PASSED'; el.className = 'countdown expired'; return; }
+    const h = Math.floor(rem / 3600000);
+    const m = Math.floor((rem % 3600000) / 60000);
+    const s = Math.floor((rem % 60000) / 1000);
+    el.textContent = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+// ── FETCH RSS ─────────────────────────────────────────────────────────────────
+
+async function fetchFeed(url) {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error('Feed HTTP ' + res.status);
+    const data = await res.json();
+    if (data.status !== 'ok') throw new Error('Feed error: ' + (data.message || 'unknown'));
+    return data.items || [];
+}
+
+function isRelevant(item) {
+    const text = ((item.title || '') + ' ' + (item.description || '')).toLowerCase();
+    return KEYWORDS.some(k => text.includes(k));
+}
+
+function stripHTML(html) {
+    return (html || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+}
+
+async function fetchAllFeeds() {
+    const results = await Promise.allSettled(RSS_FEEDS.map(fetchFeed));
+    let items = [];
+    results.forEach(r => { if (r.status === 'fulfilled') items.push(...r.value); });
+
+    // Deduplicate by title
+    const seen = new Set();
+    items = items.filter(i => {
+        if (!i.title || seen.has(i.title)) return false;
+        seen.add(i.title); return true;
+    });
+
+    // Filter relevant, sort newest first, take top 25
+    return items
+        .filter(isRelevant)
+        .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+        .slice(0, 25);
+}
+
+// ── CATEGORISE WITHOUT AI (fallback) ─────────────────────────────────────────
+
+function categoriseLocally(item) {
+    const text = ((item.title || '') + ' ' + (item.description || '')).toLowerCase();
+    const urgent = ['ultimatum','obliterate','power plant','nuclear','ballistic','attack','strike','killed','deadline'].some(k => text.includes(k));
+    let cat = 'Global';
+    if (['uae','dubai','abu dhabi','al minhad','ras al-khaimah','emirates'].some(k => text.includes(k))) cat = 'UAE';
+    else if (['kuwait','bahrain','qatar','saudi','hormuz','gulf','gcc','ras laffan','houthi'].some(k => text.includes(k))) cat = 'GCC';
+    return { cat, urgent };
+}
+
+function buildCardsLocally(items) {
+    return items.map(item => {
+        const { cat, urgent } = categoriseLocally(item);
+        const pubDate = item.pubDate ? new Date(item.pubDate).toLocaleTimeString('en-AE',{hour:'2-digit',minute:'2-digit',hour12:false}) + ' UAE' : '';
+        return {
+            cat, urgent,
+            title: item.title || 'Untitled',
+            content: stripHTML(item.description).slice(0, 220) + '…',
+            time: pubDate,
+            link: item.link || null,
+        };
+    });
+}
+
+// ── CATEGORISE WITH CLAUDE AI ─────────────────────────────────────────────────
+
+async function buildCardsWithClaude(items, apiKey) {
+    const headlines = items.map((it, i) =>
+        `${i+1}. [${it.pubDate ? it.pubDate.slice(0,16) : 'recent'}] ${it.title}: ${stripHTML(it.description).slice(0,180)}`
+    ).join('\n');
+
+    const res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 2000,
+            system: 'You are a war intelligence analyst. Return ONLY a raw JSON array, no markdown, starting with [ ending with ].',
+            messages: [{
+                role: 'user',
+                content: `Analyse these West Asia war headlines and return a JSON array of cards. Each card:
+{"cat":"UAE"|"GCC"|"Global","urgent":true|false,"title":"concise title max 10 words","content":"2-3 sentence summary","time":"from headline date"}
+
+Headlines:
+${headlines}`,
+            }],
+        }),
+    });
+
+    const raw = await res.text();
+    let data;
+    try { data = JSON.parse(raw); } catch { throw new Error('Claude returned non-JSON'); }
+    if (data.error) throw new Error('Claude: ' + data.error.message);
+
+    const textBlock = (data.content || []).find(b => b.type === 'text');
+    if (!textBlock) throw new Error('No text in Claude response');
+
+    const cleaned = textBlock.text.replace(/```[\w]*\n?/g,'').replace(/```/g,'').trim();
+    let parsed;
+    try { parsed = JSON.parse(cleaned); } catch {
+        const s = cleaned.indexOf('['), e = cleaned.lastIndexOf(']');
+        if (s !== -1 && e > s) parsed = JSON.parse(cleaned.slice(s, e+1));
+        else throw new Error('No JSON array in Claude response');
+    }
+    if (!Array.isArray(parsed) || !parsed.length) throw new Error('Empty array from Claude');
+
+    // Preserve links from original items by index
+    return parsed.map((card, i) => ({ ...card, link: items[i] ? items[i].link : null }));
+}
+
+// ── STATUS HELPERS ────────────────────────────────────────────────────────────
+
+function setStatus(msg, type='') {
+    const el = document.getElementById('refresh-status');
+    el.textContent = msg;
+    el.className = 'refresh-status' + (type ? ' '+type : '');
+}
+
+function setDayLabel() {
+    const start = new Date('2026-02-28');
+    const day   = Math.floor((Date.now() - start) / 86400000) + 1;
+    document.getElementById('day-label').textContent = 'DAY ' + day;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+
+function renderSkeletons() {
+    const feed = document.getElementById('news-feed');
+    feed.innerHTML = [1,2,3,4].map(() => '<div class="skeleton skeleton-card"></div>').join('');
+}
+
+function render() {
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+    const feed = document.getElementById('news-feed');
+    feed.innerHTML = '';
+
+    const showAll = currentFilter === 'All';
+
+    // Deadline countdown (All + Global)
+    if (showAll || currentFilter === 'Global') {
+        if (DEADLINE_MS > Date.now() - 86400000) { // show for 24h after deadline
+            const dc = document.createElement('div');
+            dc.className = 'deadline-card';
+            dc.innerHTML = `<div class="deadline-label">⏱ US ULTIMATUM — COUNTDOWN</div>
+                <div class="deadline-text">Trump: Open Strait of Hormuz or US will "obliterate" Iran power plants</div>
+                <div class="countdown" id="countdown">--:--:--</div>`;
+            feed.appendChild(dc);
+            updateCountdown();
+            countdownTimer = setInterval(updateCountdown, 1000);
+        }
+    }
+
+    // Brent crude (All + GCC)
+    if (showAll || currentFilter === 'GCC') {
+        const bc = document.createElement('div');
+        bc.className = 'brent-card';
+        bc.innerHTML = `<div>
+            <div class="brent-label">🛢 Brent Crude</div>
+            <div class="brent-note">Goldman Sachs: elevated through 2027</div>
+        </div>
+        <div>
+            <div class="brent-price">~$112</div>
+            <div class="brent-note" style="text-align:right">per barrel</div>
+        </div>`;
+        feed.appendChild(bc);
+    }
+
+    const filtered = showAll ? currentCards : currentCards.filter(c => c.cat === currentFilter);
+
+    if (!filtered.length) {
+        feed.innerHTML += '<div class="empty">No items in this category.<br>Try "All" or refresh for latest news.</div>';
+    } else {
+        filtered.forEach(card => {
+            const div = document.createElement('div');
+            const cl  = card.cat.toLowerCase();
+            div.className = `news-card ${cl}${card.urgent ? ' urgent' : ''}`;
+            div.innerHTML = `
+                <div class="card-top">
+                    <span class="tag ${card.urgent ? 'urgent' : cl}">${card.urgent ? '🚨 URGENT' : card.cat}</span>
+                    ${card.time ? `<span class="card-time">${card.time}</span>` : ''}
+                </div>
+                <h2 class="news-title">${escHTML(card.title)}</h2>
+                <p class="news-content">${escHTML(card.content)}</p>
+                ${card.link ? `<a class="read-more" href="${escHTML(card.link)}" target="_blank" rel="noopener">Read full story →</a>` : ''}
+            `;
+            feed.appendChild(div);
+        });
+    }
+
+    const src = document.getElementById('meta-source').textContent;
+    feed.innerHTML += `<div class="sources-footer">
+        ${src} · ${new Date().toLocaleDateString('en-AE',{day:'numeric',month:'short',year:'numeric'})}
+        <br>Pull-to-refresh or tap Refresh for latest news
+    </div>`;
+}
+
+function escHTML(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+
+function doFilter(btn, cat) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = cat;
+    render();
+}
+
+// ── REFRESH ───────────────────────────────────────────────────────────────────
+
+async function doRefresh() {
+    const btn  = document.getElementById('refresh-btn');
+    const icon = document.getElementById('refresh-icon');
+
+    btn.disabled = true;
+    icon.className = 'spinning';
+    icon.textContent = '↺';
+    setStatus('Fetching live news…');
+    renderSkeletons();
+
+    try {
+        // Step 1: fetch RSS
+        setStatus('Fetching RSS feeds (AJZ · BBC · Guardian)…');
+        const items = await fetchAllFeeds();
+
+        if (!items.length) throw new Error('No relevant articles found. Feeds may be slow — try again.');
+
+        // Step 2: categorise
+        const apiKey = getKey();
+        let cards;
+
+        if (apiKey) {
+            setStatus('Analysing with Claude AI…');
+            document.getElementById('meta-source').textContent = 'AJZ · BBC · Guardian · Claude AI';
+            try {
+                cards = await buildCardsWithClaude(items, apiKey);
+            } catch (e) {
+                console.warn('Claude failed, falling back to local categorisation:', e.message);
+                cards = buildCardsLocally(items);
+                document.getElementById('meta-source').textContent = 'AJZ · BBC · Guardian (local)';
+            }
+        } else {
+            cards = buildCardsLocally(items);
+            document.getElementById('meta-source').textContent = 'AJZ · BBC · Guardian';
+        }
+
+        currentCards = cards;
+
+        // Update alert banner with most urgent
+        const urgent = cards.find(c => c.urgent);
+        if (urgent) {
+            const banner = document.getElementById('alert-banner');
+            banner.textContent = '🚨 ' + urgent.title;
+            banner.classList.add('show');
+        }
+
+        const t = new Date().toLocaleTimeString('en-AE',{hour:'2-digit',minute:'2-digit',hour12:false});
+        document.getElementById('last-updated').textContent = 'Updated ' + t + ' UAE';
+        document.getElementById('status-dot').style.background = 'var(--uae)';
+        setStatus('✓ Live · ' + cards.length + ' articles · ' + t, 'ok');
+
+        render();
+
+    } catch(e) {
+        console.error(e);
+        document.getElementById('status-dot').style.background = 'var(--global)';
+        setStatus('⚠ ' + e.message, 'error');
+        if (!currentCards.length) {
+            document.getElementById('news-feed').innerHTML =
+                `<div class="empty">Could not load news.<br><b>${escHTML(e.message)}</b><br><br>Check your internet connection and try again.</div>`;
+        }
+    } finally {
+        btn.disabled = false;
+        icon.className = '';
+    }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+setDayLabel();
+document.getElementById('refresh-btn').disabled = false;
+doRefresh(); // Auto-load on open
+</script>
+
+</body>
+</html>
