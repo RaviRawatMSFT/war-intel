@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="GlobalIQ Hub">
-<title>GlobalIQ Hub — West Asia Intel</title>
+<meta name="apple-mobile-web-app-title" content="Falcon Eye">
+<title>Falcon Eye — Strategic Intelligence West Asia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -117,9 +117,6 @@ body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100
 .astat{font-family:var(--fm);font-size:0.62rem;color:var(--muted);flex:1}
 
 /* ── VIDEO BAR ── */
-.vbar{display:none;padding:0 18px 12px;border-bottom:1px solid var(--gb);animation:slideDown 0.25s ease}
-.vbar.open{display:block}
-.vhdr{display:flex;justify-content:space-between;align-items:center;padding:8px 0 6px;font-family:var(--fm);font-size:0.65rem;color:var(--muted)}
 
 /* ── PAGE ── */
 .page{position:relative;z-index:1;padding:14px 16px 120px}
@@ -229,12 +226,16 @@ body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100
 .cred.hi{color:#4ade80;background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.25)}
 .cred.md{color:#fbbf24;background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.25)}
 .cred.lo{color:#f87171;background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.25)}
-.ttag{display:inline-flex;align-items:center;font-family:var(--fm);font-size:0.5rem;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;margin-left:4px;border:1px solid;transition:transform var(--tr)}
-.ttag:hover{transform:scale(1.07)}
-.ttag.security{color:#f87171;background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.2)}
-.ttag.energy{color:#fbbf24;background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.2)}
-.ttag.diplomacy{color:#a78bfa;background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.2)}
-.ttag.military{color:#fb923c;background:rgba(251,146,60,0.08);border-color:rgba(251,146,60,0.2)}
+.ttag{display:inline-flex;align-items:center;font-family:var(--fm);font-size:0.6rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:6px;margin-left:5px;border:1px solid;transition:transform var(--tr),box-shadow var(--tr)}
+.ttag:hover{transform:scale(1.06)}
+.ttag.security{color:#f87171;background:rgba(248,113,113,0.12);border-color:rgba(248,113,113,0.35)}
+.ttag.security:hover{box-shadow:0 0 8px rgba(248,113,113,0.3)}
+.ttag.energy{color:#fbbf24;background:rgba(251,191,36,0.12);border-color:rgba(251,191,36,0.35)}
+.ttag.energy:hover{box-shadow:0 0 8px rgba(251,191,36,0.3)}
+.ttag.diplomacy{color:#a78bfa;background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.35)}
+.ttag.diplomacy:hover{box-shadow:0 0 8px rgba(167,139,250,0.3)}
+.ttag.military{color:#fb923c;background:rgba(251,146,60,0.12);border-color:rgba(251,146,60,0.35)}
+.ttag.military:hover{box-shadow:0 0 8px rgba(251,146,60,0.3)}
 .cts{font-family:var(--fm);font-size:0.55rem;color:var(--dim);text-align:right;line-height:1.6}
 .ctitle{font-family:var(--ff);font-size:1.08rem;letter-spacing:0.5px;color:var(--text);line-height:1.25;margin-bottom:7px}
 .ctitle a{color:inherit;text-decoration:none;transition:color var(--tr)}
@@ -262,6 +263,86 @@ body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100
 .empty-title{font-family:var(--ff);font-size:1.3rem;letter-spacing:2px;color:var(--muted);margin-bottom:8px}
 .empty-sub{font-size:0.8rem;line-height:1.7}
 .ffooter{text-align:center;font-family:var(--fm);font-size:0.57rem;color:var(--dim);padding:12px 10px 4px;line-height:1.9;opacity:0.5}
+
+/* ── TWO-COLUMN LAYOUT ── */
+.page-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr;grid-template-areas:'sidebar''main';gap:0;padding:14px 16px 100px}
+@media(min-width:768px){
+  .page-grid{grid-template-columns:1fr 340px;grid-template-areas:'main sidebar';gap:16px;padding:16px 20px 100px;max-width:1400px;margin:0 auto}
+}
+.main-col{grid-area:main;min-width:0}
+.side-col{grid-area:sidebar}
+@media(min-width:768px){
+  .side-col{position:sticky;top:180px;height:fit-content;max-height:calc(100vh - 200px);overflow-y:auto;scrollbar-width:none}
+  .side-col::-webkit-scrollbar{display:none}
+}
+
+/* ── SIDEBAR PANELS ── */
+.side-panel{background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--gb);border-radius:var(--r);margin-bottom:12px;overflow:hidden;transition:border-color var(--tr)}
+.side-panel:hover{border-color:var(--gb2)}
+.side-panel-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;border-bottom:1px solid var(--gb)}
+.side-panel-title{font-family:var(--ff);font-size:0.85rem;letter-spacing:3px;color:var(--text)}
+.side-panel-badge{font-family:var(--fm);font-size:0.55rem;color:var(--muted);letter-spacing:1px}
+
+/* Map sidebar */
+.map-sidebar-wrap{height:240px;position:relative;overflow:hidden}
+.map-sidebar-wrap iframe{width:100%;height:100%;border:none;display:block}
+.map-sidebar-overlay{position:absolute;top:0;left:0;right:0;background:linear-gradient(to bottom,rgba(3,6,15,0.5),transparent);padding:6px 10px;pointer-events:none;font-family:var(--fm);font-size:0.55rem;color:var(--urgent);letter-spacing:2px}
+
+/* Stat cards in sidebar */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}
+.stat-card{background:rgba(255,255,255,0.03);border:1px solid var(--gb);border-radius:10px;padding:10px 12px;text-align:center;transition:all var(--tr)}
+.stat-card:hover{border-color:var(--gb2);background:rgba(255,255,255,0.06)}
+.stat-val{font-family:var(--ff);font-size:1.5rem;letter-spacing:1px;line-height:1}
+.stat-lbl{font-family:var(--fm);font-size:0.52rem;color:var(--dim);margin-top:3px;letter-spacing:1px;text-transform:uppercase}
+
+/* Stream links in sidebar */
+
+
+/* ── STREAM TABS ── */
+
+/* ── CATEGORY FILTERS ── */
+.cat-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding:0}
+.cat-btn{background:var(--glass);border:1px solid var(--gb);color:var(--muted);font-family:var(--fm);font-size:0.68rem;font-weight:500;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all var(--tr);white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.cat-btn:hover{background:var(--glass2);color:var(--text);border-color:var(--gb2)}
+.cat-btn.active{color:#fff;font-weight:600}
+.cat-btn[data-filter="all"].active     {background:rgba(29,110,245,0.28);border-color:rgba(29,110,245,0.55)}
+.cat-btn[data-filter="urgent"].active  {background:rgba(232,53,74,0.25);border-color:rgba(232,53,74,0.55)}
+.cat-btn[data-filter="security"].active{background:rgba(248,113,113,0.2);border-color:rgba(248,113,113,0.5);color:#f87171}
+.cat-btn[data-filter="energy"].active  {background:rgba(251,191,36,0.2);border-color:rgba(251,191,36,0.5);color:#fbbf24}
+.cat-btn[data-filter="diplomacy"].active{background:rgba(167,139,250,0.2);border-color:rgba(167,139,250,0.5);color:#a78bfa}
+.cat-btn[data-filter="military"].active{background:rgba(251,146,60,0.2);border-color:rgba(251,146,60,0.5);color:#fb923c}
+
+/* ── CARD DATETIME ── */
+.card-dt{font-family:var(--fm);font-size:0.65rem;font-weight:500;color:var(--gcc);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.card-dt-dot{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+
+
+
+/* ── WAR STATS ── */
+.wstat-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gb);gap:8px}.wstat-row.last{border-bottom:none}
+.wstat-label{font-size:0.72rem;color:var(--muted);font-family:var(--fs);flex:1}
+.wstat-val{font-family:var(--ff);font-size:0.88rem;letter-spacing:1px;white-space:nowrap;flex-shrink:0}
+
+
+/* ── WSTAT TABS ── */
+.wstat-tab{flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--fm);font-size:0.68rem;font-weight:600;padding:7px 4px;cursor:pointer;letter-spacing:1px;transition:all var(--tr)}
+.wstat-tab:hover{color:var(--text)}
+.wstat-tab.active{color:var(--urgent);border-bottom-color:var(--urgent)}
+.wstat-tab[data-tab="uae"].active{color:var(--uae);border-bottom-color:var(--uae)}
+.wstat-section{animation:fadeUp 0.2s ease}
+
+
+/* ── DYNAMIC STATS ── */
+.src-badge{font-family:var(--fm);font-size:0.55rem;letter-spacing:1px;color:var(--dim);display:inline-flex;align-items:center;gap:3px;padding:2px 6px;background:var(--glass);border:1px solid var(--gb);border-radius:4px}
+.src-dot{font-size:0.5rem;color:var(--dim);transition:color 0.4s}
+.src-badge.live .src-dot{color:var(--uae);animation:pulseBeat 2s ease infinite}
+.src-badge.warn .src-dot{color:var(--gcc)}
+.src-badge.dead .src-dot{color:var(--urgent)}
+.wstat-skeleton{height:28px;background:linear-gradient(90deg,var(--glass) 25%,var(--glass2) 50%,var(--glass) 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite;border-radius:4px;margin-bottom:4px}
+.stat-src{font-family:var(--fm);font-size:0.5rem;color:var(--dim);margin-left:4px}
+.stat-unverified{font-family:var(--fm);font-size:0.5rem;color:var(--gcc);margin-left:4px}
+
 </style>
 </head>
 <body>
@@ -272,14 +353,13 @@ body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100
   <div class="header">
     <div class="header-row">
       <div class="brand">
-        <div class="brand-icon">⚡</div>
-        <div><div class="brand-name">GlobalIQ Hub</div><div class="brand-sub">West Asia Intelligence</div></div>
+        <div class="brand-icon">🦅</div>
+        <div><div class="brand-name">Falcon Eye</div><div class="brand-sub">Strategic Intelligence | West Asia</div></div>
       </div>
       <div class="hctrl">
         <button class="icon-btn" id="theme-btn" title="Dark/Light mode" onclick="toggleTheme(this)">🌙</button>
         <button class="icon-btn" id="sound-btn" title="Sound alerts" onclick="toggleSound(this)">🔕</button>
         <button class="icon-btn" id="audio-tog" title="Audio summary" onclick="toggleAudio(this)">🔊</button>
-        <button class="icon-btn" id="video-tog" title="Live streams" onclick="toggleVideo(this)">📺</button>
         <div class="day-pill"><div class="pulse"></div><span id="day-label">LIVE</span></div>
       </div>
     </div>
@@ -301,27 +381,6 @@ body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100
     <div class="astat" id="astat">Press ▶ to read top headlines aloud</div>
   </div>
 
-  <div class="vbar" id="vbar">
-    <div class="vhdr">
-      <span style="color:var(--urgent);font-family:var(--ff);letter-spacing:2px">● LIVE NEWS STREAMS</span>
-      <button onclick="document.getElementById('vbar').classList.remove('open');document.getElementById('video-tog').classList.remove('active')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem">✕</button>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
-      <a href="https://www.aljazeera.com/video/live" target="_blank" rel="noopener" class="stream-link" style="--sc:rgba(232,53,74,0.3)">
-        <span style="font-size:1.3rem">📡</span><div><div style="font-family:var(--ff);font-size:0.85rem;letter-spacing:1px">AL JAZEERA</div><div style="font-size:0.6rem;color:var(--muted);margin-top:2px">English Live ↗</div></div>
-      </a>
-      <a href="https://www.bbc.co.uk/news/av/10318089" target="_blank" rel="noopener" class="stream-link" style="--sc:rgba(29,110,245,0.3)">
-        <span style="font-size:1.3rem">🇬🇧</span><div><div style="font-family:var(--ff);font-size:0.85rem;letter-spacing:1px">BBC NEWS</div><div style="font-size:0.6rem;color:var(--muted);margin-top:2px">Live Stream ↗</div></div>
-      </a>
-      <a href="https://www.france24.com/en/live-news/" target="_blank" rel="noopener" class="stream-link" style="--sc:rgba(139,92,246,0.3)">
-        <span style="font-size:1.3rem">🇫🇷</span><div><div style="font-family:var(--ff);font-size:0.85rem;letter-spacing:1px">FRANCE 24</div><div style="font-size:0.6rem;color:var(--muted);margin-top:2px">Live English ↗</div></div>
-      </a>
-      <a href="https://www.thenationalnews.com/video/" target="_blank" rel="noopener" class="stream-link" style="--sc:rgba(0,196,140,0.25)">
-        <span style="font-size:1.3rem">🇦🇪</span><div><div style="font-family:var(--ff);font-size:0.85rem;letter-spacing:1px">THE NATIONAL</div><div style="font-size:0.6rem;color:var(--muted);margin-top:2px">UAE Video ↗</div></div>
-      </a>
-    </div>
-    <div style="font-size:0.58rem;color:var(--dim);font-style:italic;padding:4px 0">YouTube blocks live embedding. Tap any source to open in a new tab.</div>
-  </div>
   <style>.stream-link{display:flex;align-items:center;gap:8px;background:var(--sc,rgba(255,255,255,0.05));border:1px solid var(--sc,var(--gb));border-radius:10px;padding:10px;text-decoration:none;color:var(--text);transition:all var(--tr)}.stream-link:hover{filter:brightness(1.2)}</style>
 
   <div class="ctrl-row">
@@ -339,80 +398,184 @@ body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100
   <div class="pbar"><div class="pfill" id="pf"></div></div>
 </div>
 
-<div class="page">
+<div class="page-grid">
 
-  <!-- UAE Priority -->
-  <div class="uae-priority">
-    <div class="section-header"><div class="stitle" style="color:var(--uae)">🇦🇪 UAE PRIORITY</div><div class="sline"></div></div>
-    <div class="uae-scroll" id="uae-scroll"><div class="uae-empty">Loading…</div></div>
-  </div>
+  <!-- ── MAIN COLUMN ── -->
+  <div class="main-col">
 
-  <!-- Timeline -->
-  <div class="tl-section">
-    <div class="section-header"><div class="stitle" style="color:var(--gcc)">⏱ CONFLICT TIMELINE</div><div class="sline"></div></div>
-    <div class="tl-scroll" id="tl"></div>
-  </div>
-
-  <!-- Map -->
-  <div class="map-section">
-    <div class="section-header"><div class="stitle" style="color:#60a5fa">🗺 CONFLICT ZONES</div><div class="sline"></div></div>
-    <div class="map-container">
-      <svg id="map-svg" viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg"></svg>
-      <div class="map-tip" id="map-tip"></div>
+    <!-- UAE Priority -->
+    <div class="uae-priority">
+      <div class="section-header"><div class="stitle" style="color:var(--uae)">🇦🇪 UAE PRIORITY</div><div class="sline"></div></div>
+      <div class="uae-scroll" id="uae-scroll"><div class="uae-empty">Loading…</div></div>
     </div>
-  </div>
 
-  <!-- Dashboard -->
-  <div class="dash-section">
-    <div class="section-header"><div class="stitle" style="color:#a78bfa">📊 INTELLIGENCE BREAKDOWN</div><div class="sline"></div></div>
-    <div class="dash-grid">
-      <div class="dash-panel"><div class="dlbl">📁 Category Split</div><div class="dchart"><canvas id="donut-chart"></canvas></div></div>
-      <div class="dash-panel"><div class="dlbl">📡 Source Volume</div><div class="dchart"><canvas id="bar-chart"></canvas></div></div>
+    <!-- Timeline -->
+    <div class="tl-section">
+      <div class="section-header"><div class="stitle" style="color:var(--gcc)">⏱ CONFLICT TIMELINE</div><div class="sline"></div></div>
+      <div class="tl-scroll" id="tl"></div>
     </div>
-  </div>
 
-  <!-- Brent -->
-  <div class="brent-section">
-    <div class="section-header"><div class="stitle" style="color:#4ade80">🛢 BRENT CRUDE LIVE</div><div class="sline"></div></div>
-    <div class="brent-panel">
-      <div class="brent-top">
-        <div>
-          <div class="blr"><span class="blbl">BRENT · BZ=F</span><div class="bldot"></div><span id="bmkt" style="font-family:var(--fm);font-size:0.52rem;color:var(--dim)">LIVE</span></div>
-          <div class="bprice" id="bprice">–</div>
-          <div class="bchg flat" id="bchg">Fetching…</div>
+    <!-- Brent -->
+    <div class="brent-section">
+      <div class="section-header"><div class="stitle" style="color:#4ade80">🛢 BRENT CRUDE LIVE</div><div class="sline"></div></div>
+      <div class="brent-panel">
+        <div class="brent-top">
+          <div>
+            <div class="blr"><span class="blbl">BRENT · BZ=F</span><div class="bldot"></div><span id="bmkt" style="font-family:var(--fm);font-size:0.52rem;color:var(--dim)">LIVE</span></div>
+            <div class="bprice" id="bprice">–</div>
+            <div class="bchg flat" id="bchg">Fetching…</div>
+          </div>
+          <div class="bstats">
+            <div class="bstat"><div class="bsval" id="b-high" style="color:#f87171">–</div><div class="bslbl">WAR HIGH</div></div>
+            <div class="bstat"><div class="bsval" style="color:var(--muted)">$72.29</div><div class="bslbl">PRE-WAR</div></div>
+            <div class="bstat"><div class="bsval" id="b-pct" style="color:var(--urgent)">–</div><div class="bslbl">↑ SINCE FEB 28</div></div>
+          </div>
         </div>
-        <div class="bstats">
-          <div class="bstat"><div class="bsval" id="b-high" style="color:#f87171">–</div><div class="bslbl">WAR HIGH</div></div>
-          <div class="bstat"><div class="bsval" style="color:var(--muted)">$72.29</div><div class="bslbl">PRE-WAR</div></div>
-          <div class="bstat"><div class="bsval" id="b-pct" style="color:var(--urgent)">–</div><div class="bslbl">↑ SINCE FEB 28</div></div>
-        </div>
-      </div>
-      <div class="bchart"><canvas id="bchart"></canvas></div>
-      <div class="bticker">
-        <div class="bti" id="bti">
-          <span class="btitem"><span style="color:var(--muted)">Feb 1</span><span style="color:var(--text)">$74.20 — Pre-conflict baseline</span></span>
-          <span class="btitem"><span style="color:var(--urgent)">Feb 28 🔴</span><span style="color:#f87171">$79.40 — US-Israel strikes begin, Khamenei killed</span></span>
-          <span class="btitem"><span style="color:var(--urgent)">Mar 1</span><span style="color:#f87171">$88.60 — Iran counterstrikes, Hormuz threatened</span></span>
-          <span class="btitem"><span style="color:var(--urgent)">Mar 3</span><span style="color:#f87171">$95.80 — Hormuz effectively blocked</span></span>
-          <span class="btitem"><span style="color:var(--urgent)">Mar 18 🔴</span><span style="color:#f87171">$107.10 — Israel strikes South Pars gas field</span></span>
-          <span class="btitem"><span style="color:var(--urgent)">Mar 19 📈</span><span style="color:#f87171">$107.40 — Conflict high · Goldman: elevated through 2027</span></span>
-          <span class="btitem"><span style="color:var(--gcc)">Mar 20–22</span><span style="color:var(--text)">$106.77 — Trump 48-hr Hormuz ultimatum</span></span>
-          <!-- duplicate for seamless loop -->
-          <span class="btitem"><span style="color:var(--muted)">Feb 1</span><span style="color:var(--text)">$74.20 — Pre-conflict baseline</span></span>
-          <span class="btitem"><span style="color:var(--urgent)">Feb 28 🔴</span><span style="color:#f87171">$79.40 — US-Israel strikes begin, Khamenei killed</span></span>
-          <span class="btitem"><span style="color:var(--urgent)">Mar 1</span><span style="color:#f87171">$88.60 — Iran counterstrikes, Hormuz threatened</span></span>
-          <span class="btitem"><span style="color:var(--urgent)">Mar 3</span><span style="color:#f87171">$95.80 — Hormuz effectively blocked</span></span>
-          <span class="btitem"><span style="color:var(--urgent)">Mar 18 🔴</span><span style="color:#f87171">$107.10 — Israel strikes South Pars gas field</span></span>
-          <span class="btitem"><span style="color:var(--urgent)">Mar 19 📈</span><span style="color:#f87171">$107.40 — Conflict high · Goldman: elevated through 2027</span></span>
-          <span class="btitem"><span style="color:var(--gcc)">Mar 20–22</span><span style="color:var(--text)">$106.77 — Trump 48-hr Hormuz ultimatum</span></span>
+        <div class="bchart"><canvas id="bchart"></canvas></div>
+        <div class="bticker">
+          <div class="bti" id="bti">
+            <span class="btitem"><span style="color:var(--muted)">Feb 1</span><span style="color:var(--text)">$74.20 — Pre-conflict baseline</span></span>
+            <span class="btitem"><span style="color:var(--urgent)">Feb 28 🔴</span><span style="color:#f87171">$79.40 — War begins, Khamenei killed</span></span>
+            <span class="btitem"><span style="color:var(--urgent)">Mar 3</span><span style="color:#f87171">$95.80 — Hormuz effectively blocked</span></span>
+            <span class="btitem"><span style="color:var(--urgent)">Mar 18 🔴</span><span style="color:#f87171">$107.10 — South Pars gas field struck</span></span>
+            <span class="btitem"><span style="color:var(--urgent)">Mar 19 📈</span><span style="color:#f87171">$107.40 — Conflict high</span></span>
+            <span class="btitem"><span style="color:var(--gcc)">Mar 22</span><span style="color:var(--text)">$106.77 — Trump 48-hr Hormuz ultimatum</span></span>
+            <span class="btitem"><span style="color:var(--muted)">Feb 1</span><span style="color:var(--text)">$74.20 — Pre-conflict baseline</span></span>
+            <span class="btitem"><span style="color:var(--urgent)">Feb 28 🔴</span><span style="color:#f87171">$79.40 — War begins, Khamenei killed</span></span>
+            <span class="btitem"><span style="color:var(--urgent)">Mar 3</span><span style="color:#f87171">$95.80 — Hormuz effectively blocked</span></span>
+            <span class="btitem"><span style="color:var(--urgent)">Mar 18 🔴</span><span style="color:#f87171">$107.10 — South Pars gas field struck</span></span>
+            <span class="btitem"><span style="color:var(--urgent)">Mar 19 📈</span><span style="color:#f87171">$107.40 — Conflict high</span></span>
+            <span class="btitem"><span style="color:var(--gcc)">Mar 22</span><span style="color:var(--text)">$106.77 — Trump 48-hr ultimatum</span></span>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Intel Breakdown -->
+    <div class="dash-section">
+      <div class="section-header"><div class="stitle" style="color:#a78bfa">📊 INTELLIGENCE BREAKDOWN</div><div class="sline"></div></div>
+      <div class="dash-grid">
+        <div class="dash-panel"><div class="dlbl">📁 Category Split</div><div class="dchart"><canvas id="donut-chart"></canvas></div></div>
+        <div class="dash-panel"><div class="dlbl">📡 Source Volume</div><div class="dchart"><canvas id="bar-chart"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- Live Feed -->
+    <div class="section-header" style="margin-bottom:8px">
+      <div class="stitle" style="color:var(--primary)">📡 LIVE INTEL FEED</div>
+      <div class="sline"></div>
+      <span id="feed-count" style="font-family:var(--fm);font-size:0.6rem;color:var(--dim);white-space:nowrap;flex-shrink:0"></span>
+    </div>
+    <!-- Category filter row -->
+    <div class="cat-filters" id="cat-filters">
+      <button class="cat-btn active" data-filter="all"       onclick="setCatFilter(this,'all')">All</button>
+      <button class="cat-btn"        data-filter="urgent"    onclick="setCatFilter(this,'urgent')">🚨 Breaking</button>
+      <button class="cat-btn"        data-filter="security"  onclick="setCatFilter(this,'security')">🔴 Security</button>
+      <button class="cat-btn"        data-filter="energy"    onclick="setCatFilter(this,'energy')">⚡ Energy</button>
+      <button class="cat-btn"        data-filter="diplomacy" onclick="setCatFilter(this,'diplomacy')">🕊 Diplomacy</button>
+      <button class="cat-btn"        data-filter="military"  onclick="setCatFilter(this,'military')">🪖 Military</button>
+    </div>
+    <div id="feed"></div>
   </div>
 
-  <!-- Feed -->
-  <div class="section-header" style="margin-bottom:10px"><div class="stitle" style="color:var(--primary)">📡 LIVE FEED</div><div class="sline"></div></div>
-  <div id="feed"></div>
+  <!-- ── SIDEBAR ── -->
+  <div class="side-col">
+
+    <!-- Map Panel — SVG with markers -->
+    <div class="side-panel">
+      <div class="side-panel-hdr">
+        <div class="side-panel-title" style="color:#60a5fa">🗺 THEATER MAP</div>
+        <div class="side-panel-badge" style="color:var(--urgent)">● LIVE</div>
+      </div>
+      <div style="position:relative;background:#071520;overflow:hidden" id="sidebar-map-wrap">
+        <svg id="sidebar-map-svg" viewBox="220 60 440 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;max-height:280px"></svg>
+        <div class="map-tip" id="map-tip" style="font-size:0.7rem"></div>
+      </div>
+      <div style="display:flex;justify-content:space-around;padding:6px 12px 8px;border-top:1px solid var(--gb)">
+        <span style="font-family:var(--fm);font-size:0.55rem;color:var(--urgent)">● Active strikes</span>
+        <span style="font-family:var(--fm);font-size:0.55rem;color:var(--gcc)">● Threat zone</span>
+        <span style="font-family:var(--fm);font-size:0.55rem;color:var(--uae)">● UAE/GCC</span>
+      </div>
+    </div>
+
+    <!-- Situation Status -->
+    <div class="side-panel">
+      <div class="side-panel-hdr">
+        <div class="side-panel-title">⚡ SITUATION STATUS</div>
+        <div class="side-panel-badge" id="side-updated">–</div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-val" id="side-day" style="color:var(--urgent)">–</div>
+          <div class="stat-lbl">Conflict Day</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="side-articles" style="color:#60a5fa">–</div>
+          <div class="stat-lbl">Articles Live</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="side-sources" style="color:var(--uae)">–</div>
+          <div class="stat-lbl">Sources Live</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="side-urgent" style="color:var(--gcc)">–</div>
+          <div class="stat-lbl">Breaking</div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- War Stats Panel — Dynamic Data Layer -->
+    <div class="side-panel" id="war-stats-panel">
+      <div class="side-panel-hdr">
+        <div class="side-panel-title" style="color:var(--urgent)">📊 CONFLICT STATS</div>
+        <div class="side-panel-badge" id="stats-last-updated" style="color:var(--gcc)">Refreshing…</div>
+      </div>
+
+      <!-- Data source status strip -->
+      <div style="display:flex;gap:6px;padding:6px 12px;border-bottom:1px solid var(--gb);flex-wrap:wrap">
+        <span class="src-badge" id="src-acled" title="Armed Conflict Location & Event Data">ACLED <span class="src-dot">●</span></span>
+        <span class="src-badge" id="src-reliefweb" title="UN OCHA ReliefWeb">UN OCHA <span class="src-dot">●</span></span>
+        <span class="src-badge" id="src-verified" title="Manually verified from newswires">Verified <span class="src-dot">●</span></span>
+      </div>
+
+      <!-- Tabs -->
+      <div style="display:flex;border-bottom:1px solid var(--gb)">
+        <button class="wstat-tab active" onclick="wstatTab(this,'global')" data-tab="global">🌐 Global</button>
+        <button class="wstat-tab" onclick="wstatTab(this,'uae')" data-tab="uae">🇦🇪 UAE</button>
+      </div>
+
+      <!-- Global Stats -->
+      <div id="wstat-global" class="wstat-section">
+        <div style="padding:8px 12px;display:flex;flex-direction:column;gap:0" id="global-stats-rows">
+          <!-- Populated by JS -->
+          <div class="wstat-skeleton"></div>
+          <div class="wstat-skeleton"></div>
+          <div class="wstat-skeleton"></div>
+          <div class="wstat-skeleton"></div>
+          <div class="wstat-skeleton"></div>
+        </div>
+      </div>
+
+      <!-- UAE Stats -->
+      <div id="wstat-uae" class="wstat-section" style="display:none">
+        <div style="padding:8px 12px;display:flex;flex-direction:column;gap:0" id="uae-stats-rows">
+          <div class="wstat-skeleton"></div>
+          <div class="wstat-skeleton"></div>
+          <div class="wstat-skeleton"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Source Credibility -->
+    <div class="side-panel">
+      <div class="side-panel-hdr">
+        <div class="side-panel-title">✓ SOURCE CREDIBILITY</div>
+      </div>
+      <div style="padding:10px 14px;display:flex;flex-direction:column;gap:7px" id="cred-list"></div>
+    </div>
+
+  </div>
 </div>
 
 <script>
@@ -513,14 +676,25 @@ const KW = ['iran','israel','west asia','middle east','hormuz','gulf','hezbollah
 const UAE_KW = ['uae','dubai','abu dhabi','al minhad','minhad','ras al-khaimah','emirates','emirati','sharjah','ajman','fujairah'];
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let curFilter='All', allCards=[], workingFeeds=[], freqMin=15;
+let curFilter='All', catFilter='all', allCards=[], workingFeeds=[], freqMin=15;
 let autoTimer=null, bChart=null, donutChart=null, barChart=null;
 let soundOn=false, speaking=false, prevUrgents=new Set();
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 const strip = h=>(h||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
 const esc   = s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const fmtD  = str=>{if(!str)return'';const d=new Date(str),now=new Date(),diff=Math.floor((now-d)/60000);if(diff<1)return'just now';if(diff<60)return diff+'m ago';if(diff<1440)return Math.floor(diff/60)+'h ago';return d.toLocaleDateString('en-AE',{day:'numeric',month:'short'});};
+const fmtD = str=>{
+  if(!str)return'';
+  const d=new Date(str);
+  if(isNaN(d))return'';
+  const now=new Date(), diff=Math.floor((now-d)/60000);
+  const dateStr = d.toLocaleDateString('en-AE',{day:'numeric',month:'short',year:'numeric'});
+  const timeStr = d.toLocaleTimeString('en-AE',{hour:'2-digit',minute:'2-digit',hour12:false});
+  if(diff<1)  return 'just now · '+timeStr+' UAE';
+  if(diff<60) return diff+'m ago · '+dateStr+' '+timeStr;
+  if(diff<1440) return Math.floor(diff/60)+'h ago · '+dateStr+' '+timeStr;
+  return dateStr+' · '+timeStr+' UAE';
+};
 const fmtT  = ts=>new Date(ts).toLocaleTimeString('en-AE',{hour:'2-digit',minute:'2-digit',hour12:false})+' UAE';
 const waURL = (t,u)=>'https://wa.me/?text='+encodeURIComponent((t||'').slice(0,100)+(u?'\n'+u:''));
 const waSVG = `<svg class="wasvg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
@@ -549,7 +723,6 @@ function stopSpeak(){window.speechSynthesis.cancel();speaking=false;document.get
 function readCard(t){if(!window.speechSynthesis)return;window.speechSynthesis.cancel();window.speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(t),{rate:1,pitch:0.95}));}
 
 // ── VIDEO ─────────────────────────────────────────────────────────────────────
-function toggleVideo(btn){const v=document.getElementById('vbar');v.classList.toggle('open');btn.classList.toggle('active',v.classList.contains('open'));}
 
 // ── TIMELINE ─────────────────────────────────────────────────────────────────
 function renderTimeline(){
@@ -770,10 +943,40 @@ function buildCards(items){return items.map(item=>{const{cat,urgent}=categorise(
 // ── BADGES ────────────────────────────────────────────────────────────────────
 function updateBadges(cards){document.getElementById('cnt-all').textContent=cards.length;document.getElementById('cnt-uae').textContent=cards.filter(c=>c.cat==='UAE').length;document.getElementById('cnt-gcc').textContent=cards.filter(c=>c.cat==='GCC').length;document.getElementById('cnt-global').textContent=cards.filter(c=>c.cat==='Global').length;}
 
+function updateSidebar(cards){
+  const day=Math.max(1,Math.floor((Date.now()-new Date('2026-02-28'))/86400000)+1);
+  const sd=document.getElementById('side-day');     if(sd) sd.textContent=day;
+  const sa=document.getElementById('side-articles');if(sa) sa.textContent=cards.length;
+  const ss=document.getElementById('side-sources'); if(ss) ss.textContent=workingFeeds.length+'/7';
+  const su=document.getElementById('side-urgent');  if(su) su.textContent=cards.filter(c=>c.urgent).length||'–';
+  const spu=document.getElementById('side-updated');if(spu) spu.textContent=new Date().toLocaleTimeString('en-AE',{hour:'2-digit',minute:'2-digit',hour12:false})+' UAE';
+  // Source credibility list
+  const cl=document.getElementById('cred-list');
+  if(cl){
+    cl.innerHTML=Object.entries(SOURCE_CRED).map(([name,d])=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <span style="font-size:0.75rem;color:var(--muted);font-family:var(--fs)">${name}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:60px;height:4px;border-radius:2px;background:rgba(255,255,255,0.08);overflow:hidden">
+            <div style="height:100%;width:${d.score}%;background:${d.score>=85?'#4ade80':d.score>=75?'#fbbf24':'#f87171'};border-radius:2px"></div>
+          </div>
+          <span style="font-family:var(--fm);font-size:0.58rem;color:${d.score>=85?'#4ade80':d.score>=75?'#fbbf24':'#f87171'}">${d.score}</span>
+        </div>
+      </div>`).join('');
+  }
+}
+
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function render(){
   const feed=document.getElementById('feed');
-  const cards=curFilter==='All'?allCards:allCards.filter(c=>c.cat===curFilter);
+  // Apply geo filter first
+  let cards=curFilter==='All'?allCards:allCards.filter(c=>c.cat===curFilter);
+  // Then apply category/topic filter
+  if(catFilter==='urgent')    cards=cards.filter(c=>c.urgent);
+  else if(catFilter==='security')  cards=cards.filter(c=>c.topics.includes('security'));
+  else if(catFilter==='energy')    cards=cards.filter(c=>c.topics.includes('energy'));
+  else if(catFilter==='diplomacy') cards=cards.filter(c=>c.topics.includes('diplomacy'));
+  else if(catFilter==='military')  cards=cards.filter(c=>c.topics.includes('military'));
   feed.innerHTML='';
   if(!cards.length){feed.innerHTML=`<div class="empty"><div class="empty-icon">📡</div><div class="empty-title">No Articles</div><div class="empty-sub">${allCards.length?'Try "All" filter.':'Tap Refresh.'}</div></div>`;return;}
   cards.forEach((card,idx)=>{
@@ -782,15 +985,24 @@ function render(){
     div.className=`card ${cl}${card.urgent?' urgent':''}`;
     div.style.animationDelay=(idx*38)+'ms';
     const cred=SOURCE_CRED[card.source]||{score:75,level:'md',bias:'Unknown'};
-    const tagH=`<span class="tag ${card.urgent?'urgent':cl}">${card.urgent?'🚨 BREAKING':card.cat.toUpperCase()}</span>${card.topics.map(t=>`<span class="ttag ${t}">${t}</span>`).join('')}`;
-    const metaH=`<div class="cts"><div>${esc(card.time)}</div><div style="display:flex;align-items:center;gap:4px;justify-content:flex-end"><span class="cred ${cred.level}" title="${cred.bias}">✓${cred.score}</span><span style="font-size:0.52rem;color:var(--dim)">${esc(card.source)}</span></div></div>`;
+    const intelLabel = card.urgent ? '🚨 BREAKING' : card.cat==='UAE' ? 'UAE Intel' : card.cat==='GCC' ? 'Gulf Intel' : 'Global Intel';
+    const tagH=`<span class="tag ${card.urgent?'urgent':cl}">${intelLabel}</span>${card.topics.map(t=>`<span class="ttag ${t}">${t.charAt(0).toUpperCase()+t.slice(1)}</span>`).join('')}`;
+    const metaH=`<div class="cts">
+      <div style="display:flex;align-items:center;gap:4px;justify-content:flex-end">
+        <span style="font-size:0.6rem;color:var(--muted);font-family:var(--fs)">${esc(card.source)}</span>
+      </div>
+    </div>`;
+    const dtH=`<div class="card-dt"><div class="card-dt-dot"></div>${esc(card.time)}</div>`;
     const titleH=card.link?`<a href="${esc(card.link)}" target="_blank" rel="noopener">${esc(card.title)}</a>`:esc(card.title);
     const actH=`<div class="cactions">${card.link?`<a class="rmore" href="${esc(card.link)}" target="_blank" rel="noopener">Full story →</a>`:''}<a class="wabtn" href="${esc(waURL(card.title,card.link))}" target="_blank" rel="noopener">${waSVG} Share</a><button class="ralbtn" onclick="readCard('${esc(card.title).replace(/'/g,"\\'")}')">🔊</button></div>`;
-    if(card.image){div.innerHTML=`<div class="cimg"><img src="${esc(card.image)}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"><div class="cimg-ov"></div><div class="cimg-tag">${tagH}</div></div><div class="cbody wi"><div class="cmeta"><div></div>${metaH}</div><div class="ctitle">${titleH}</div><div class="ccontent">${esc(card.content)}</div>${actH}</div>`;}
-    else{div.innerHTML=`<div class="cbody"><div class="cmeta"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">${tagH}</div>${metaH}</div><div class="ctitle">${titleH}</div><div class="ccontent">${esc(card.content)}</div>${actH}</div>`;}
+    if(card.image){div.innerHTML=`<div class="cimg"><img src="${esc(card.image)}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"><div class="cimg-ov"></div><div class="cimg-tag">${tagH}</div></div><div class="cbody wi">${dtH}<div class="cmeta"><div></div>${metaH}</div><div class="ctitle">${titleH}</div><div class="ccontent">${esc(card.content)}</div>${actH}</div>`;}
+    else{div.innerHTML=`<div class="cbody">${dtH}<div class="cmeta"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">${tagH}</div>${metaH}</div><div class="ctitle">${titleH}</div><div class="ccontent">${esc(card.content)}</div>${actH}</div>`;}
     feed.appendChild(div);
   });
   feed.innerHTML+=`<div class="ffooter">${workingFeeds.join(' · ')}<br>${allCards.length} articles · Keyword-categorised · Source credibility scored</div>`;
+  // Update feed count in header
+  const fc=document.getElementById('feed-count');
+  if(fc) fc.textContent=cards.length+' articles';
 }
 
 // ── AUTO REFRESH ──────────────────────────────────────────────────────────────
@@ -816,7 +1028,8 @@ async function doRefresh(){
     updateThreat(allCards);
     renderUAE(allCards);
     buildDashboard(allCards);
-    if(window._mapBlip){const top=allCards.find(c=>c.urgent);if(top)window._mapBlip(27+Math.random()*4-2,50+Math.random()*4-2,top.cat==='UAE'?'#00c48c':top.cat==='GCC'?'#f5a623':'#e8354a');}
+    updateSidebar(allCards);
+    if(window._sidebarMapBlip){const top=allCards.find(c=>c.urgent);if(top)window._sidebarMapBlip(27+Math.random()*3-1.5,50+Math.random()*3-1.5,top.cat==='UAE'?'#00c48c':top.cat==='GCC'?'#f5a623':'#e8354a');}
     document.getElementById('msrc').textContent=workingFeeds.join(' · ');
     document.getElementById('lupd').textContent=fmtT(Date.now());
     led.style.background='var(--uae)';
@@ -827,10 +1040,382 @@ async function doRefresh(){
   }finally{btn.disabled=false;ri.className='';rl.textContent='Refresh';}
 }
 
+
+
+// ── STREAM SWITCHER ──────────────────────────────────────────────────────────
+// All major broadcasters block iframe embedding (X-Frame-Options: SAMEORIGIN).
+// Premium launch panel instead — one tap opens in new tab.
+const STREAMS = [
+  {id:'aj',  label:'AJ',  name:'Al Jazeera English', desc:'Middle East focus · 24/7 live',      url:'https://www.aljazeera.com/live/',            color:'#e8354a', icon:'📡'},
+  {id:'f24', label:'F24', name:'France 24 English',  desc:'Global coverage · Live from Paris',  url:'https://www.france24.com/en/live-news/',     color:'#0066cc', icon:'🇫🇷'},
+  {id:'dw',  label:'DW',  name:'DW News English',    desc:'European perspective · 24/7',        url:'https://www.dw.com/en/tv-live-stream/',      color:'#c8002d', icon:'🇩🇪'},
+  {id:'eur', label:'EUR', name:'Euronews English',   desc:'European & Middle East coverage',    url:'https://www.euronews.com/live',              color:'#0099cc', icon:'🌍'},
+  {id:'bbc', label:'BBC', name:'BBC World News',     desc:'International breaking news · Live', url:'https://www.bbc.co.uk/news/av/10318089',     color:'#bb1919', icon:'🇬🇧'},
+  {id:'cnn', label:'CNN', name:'CNN International',  desc:'Breaking world news · Live stream',  url:'https://edition.cnn.com/live-tv',            color:'#cc0000', icon:'📺'},
+];
+
+// ── CATEGORY FILTER ────────────────────────────────────────────────────────
+
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║  CONFLICT STATS — DYNAMIC DATA LAYER                                ║
+// ║  Architecture:                                                       ║
+// ║    1. fetchLayer   — calls APIs with timeout + error handling        ║
+// ║    2. transformLayer — normalises to unified StatModel               ║
+// ║    3. renderLayer  — populates DOM rows                              ║
+// ║  Sources: ACLED (live), ReliefWeb/UN OCHA (live), Verified (static) ║
+// ╚══════════════════════════════════════════════════════════════════════╝
+
+// ── CONFIG — replace ACLED_KEY with your key from acleddata.com ──────────────
+const STATS_CONFIG = {
+  ACLED_KEY: '',  // Get free key at: https://acleddata.com/register/
+  // Country ISO codes for conflict zone filter
+  ACLED_COUNTRIES: 'Iran,Israel,Lebanon,Yemen,Iraq',
+  // ReliefWeb: no key needed, CORS-enabled UN API
+  RELIEFWEB_URL: 'https://api.reliefweb.int/v1/reports?appname=falcon-eye&filter[field]=country.name&filter[value][]=Iran&filter[value][]=Lebanon&limit=1&fields[include][]=date_modified&fields[include][]=title&sort[]=date_modified:desc',
+  REFRESH_MS: 10 * 60 * 1000, // 10 minutes
+  TIMEOUT_MS: 8000,
+};
+
+// ── DATA MODEL (StatModel) ────────────────────────────────────────────────────
+// Each stat: { label, value, color, source, live, fallback, verified_date }
+
+// ── FALLBACK VALUES (verified from newswires 22 Mar 2026) ────────────────────
+// These are shown when live APIs are unavailable or key not configured.
+// Marked with ⚠ Unverified badge when showing stale data.
+const FALLBACK_STATS = {
+  global: [
+    {label:'Fatalities (ACLED est.)',   value:'2,800+',    color:'#f87171', source:'ACLED',    key:'fatalities'},
+    {label:'Iranian Civilian Deaths',   value:'1,444+',    color:'#f87171', source:'UN OCHA',  key:'iran_dead'},
+    {label:'Children Killed (Iran)',    value:'204+',      color:'#f87171', source:'UN OCHA',  key:'iran_children'},
+    {label:'Lebanon Deaths (Mar 2→)',   value:'1,001+',    color:'#f87171', source:'Reuters',  key:'leb_dead'},
+    {label:'Missiles Fired (est.)',     value:'3,200+',    color:'#fbbf24', source:'CENTCOM',  key:'missiles'},
+    {label:'Drones Deployed (est.)',    value:'1,800+',    color:'#fbbf24', source:'CENTCOM',  key:'drones'},
+    {label:'Sites Struck (total)',      value:'40+',       color:'#fb923c', source:'Verified', key:'sites'},
+    {label:'Natanz Status',             value:'STRUCK',    color:'#e8354a', source:'IAEA',     key:'natanz'},
+    {label:'Hormuz Status',             value:'BLOCKED',   color:'#e8354a', source:'UKMTO',    key:'hormuz'},
+    {label:'Global Oil Disrupted',      value:'~20%',      color:'#fbbf24', source:'IEA',      key:'oil_pct'},
+    {label:'Brent vs Pre-War',          value:'+47%',      color:'#4ade80', source:'Live',     key:'brent_chg'},
+    {label:'US Forces Deployed',        value:'3 Carrier Groups', color:'#60a5fa', source:'DoD', key:'us_forces'},
+  ],
+  uae: [
+    {label:'Iran Threat Level (UAE)',   value:'CRITICAL',         color:'#e8354a', source:'UAE MoD',  key:'uae_threat'},
+    {label:'Al-Minhad Air Base',        value:'ACTIVE · Threatened', color:'#fbbf24', source:'Reuters', key:'minhad'},
+    {label:'US Arms Package (UAE)',     value:'$8 billion',       color:'#4ade80', source:'Pentagon', key:'uae_arms'},
+    {label:'Iran Terror Network',       value:'DISMANTLED',       color:'#4ade80', source:'UAE MoD',  key:'terror_net'},
+    {label:'Hezbollah Cells Arrested',  value:'Confirmed',        color:'#fbbf24', source:'UAE MoD',  key:'hezb_cells'},
+    {label:'Dubai Airspace',            value:'RESTRICTED',       color:'#fbbf24', source:'GCAA',     key:'airspace'},
+    {label:'UAE Navy Readiness',        value:'ELEVATED',         color:'#fb923c', source:'UAE MoD',  key:'navy'},
+    {label:'Hormuz Oil Exposure',       value:'~25% of GDP',      color:'#e8354a', source:'IMF',      key:'hormuz_gdp'},
+    {label:'UAE Crude Export Risk',     value:'HIGH',             color:'#e8354a', source:'ADNOC',    key:'crude_risk'},
+    {label:'ADNOC Production',          value:'Monitoring',       color:'#fbbf24', source:'ADNOC',    key:'adnoc'},
+    {label:'Expat Evacuation Status',   value:'Standby',          color:'#fbbf24', source:'NCEMA',    key:'evac'},
+    {label:'Emirates Flights',          value:'Some routes diverted', color:'#fbbf24', source:'EK', key:'ek_flights'},
+  ]
+};
+
+// ── 1. FETCH LAYER ────────────────────────────────────────────────────────────
+async function fetchWithTimeout(url, options={}, timeoutMs=STATS_CONFIG.TIMEOUT_MS){
+  const controller = new AbortController();
+  const timer = setTimeout(()=>controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, {...options, signal:controller.signal});
+    clearTimeout(timer);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    return await res.json();
+  } catch(e) {
+    clearTimeout(timer);
+    throw e;
+  }
+}
+
+async function fetchACLED(){
+  // ACLED API: free, requires registration at acleddata.com
+  // Returns event counts and fatalities by country
+  if(!STATS_CONFIG.ACLED_KEY) throw new Error('No ACLED key configured');
+  const since = '2026-02-28'; // war start date
+  const url = `https://api.acleddata.com/acled/read/?key=${STATS_CONFIG.ACLED_KEY}&email=YOUR_EMAIL&country=${encodeURIComponent(STATS_CONFIG.ACLED_COUNTRIES)}&event_date=${since}&event_date_where=BETWEEN&event_date2=2026-03-31&limit=0&fields=fatalities,event_type,country`;
+  const data = await fetchWithTimeout(url);
+  return data;
+}
+
+async function fetchReliefWeb(){
+  // ReliefWeb — UN OCHA open API, no key needed, CORS-enabled
+  const data = await fetchWithTimeout(STATS_CONFIG.RELIEFWEB_URL);
+  return data;
+}
+
+// ── 2. TRANSFORM LAYER ────────────────────────────────────────────────────────
+function transformACLED(raw){
+  // Aggregate ACLED event data into summary stats
+  if(!raw?.data) return null;
+  const totalFatalities = raw.data.reduce((sum,e)=>sum+(parseInt(e.fatalities)||0), 0);
+  return { fatalities: totalFatalities.toLocaleString()+'+' };
+}
+
+function transformReliefWeb(raw){
+  // Extract last update timestamp from UN OCHA reports
+  if(!raw?.data?.[0]) return null;
+  const lastReport = raw.data[0];
+  return {
+    last_report_date: lastReport.fields?.date_modified?.split('T')[0] || null,
+    last_report_title: lastReport.fields?.title || null,
+  };
+}
+
+// ── 3. RENDER LAYER ───────────────────────────────────────────────────────────
+function renderStatRows(containerId, stats, liveOverrides={}){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML = stats.map((s,i) => {
+    const live = liveOverrides[s.key];
+    const val  = live?.value || s.value;
+    const isLive = !!live;
+    const isLast = i === stats.length-1;
+    return `<div class="wstat-row${isLast?' last':''}">
+      <span class="wstat-label">${s.label}</span>
+      <span style="display:flex;align-items:center;gap:4px">
+        <span class="wstat-val" style="color:${s.color}">${val}</span>
+        <span class="${isLive?'stat-src':'stat-unverified'}" title="Source: ${s.source}">${isLive?'● '+s.source:'⚠ Mar 22'}</span>
+      </span>
+    </div>`;
+  }).join('');
+}
+
+function setSourceBadge(id, state){
+  // state: 'live' | 'warn' | 'dead'
+  const el = document.getElementById(id);
+  if(el){ el.className='src-badge '+state; }
+}
+
+function updateStatsTimestamp(msg, color='var(--gcc)'){
+  const el = document.getElementById('stats-last-updated');
+  if(el){ el.textContent=msg; el.style.color=color; }
+}
+
+// ── MAIN STATS REFRESH ────────────────────────────────────────────────────────
+async function refreshStats(){
+  const liveOverrides = {};
+
+  // Start with fallback data shown immediately
+  renderStatRows('global-stats-rows', FALLBACK_STATS.global, liveOverrides);
+  renderStatRows('uae-stats-rows',    FALLBACK_STATS.uae,    liveOverrides);
+  updateStatsTimestamp('Verified 22 Mar 2026', 'var(--gcc)');
+  setSourceBadge('src-verified','live');
+
+  // Try ReliefWeb (UN OCHA) — free, no key
+  try {
+    const rwData  = await fetchReliefWeb();
+    const rwStats = transformReliefWeb(rwData);
+    if(rwStats?.last_report_date){
+      setSourceBadge('src-reliefweb','live');
+      updateStatsTimestamp('UN OCHA: '+rwStats.last_report_date, 'var(--uae)');
+    }
+  } catch(e){
+    console.warn('ReliefWeb unavailable:', e.message);
+    setSourceBadge('src-reliefweb','warn');
+  }
+
+  // Try ACLED — needs API key
+  try {
+    const acledData = await fetchACLED();
+    const acledStats = transformACLED(acledData);
+    if(acledStats?.fatalities){
+      liveOverrides['fatalities'] = { value: acledStats.fatalities };
+      renderStatRows('global-stats-rows', FALLBACK_STATS.global, liveOverrides);
+      setSourceBadge('src-acled','live');
+    }
+  } catch(e){
+    if(e.message.includes('No ACLED key')){
+      setSourceBadge('src-acled','warn');
+      console.info('ACLED: add your free API key in STATS_CONFIG.ACLED_KEY');
+    } else {
+      setSourceBadge('src-acled','dead');
+      console.warn('ACLED unavailable:', e.message);
+    }
+  }
+}
+
+// ── TAB SWITCHER ─────────────────────────────────────────────────────────────
+function wstatTab(btn, tab){
+  document.querySelectorAll('.wstat-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('wstat-global').style.display = tab==='global'?'block':'none';
+  document.getElementById('wstat-uae').style.display    = tab==='uae'   ?'block':'none';
+}
+
+// Auto-refresh stats every 10 minutes
+setInterval(refreshStats, STATS_CONFIG.REFRESH_MS);
+
+function setCatFilter(btn, filter){
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  catFilter=filter;
+  render();
+}
+
+// ── SIDEBAR SVG MAP ─────────────────────────────────────────────────────────
+function initSidebarMap(){
+  const svg=document.getElementById('sidebar-map-svg');
+  if(!svg||svg.dataset.done)return;
+  svg.dataset.done='1';
+  const ns='http://www.w3.org/2000/svg';
+  // Use same viewBox as main but focussed on Middle East: viewBox="220 60 440 320"
+  const W=900,H=480,minLng=29,maxLng=66,minLat=11,maxLat=43;
+  const px=(lat,lng)=>({
+    x:((lng-minLng)/(maxLng-minLng)*W).toFixed(1),
+    y:((maxLat-lat)/(maxLat-minLat)*H).toFixed(1)
+  });
+
+  const MAP_COUNTRIES_SIDEBAR = [
+    {c:'#1a2a1a',s:'#2a4a2a',pts:[[38,44],[39.5,47],[39,48.5],[37.5,49.5],[36.5,52],[37.2,54.5],[36.8,56.2],[35.5,58.5],[34,60.5],[31,60.5],[28,60],[25.5,59],[24.5,57.5],[25,55.5],[26.5,56.5],[27,57],[26.8,55],[25,53.5],[24.8,50.5],[25.5,49.5],[26.5,49.5],[28.5,48],[30,48.5],[31.5,48],[33.5,46],[34.5,45.5],[35.5,45],[36.5,44],[37.5,44.5],[38,44]]},
+    {c:'#1a1a28',s:'#2a2a48',pts:[[37.5,42.5],[37.5,44],[36.5,44],[35.5,45],[34.5,45.5],[33.5,46],[31.5,48],[30,48.5],[29.5,47.5],[29.5,46],[30.5,45.5],[31,44],[30.5,43],[31,40],[32,39.5],[33,38.5],[34.5,38],[35.5,38.5],[36.8,38],[37.5,40.5],[37.5,42.5]]},
+    {c:'#1e1a14',s:'#3a3020',pts:[[29.5,34.8],[29.2,36],[28,36.5],[26.5,37],[24.5,37.5],[22,39],[18,41.5],[15,42.5],[16,43.5],[17.5,44],[19,44.5],[20.5,46.5],[21.5,47.5],[22,48.5],[22.5,50],[23.5,51.5],[24,55],[22.5,55.5],[22,57],[23,58.5],[24,58.5],[26,56.5],[26.5,56.5],[25,55.5],[25,53.5],[26.5,49.5],[25.5,49.5],[26.5,47.5],[28.5,48],[29.5,47.5],[30,48.5],[31,44],[30.5,43],[31,40],[32,39.5],[30,37],[29.5,34.8]]},
+    {c:'#1a1a20',s:'#2a2a40',pts:[[37.5,42.5],[37.5,40.5],[36.8,38],[35.5,38.5],[34.5,38],[33,38.5],[33,36.5],[33.5,36],[34.5,36.5],[35.5,36],[36.5,36.5],[37,36.5],[37,37.5],[38,37.5],[38.5,39.5],[38,40.5],[38.5,41.5],[37.5,42.5]]},
+    {c:'#1a1a18',s:'#303030',pts:[[33,38.5],[32,39.5],[31,40],[30.5,38.5],[29.5,34.8],[30,34.5],[31.5,35],[32.5,35.5],[33.5,36.5],[33,38.5]]},
+    {c:'#181820',s:'#303050',pts:[[33.5,35.2],[33,36.5],[32.5,35.5],[31.5,35],[30,34.5],[29.5,34.8],[31.5,35],[32.5,34.8],[33.5,35.2]]},
+    {c:'#181820',s:'#303040',pts:[[34.5,36.5],[33.5,36],[33,36.5],[33.5,35.2],[34,35.5],[34.5,36.5]]},
+    {c:'#141818',s:'#203028',pts:[[26,51.5],[24,51.5],[22.5,55.5],[24,55],[25,55.5],[25.5,55.8],[26,56.5],[26.8,55],[26,51.5]]},
+    {c:'#141818',s:'#203028',pts:[[26,50.8],[25.5,50.5],[24.5,51],[25,51.5],[26,51.5],[26,50.8]]},
+    {c:'#1a1814',s:'#302820',pts:[[22,57],[22.5,55.5],[24,55],[26,56.5],[26.8,55],[25.5,55.8],[25,55.5],[25,57],[23,58.5],[22,57]]},
+  ];
+
+  // Ocean bg
+  const oc=document.createElementNS(ns,'rect');
+  oc.setAttribute('x','0');oc.setAttribute('y','0');oc.setAttribute('width',W);oc.setAttribute('height',H);
+  oc.setAttribute('fill','#071520');svg.appendChild(oc);
+
+  // Countries
+  MAP_COUNTRIES_SIDEBAR.forEach(co=>{
+    const poly=document.createElementNS(ns,'polygon');
+    poly.setAttribute('points',co.pts.map(([lat,lng])=>{const p=px(lat,lng);return p.x+','+p.y;}).join(' '));
+    poly.setAttribute('fill',co.c);poly.setAttribute('stroke',co.s);poly.setAttribute('stroke-width','0.8');
+    svg.appendChild(poly);
+  });
+
+  // Persian Gulf
+  const gp=[[29.5,47.5],[28.5,48],[26.5,49.5],[25.5,49.5],[24.8,50.5],[24,51.5],[25,51.5],[26,51.5],[26,56.5],[26.8,55],[25,55.5],[25,53.5],[26.5,49.5],[28.5,48],[30,48.5],[29.5,47.5]];
+  const gf=document.createElementNS(ns,'polygon');
+  gf.setAttribute('points',gp.map(([a,b])=>{const p=px(a,b);return p.x+','+p.y;}).join(' '));
+  gf.setAttribute('fill','#0d2035');gf.setAttribute('stroke','#1a3050');gf.setAttribute('stroke-width','0.5');
+  svg.appendChild(gf);
+
+  // Red Sea
+  const rp=[[30,32.5],[29.5,34.8],[22,37],[18,41.5],[16,43.5],[15.5,42.5],[17.5,41],[22,37.5],[26.5,35],[28.5,33.5],[30,32.5]];
+  const rf=document.createElementNS(ns,'polygon');
+  rf.setAttribute('points',rp.map(([a,b])=>{const p=px(a,b);return p.x+','+p.y;}).join(' '));
+  rf.setAttribute('fill','#0d2035');rf.setAttribute('stroke','#1a3050');rf.setAttribute('stroke-width','0.5');
+  svg.appendChild(rf);
+
+  // English labels (only key ones that fit in the zoomed view)
+  const SLABELS=[
+    {lat:32.5,lng:52,  t:'IRAN',        fs:9, fw:700,c:'rgba(180,200,230,0.7)'},
+    {lat:33.5,lng:43,  t:'IRAQ',        fs:8, fw:600,c:'rgba(160,180,210,0.6)'},
+    {lat:23.5,lng:45,  t:'SAUDI',       fs:8, fw:600,c:'rgba(160,180,210,0.6)'},
+    {lat:23.2,lng:53.5,t:'UAE',         fs:8, fw:700,c:'rgba(0,196,140,0.85)'},
+    {lat:25.2,lng:51,  t:'QATAR',       fs:6, fw:600,c:'rgba(150,170,200,0.6)'},
+    {lat:34.1,lng:35.7,t:'LEB',         fs:6, fw:600,c:'rgba(150,170,200,0.6)'},
+    {lat:31.7,lng:34.9,t:'ISR',         fs:6, fw:700,c:'rgba(180,200,230,0.7)'},
+    {lat:31.5,lng:36.5,t:'JOR',         fs:6, fw:600,c:'rgba(150,170,200,0.6)'},
+    {lat:26.6,lng:56.8,t:'HORMUZ',      fs:7, fw:700,c:'rgba(232,53,74,0.9)'},
+    {lat:27.5,lng:50.5,t:'PERSIAN GULF',fs:6, fw:400,c:'rgba(100,150,200,0.5)',i:true},
+  ];
+  SLABELS.forEach(l=>{
+    const p=px(l.lat,l.lng);
+    const t=document.createElementNS(ns,'text');
+    t.setAttribute('x',p.x);t.setAttribute('y',p.y);
+    t.setAttribute('fill',l.c);t.setAttribute('font-size',l.fs);
+    t.setAttribute('font-family',"'DM Mono',monospace");t.setAttribute('font-weight',l.fw);
+    t.setAttribute('letter-spacing','1');t.setAttribute('text-anchor','middle');
+    t.setAttribute('style','pointer-events:none;paint-order:stroke;stroke:rgba(0,0,0,0.8);stroke-width:3px');
+    if(l.i)t.setAttribute('font-style','italic');
+    t.textContent=l.t;svg.appendChild(t);
+  });
+
+  // Tooltip
+  const tip=document.getElementById('map-tip');
+
+  // Conflict markers
+  const SMARKERS=[
+    {lat:35.7,lng:51.4,n:'Tehran',      s:'🔴 US-Israeli strikes ongoing',    c:'#e8354a',r:6},
+    {lat:32.1,lng:34.8,n:'Tel Aviv',    s:'🔴 Iranian missiles intercepted',  c:'#e8354a',r:5},
+    {lat:33.9,lng:35.5,n:'Beirut',      s:'🟡 Hezbollah clashes',             c:'#f5a623',r:4},
+    {lat:25.2,lng:55.3,n:'Dubai (UAE)', s:'⚠️ Iran threat warnings',          c:'#00c48c',r:5},
+    {lat:26.5,lng:56.5,n:'Hormuz',      s:'🔴 CRITICAL — Blocked',            c:'#e8354a',r:8},
+    {lat:33.7,lng:51.7,n:'Natanz',      s:'🔴 Nuclear site struck Mar 21',    c:'#e8354a',r:5},
+    {lat:27.2,lng:52.5,n:'South Pars',  s:'🔴 Gas field struck Mar 18',       c:'#e8354a',r:5},
+    {lat:29.4,lng:47.9,n:'Kuwait',      s:'🟡 Missiles intercepted',          c:'#f5a623',r:4},
+    {lat:26.2,lng:50.2,n:'Bahrain',     s:'🟡 2 missiles intercepted',        c:'#f5a623',r:4},
+    {lat:25.3,lng:51.5,n:'Ras Laffan',  s:'🟠 Energy facilities struck',      c:'#fb923c',r:4},
+    {lat:24.7,lng:46.7,n:'Riyadh',      s:'⚠️ Drone threats intercepted',     c:'#fb923c',r:4},
+    {lat:33.3,lng:44.4,n:'Baghdad',     s:'🟡 US Embassy drone attacks',      c:'#f5a623',r:4},
+  ];
+
+  SMARKERS.forEach((m,i)=>{
+    const{x,y}=px(m.lat,m.lng);
+    // Pulse ring
+    const ring=document.createElementNS(ns,'circle');
+    ring.setAttribute('cx',x);ring.setAttribute('cy',y);ring.setAttribute('r',m.r+5);
+    ring.setAttribute('fill','none');ring.setAttribute('stroke',m.c);ring.setAttribute('stroke-width','1');ring.setAttribute('opacity','0.2');
+    ring.style.animation=`svgPulse ${1.5+i*0.1}s ease-in-out infinite`;
+    svg.appendChild(ring);
+    // Dot
+    const dot=document.createElementNS(ns,'circle');
+    dot.setAttribute('cx',x);dot.setAttribute('cy',y);dot.setAttribute('r',m.r);
+    dot.setAttribute('fill',m.c);dot.setAttribute('stroke','rgba(255,255,255,0.5)');dot.setAttribute('stroke-width','1.5');
+    dot.style.cursor='pointer';
+    dot.style.filter=`drop-shadow(0 0 ${m.r+2}px ${m.c}99)`;
+    // Tooltip
+    const show=(e)=>{
+      if(!tip)return;
+      tip.style.display='block';
+      tip.innerHTML=`<strong>${m.n}</strong>${m.s}`;
+      const rc=svg.parentElement.getBoundingClientRect();
+      const bx=e.touches?e.touches[0].clientX:e.clientX;
+      const by=e.touches?e.touches[0].clientY:e.clientY;
+      tip.style.left=Math.min(bx-rc.left+8,rc.width-180)+'px';
+      tip.style.top =Math.max(by-rc.top -48,2)+'px';
+    };
+    dot.addEventListener('mouseenter',show);dot.addEventListener('mousemove',show);
+    dot.addEventListener('mouseleave',()=>{if(tip)tip.style.display='none';});
+    dot.addEventListener('click',show);
+    svg.appendChild(dot);
+  });
+
+  window._sidebarMapBlip=function(lat,lng,color){
+    const{x,y}=px(lat,lng);
+    const b=document.createElementNS(ns,'circle');
+    b.setAttribute('cx',x);b.setAttribute('cy',y);b.setAttribute('r','4');
+    b.setAttribute('fill',color);b.setAttribute('opacity','0.9');
+    b.style.animation='svgBlip 1.5s ease-out forwards';
+    svg.appendChild(b);setTimeout(()=>{try{svg.removeChild(b);}catch(e){}},1500);
+  };
+}
+
+// ── STREAM LAUNCH PANEL ──────────────────────────────────────────────────────
+function initStreamPanel(){
+  const grid = document.getElementById('stream-launch-grid');
+  if(!grid) return;
+  grid.innerHTML = STREAMS.map(s=>`
+    <a href="${s.url}" target="_blank" rel="noopener"
+       style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+              background:rgba(255,255,255,0.04);border:1px solid var(--gb);border-radius:10px;
+              padding:12px 8px;text-decoration:none;color:var(--text);
+              transition:all 0.2s;text-align:center;cursor:pointer"
+       onmouseover="this.style.background='rgba(255,255,255,0.09)';this.style.borderColor='rgba(255,255,255,0.18)';this.style.transform='translateY(-2px)'"
+       onmouseout="this.style.background='rgba(255,255,255,0.04)';this.style.borderColor='var(--gb)';this.style.transform='translateY(0)'">
+      <div style="font-size:1.4rem">${s.icon}</div>
+      <div style="font-family:var(--ff);font-size:0.82rem;letter-spacing:2px;color:#fff">${s.label}</div>
+      <div style="font-family:var(--fm);font-size:0.52rem;color:var(--dim);line-height:1.4">${s.desc}</div>
+      
+    </a>`).join('');
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 setDay();
 renderTimeline();
-initMap();
+initSidebarMap();
+refreshStats();
+initStreamPanel();
 buildBrent();
 doRefresh();
 </script>
