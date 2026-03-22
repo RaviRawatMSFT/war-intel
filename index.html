@@ -1,829 +1,855 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="WA Intel">
-    <title>West Asia Intel</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        /* ── RESET & BASE ─────────────────────────────────────────────── */
-        *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GlobalIQ Hub">
+<title>GlobalIQ Hub — West Asia Intel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+/* ── THEME TOKENS ─────────────────────────────────────────────────────────── */
+:root {
+  --bg:#03060f; --bg2:#070d1c; --bg3:#0c1428;
+  --glass:rgba(255,255,255,0.038); --glass2:rgba(255,255,255,0.07);
+  --gb:rgba(255,255,255,0.08); --gb2:rgba(255,255,255,0.15);
+  --chrome:rgba(3,6,15,0.85);
+  --text:#e8f0fe; --muted:#8899bb; --dim:#4a5a7a;
+  --primary:#1d6ef5; --pg:rgba(29,110,245,0.35);
+  --uae:#00c48c; --ug:rgba(0,196,140,0.28);
+  --gcc:#f5a623; --gg:rgba(245,166,35,0.28);
+  --urgent:#e8354a; --urg:rgba(232,53,74,0.32);
+  --card-shadow:0 8px 32px rgba(0,0,0,0.45);
+  --ff:'Bebas Neue',sans-serif; --fs:'DM Sans',sans-serif; --fm:'DM Mono',monospace;
+  --radius:14px; --transition:0.22s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="light"] {
+  --bg:#f0f4ff; --bg2:#e4eaf8; --bg3:#d8e2f5;
+  --glass:rgba(255,255,255,0.7); --glass2:rgba(255,255,255,0.85);
+  --gb:rgba(0,0,60,0.1); --gb2:rgba(0,0,60,0.18);
+  --chrome:rgba(240,244,255,0.92);
+  --text:#0f1a3a; --muted:#3a4a6a; --dim:#7a8aaa;
+  --card-shadow:0 4px 20px rgba(0,0,60,0.12);
+}
 
-        :root {
-            --bg-1:#03060f;
-            --bg-2:#070d1c;
-            --glass-bg:rgba(255,255,255,0.035);
-            --glass-bg-strong:rgba(255,255,255,0.065);
-            --glass-border:rgba(255,255,255,0.08);
-            --glass-border-strong:rgba(255,255,255,0.14);
-            --primary:#1d6ef5;
-            --primary-glow:rgba(29,110,245,0.3);
-            --uae:#00c48c;
-            --uae-glow:rgba(0,196,140,0.25);
-            --gcc:#f5a623;
-            --gcc-glow:rgba(245,166,35,0.25);
-            --urgent:#e8354a;
-            --urgent-glow:rgba(232,53,74,0.3);
-            --text:#e8f0fe;
-            --text-muted:#8899bb;
-            --text-dim:#4a5a7a;
-            --ff-display:'Bebas Neue', sans-serif;
-            --ff-body:'DM Sans', sans-serif;
-            --ff-mono:'DM Mono', monospace;
-        }
+/* ── RESET ───────────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100vh;padding-top:env(safe-area-inset-top);overflow-x:hidden;transition:background var(--transition),color var(--transition)}
 
-        html { scroll-behavior:smooth; }
+/* ── AMBIENT BACKGROUND ─────────────────────────────────────────────────── */
+.bg-orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);animation:orbFloat 24s ease-in-out infinite}
+.orb-1{width:520px;height:520px;background:radial-gradient(circle,rgba(29,78,216,0.22),transparent);top:-140px;left:-140px}
+.orb-2{width:420px;height:420px;background:radial-gradient(circle,rgba(15,118,110,0.2),transparent);bottom:-90px;right:-90px;animation-delay:-9s}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(124,45,18,0.18),transparent);top:42%;left:68%;animation-delay:-17s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(25px,-18px) scale(1.06)}66%{transform:translate(-18px,25px) scale(0.94)}}
+[data-theme="light"] .orb{opacity:0.4}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(var(--gb) 1px,transparent 1px),linear-gradient(90deg,var(--gb) 1px,transparent 1px);background-size:60px 60px;opacity:0.35}
 
-        body {
-            font-family:var(--ff-body);
-            background:var(--bg-1);
-            color:var(--text);
-            min-height:100vh;
-            padding-top:env(safe-area-inset-top);
-            overflow-x:hidden;
-        }
+/* ── STICKY CHROME ───────────────────────────────────────────────────────── */
+.chrome{position:sticky;top:0;z-index:300;background:var(--chrome);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--gb);transition:background var(--transition)}
 
-        /* ── ANIMATED BACKGROUND ──────────────────────────────────────── */
-        .bg-orbs {
-            position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
-        }
-        .orb {
-            position:absolute; border-radius:50%;
-            filter:blur(80px); opacity:0.18;
-            animation:orbFloat 20s ease-in-out infinite;
-        }
-        .orb-1 { width:500px;height:500px; background:radial-gradient(circle,#1d4ed8,transparent); top:-100px; left:-100px; animation-delay:0s; }
-        .orb-2 { width:400px;height:400px; background:radial-gradient(circle,#0f766e,transparent); bottom:-80px; right:-80px; animation-delay:-7s; }
-        .orb-3 { width:300px;height:300px; background:radial-gradient(circle,#7c2d12,transparent); top:40%; left:60%; animation-delay:-14s; }
-        @keyframes orbFloat {
-            0%,100% { transform:translate(0,0) scale(1); }
-            33%      { transform:translate(30px,-20px) scale(1.05); }
-            66%      { transform:translate(-20px,30px) scale(0.95); }
-        }
+/* ── HEADER ──────────────────────────────────────────────────────────────── */
+.header{padding:12px 18px 8px}
+.header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--primary),#0ea5e9);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 16px var(--pg);transition:transform var(--transition),box-shadow var(--transition)}
+.brand-icon:hover{transform:scale(1.1) rotate(-5deg);box-shadow:0 0 28px var(--pg)}
+.brand-name{font-family:var(--ff);font-size:1.4rem;letter-spacing:3px;color:var(--text);line-height:1}
+.brand-sub{font-size:0.52rem;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-top:2px}
+.header-controls{display:flex;align-items:center;gap:8px}
 
-        /* Subtle grid overlay */
-        .bg-grid {
-            position:fixed; inset:0; z-index:0; pointer-events:none;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size:60px 60px;
-        }
+/* Icon buttons */
+.icon-btn{width:32px;height:32px;border-radius:50%;background:var(--glass2);border:1px solid var(--gb);color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--transition);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
+.icon-btn:hover{background:var(--glass2);color:var(--text);border-color:var(--gb2);transform:scale(1.08)}
+.icon-btn:active{transform:scale(0.94)}
+.icon-btn.active{background:rgba(29,110,245,0.25);border-color:rgba(29,110,245,0.5);color:#60a5fa}
+.icon-btn.sound-on{background:rgba(0,196,140,0.2);border-color:rgba(0,196,140,0.4);color:var(--uae)}
 
-        /* ── STICKY CHROME ────────────────────────────────────────────── */
-        .chrome {
-            position:sticky; top:0; z-index:100;
-            background:rgba(3,6,15,0.7);
-            backdrop-filter:blur(24px) saturate(180%);
-            -webkit-backdrop-filter:blur(24px) saturate(180%);
-            border-bottom:1px solid var(--glass-border);
-        }
+/* Ripple effect */
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.25);transform:scale(0);animation:ripple-anim 0.5s ease;pointer-events:none}
+@keyframes ripple-anim{to{transform:scale(4);opacity:0}}
 
-        /* ── HEADER ───────────────────────────────────────────────────── */
-        .header {
-            padding:14px 20px 10px;
-        }
-        .header-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.day-pill{display:flex;align-items:center;gap:5px;background:rgba(232,53,74,0.12);border:1px solid rgba(232,53,74,0.25);border-radius:20px;padding:4px 10px;font-family:var(--fm);font-size:0.6rem;color:var(--urgent);letter-spacing:1px}
+.pulse{width:5px;height:5px;background:var(--urgent);border-radius:50%;animation:pulseBeat 1.4s ease infinite}
+@keyframes pulseBeat{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.55)}}
+.meta-strip{display:flex;justify-content:space-between;align-items:center;font-size:0.6rem;color:var(--dim);gap:8px;flex-wrap:wrap}
+.status-led{width:5px;height:5px;border-radius:50%;background:var(--dim);transition:background 0.5s;display:inline-block;margin-right:4px;vertical-align:middle}
 
-        .brand { display:flex; align-items:center; gap:10px; }
-        .brand-icon {
-            width:32px; height:32px;
-            background:linear-gradient(135deg, var(--primary), #0ea5e9);
-            border-radius:8px;
-            display:flex; align-items:center; justify-content:center;
-            font-size:16px;
-            box-shadow:0 0 16px var(--primary-glow);
-        }
-        .brand-name {
-            font-family:var(--ff-display);
-            font-size:1.5rem;
-            letter-spacing:3px;
-            color:#fff;
-            line-height:1;
-        }
-        .brand-sub {
-            font-size:0.55rem;
-            letter-spacing:3px;
-            color:var(--text-dim);
-            text-transform:uppercase;
-            margin-top:2px;
-        }
+/* ── THREAT BAR ──────────────────────────────────────────────────────────── */
+.threat-bar{padding:7px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--gb);transition:background 0.6s,border-color 0.6s}
+.threat-bar.CRITICAL{background:rgba(232,53,74,0.18);border-bottom-color:rgba(232,53,74,0.3)}
+.threat-bar.HIGH{background:rgba(234,88,12,0.14)}
+.threat-bar.ELEVATED{background:rgba(202,138,4,0.1)}
+.threat-bar.MODERATE{background:rgba(0,196,140,0.06)}
+.threat-label{font-family:var(--ff);font-size:0.88rem;letter-spacing:3px;display:flex;align-items:center;gap:7px}
+.threat-dot{width:7px;height:7px;border-radius:50%;animation:pulseBeat 1.2s ease infinite}
+.CRITICAL .threat-dot{background:var(--urgent)}   .CRITICAL .threat-label{color:var(--urgent)}
+.HIGH     .threat-dot{background:#fb923c}          .HIGH     .threat-label{color:#fb923c}
+.ELEVATED .threat-dot{background:var(--gcc)}       .ELEVATED .threat-label{color:var(--gcc)}
+.MODERATE .threat-dot{background:var(--uae)}       .MODERATE .threat-label{color:var(--uae)}
+.threat-right{display:flex;align-items:center;gap:10px}
+.threat-desc{font-size:0.6rem;color:var(--muted);font-style:italic}
 
-        .header-right { display:flex; align-items:center; gap:10px; }
-        .day-pill {
-            display:flex; align-items:center; gap:5px;
-            background:rgba(232,53,74,0.12);
-            border:1px solid rgba(232,53,74,0.25);
-            border-radius:20px;
-            padding:4px 10px;
-            font-family:var(--ff-mono);
-            font-size:0.62rem;
-            color:var(--urgent);
-            letter-spacing:1px;
-        }
-        .pulse {
-            width:5px; height:5px; background:var(--urgent); border-radius:50%;
-            animation:pulseBeat 1.4s ease infinite;
-        }
-        @keyframes pulseBeat {
-            0%,100%{opacity:1;transform:scale(1)}
-            50%{opacity:0.3;transform:scale(0.6)}
-        }
+/* ── CONTROLS ROW ────────────────────────────────────────────────────────── */
+.controls-row{display:flex;align-items:center;gap:6px;padding:7px 18px;border-top:1px solid var(--gb);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.controls-row::-webkit-scrollbar{display:none}
+.filter-btn{flex-shrink:0;background:var(--glass);border:1px solid var(--gb);color:var(--muted);font-family:var(--fs);font-size:0.72rem;font-weight:500;padding:5px 11px;border-radius:20px;cursor:pointer;transition:all var(--transition);white-space:nowrap;-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
+.filter-btn:hover{background:var(--glass2);color:var(--text);border-color:var(--gb2)}
+.badge{background:rgba(255,255,255,0.1);border-radius:8px;padding:0 5px;font-size:0.57rem;margin-left:3px;font-family:var(--fm)}
+.filter-btn.active{color:#fff;font-weight:600}
+.filter-btn[data-cat="All"].active   {background:rgba(29,110,245,0.28);border-color:rgba(29,110,245,0.55);box-shadow:0 0 12px rgba(29,110,245,0.2)}
+.filter-btn[data-cat="UAE"].active   {background:rgba(0,196,140,0.22);border-color:rgba(0,196,140,0.55);color:var(--uae)}
+.filter-btn[data-cat="GCC"].active   {background:rgba(245,166,35,0.22);border-color:rgba(245,166,35,0.55);color:var(--gcc)}
+.filter-btn[data-cat="Global"].active{background:rgba(232,53,74,0.2);border-color:rgba(232,53,74,0.45)}
+.divider-v{width:1px;height:18px;background:var(--gb);flex-shrink:0}
+.refresh-select{flex-shrink:0;background:var(--glass);border:1px solid var(--gb);color:var(--muted);font-family:var(--fm);font-size:0.64rem;padding:5px 7px;border-radius:8px;cursor:pointer;outline:none;-webkit-appearance:none;transition:border-color var(--transition)}
+.refresh-select:focus{border-color:rgba(29,110,245,0.5)}
+.refresh-btn{flex-shrink:0;display:flex;align-items:center;gap:5px;background:rgba(29,110,245,0.2);border:1px solid rgba(29,110,245,0.45);color:#60a5fa;font-family:var(--fs);font-size:0.72rem;font-weight:600;padding:5px 14px;border-radius:20px;cursor:pointer;white-space:nowrap;transition:all var(--transition);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
+.refresh-btn:not(:disabled):hover{background:rgba(29,110,245,0.35);box-shadow:0 0 16px rgba(29,110,245,0.3)}
+.refresh-btn:disabled{opacity:0.4;cursor:not-allowed}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning{animation:spin 0.75s linear infinite;display:inline-block}
+.progress-bar{height:2px;background:rgba(29,110,245,0.08);overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),#0ea5e9,var(--uae));width:0%;box-shadow:0 0 8px var(--pg)}
 
-        .meta-strip {
-            display:flex; justify-content:space-between; align-items:center;
-            font-size:0.62rem; color:var(--text-dim); gap:8px; flex-wrap:wrap;
-        }
-        .status-badge {
-            display:inline-flex; align-items:center; gap:4px;
-            font-family:var(--ff-mono);
-        }
-        .status-led {
-            width:5px; height:5px; border-radius:50%;
-            background:var(--text-dim);
-            transition:background 0.4s;
-        }
+/* ── AUDIO BAR ───────────────────────────────────────────────────────────── */
+.audio-bar{display:none;align-items:center;gap:10px;padding:8px 18px;background:rgba(29,110,245,0.08);border-bottom:1px solid rgba(29,110,245,0.15);animation:slideDown 0.25s ease}
+.audio-bar.open{display:flex}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.audio-btn{display:flex;align-items:center;gap:5px;background:rgba(29,110,245,0.18);border:1px solid rgba(29,110,245,0.4);color:#60a5fa;font-family:var(--fm);font-size:0.68rem;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all var(--transition);white-space:nowrap}
+.audio-btn:hover{background:rgba(29,110,245,0.32)}
+.audio-status{font-family:var(--fm);font-size:0.62rem;color:var(--muted);flex:1}
+.audio-speed{background:var(--glass);border:1px solid var(--gb);color:var(--muted);font-family:var(--fm);font-size:0.62rem;padding:4px 6px;border-radius:6px;cursor:pointer;outline:none;-webkit-appearance:none}
 
-        /* ── ALERT BANNER ──────────────────────────────────────────────── */
-        .alert-bar {
-            margin:0 20px 10px;
-            background:linear-gradient(90deg, rgba(232,53,74,0.15), rgba(232,53,74,0.05));
-            border:1px solid rgba(232,53,74,0.3);
-            border-radius:8px;
-            padding:8px 14px;
-            font-size:0.75rem;
-            font-weight:500;
-            color:#fca5a5;
-            display:none;
-            animation:alertSlide 0.3s ease;
-        }
-        .alert-bar.show { display:flex; align-items:center; gap:8px; }
-        @keyframes alertSlide { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+/* ── VIDEO PANEL ─────────────────────────────────────────────────────────── */
+.video-bar{display:none;padding:0 18px 12px;border-bottom:1px solid var(--gb);animation:slideDown 0.25s ease}
+.video-bar.open{display:block}
+.video-header{display:flex;justify-content:space-between;align-items:center;padding:8px 0 6px;font-family:var(--fm);font-size:0.65rem;color:var(--muted)}
+.video-wrap{position:relative;border-radius:10px;overflow:hidden;background:#000;aspect-ratio:16/9}
+.video-wrap iframe{width:100%;height:100%;border:none}
 
-        /* ── FILTER + CONTROLS ─────────────────────────────────────────── */
-        .controls-row {
-            display:flex; align-items:center; gap:8px;
-            padding:8px 20px;
-            border-top:1px solid var(--glass-border);
-            overflow-x:auto; -webkit-overflow-scrolling:touch;
-        }
-        .controls-row::-webkit-scrollbar { display:none; }
+/* ── PAGE ────────────────────────────────────────────────────────────────── */
+.page{position:relative;z-index:1;padding:14px 16px 120px}
 
-        .filter-btn {
-            flex-shrink:0;
-            background:var(--glass-bg);
-            border:1px solid var(--glass-border);
-            color:var(--text-muted);
-            font-family:var(--ff-body);
-            font-size:0.75rem;
-            font-weight:500;
-            padding:5px 14px;
-            border-radius:20px;
-            cursor:pointer;
-            transition:all 0.2s;
-            -webkit-tap-highlight-color:transparent;
-            white-space:nowrap;
-        }
-        .filter-btn:hover { background:var(--glass-bg-strong); color:var(--text); }
-        .filter-btn.active { color:#fff; font-weight:600; }
-        .filter-btn[data-cat="All"].active    { background:rgba(29,110,245,0.25);  border-color:rgba(29,110,245,0.5);  box-shadow:0 0 12px rgba(29,110,245,0.2); }
-        .filter-btn[data-cat="UAE"].active    { background:rgba(0,196,140,0.2);    border-color:rgba(0,196,140,0.5);   box-shadow:0 0 12px var(--uae-glow); }
-        .filter-btn[data-cat="GCC"].active    { background:rgba(245,166,35,0.2);   border-color:rgba(245,166,35,0.5);  box-shadow:0 0 12px var(--gcc-glow); color:#f5a623; }
-        .filter-btn[data-cat="Global"].active { background:rgba(232,53,74,0.18);   border-color:rgba(232,53,74,0.4);   box-shadow:0 0 12px var(--urgent-glow); }
+/* ── SECTION HEADERS ─────────────────────────────────────────────────────── */
+.section-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.section-title{font-family:var(--ff);font-size:0.92rem;letter-spacing:3px;white-space:nowrap}
+.section-line{flex:1;height:1px;background:var(--gb)}
 
-        .divider-v { width:1px; height:20px; background:var(--glass-border); flex-shrink:0; }
+/* ── UAE PRIORITY ────────────────────────────────────────────────────────── */
+.uae-priority{margin-bottom:18px;animation:fadeUp 0.4s ease both}
+.uae-scroll{display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.uae-scroll::-webkit-scrollbar{height:2px}
+.uae-scroll::-webkit-scrollbar-thumb{background:rgba(0,196,140,0.3);border-radius:2px}
+.uae-mini-card{flex-shrink:0;width:248px;background:rgba(0,196,140,0.06);border:1px solid rgba(0,196,140,0.18);border-radius:12px;padding:12px 13px;cursor:pointer;transition:transform var(--transition),box-shadow var(--transition),border-color var(--transition)}
+.uae-mini-card:hover{transform:translateY(-3px);box-shadow:0 6px 22px var(--ug);border-color:rgba(0,196,140,0.38)}
+.uae-mini-title{font-size:0.82rem;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:7px}
+.uae-mini-meta{font-family:var(--fm);font-size:0.56rem;color:var(--uae);display:flex;justify-content:space-between;align-items:center}
+.uae-empty{font-size:0.78rem;color:var(--dim);font-style:italic;padding:8px 0}
+.wa-mini{color:var(--uae);font-size:0.72rem;text-decoration:none;opacity:0.8;transition:opacity var(--transition)}
+.wa-mini:hover{opacity:1}
 
-        /* Auto-refresh selector */
-        .refresh-select {
-            flex-shrink:0;
-            background:var(--glass-bg);
-            border:1px solid var(--glass-border);
-            color:var(--text-muted);
-            font-family:var(--ff-mono);
-            font-size:0.68rem;
-            padding:5px 8px;
-            border-radius:8px;
-            cursor:pointer;
-            outline:none;
-            -webkit-appearance:none;
-        }
-        .refresh-select:focus { border-color:rgba(29,110,245,0.4); }
+/* ── TIMELINE ────────────────────────────────────────────────────────────── */
+.timeline-section{margin-bottom:18px;animation:fadeUp 0.4s 0.1s ease both}
+.tl-scroll{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px}
+.tl-scroll::-webkit-scrollbar{height:2px}
+.tl-scroll::-webkit-scrollbar-thumb{background:rgba(245,166,35,0.3);border-radius:2px}
+.tl-item{flex-shrink:0;display:flex;flex-direction:column;align-items:center;width:112px;position:relative;cursor:default}
+.tl-item:not(:last-child)::after{content:'';position:absolute;top:11px;left:calc(50% + 7px);width:calc(100% - 14px);height:1px;background:linear-gradient(90deg,var(--gcc),rgba(245,166,35,0.12))}
+.tl-dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--gcc);background:var(--bg);display:flex;align-items:center;justify-content:center;position:relative;z-index:1;margin-bottom:5px;transition:transform var(--transition),box-shadow var(--transition)}
+.tl-item:hover .tl-dot{transform:scale(1.2);box-shadow:0 0 12px var(--gg)}
+.tl-dot.hi{background:var(--gcc);box-shadow:0 0 12px var(--gg)}
+.tl-inner{width:5px;height:5px;border-radius:50%;background:var(--gcc)}
+.tl-date{font-family:var(--fm);font-size:0.53rem;color:var(--gcc);margin-bottom:3px;text-align:center}
+.tl-text{font-size:0.62rem;color:var(--muted);text-align:center;line-height:1.4;padding:0 3px;transition:color var(--transition)}
+.tl-item:hover .tl-text{color:var(--text)}
 
-        .refresh-btn {
-            flex-shrink:0;
-            display:flex; align-items:center; gap:5px;
-            background:rgba(29,110,245,0.18);
-            border:1px solid rgba(29,110,245,0.4);
-            color:#60a5fa;
-            font-family:var(--ff-body);
-            font-size:0.75rem;
-            font-weight:600;
-            padding:5px 14px;
-            border-radius:20px;
-            cursor:pointer;
-            white-space:nowrap;
-            transition:all 0.2s;
-            -webkit-tap-highlight-color:transparent;
-        }
-        .refresh-btn:disabled { opacity:0.4; cursor:not-allowed; }
-        .refresh-btn:not(:disabled):hover { background:rgba(29,110,245,0.3); }
+/* ── MAP ─────────────────────────────────────────────────────────────────── */
+.map-section{margin-bottom:18px;animation:fadeUp 0.4s 0.15s ease both}
+#conflict-map{height:240px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--gb);background:var(--bg2);transition:border-color var(--transition)}
+#conflict-map:hover{border-color:var(--gb2)}
+.leaflet-container{background:#071020!important}
+.leaflet-tile{filter:brightness(0.6) saturate(0.45) hue-rotate(190deg)}
+[data-theme="light"] .leaflet-tile{filter:brightness(0.9) saturate(0.7)}
+.leaflet-popup-content-wrapper{background:rgba(7,16,40,0.96);color:var(--text);border:1px solid var(--gb2);border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,0.6)}
+[data-theme="light"] .leaflet-popup-content-wrapper{background:rgba(240,244,255,0.97);color:var(--text)}
+.leaflet-popup-tip{background:rgba(7,16,40,0.96)}
+.leaflet-popup-content{margin:10px 13px;font-family:var(--fs)}
+.mp-name{font-family:var(--ff);font-size:0.9rem;letter-spacing:1px;color:var(--text);margin-bottom:4px}
+.mp-status{font-size:0.7rem;color:var(--muted);line-height:1.55}
 
-        @keyframes spin { to{transform:rotate(360deg)} }
-        .spinning { animation:spin 0.8s linear infinite; display:inline-block; }
+/* ── DATA DASHBOARD ──────────────────────────────────────────────────────── */
+.dashboard-section{margin-bottom:18px;animation:fadeUp 0.4s 0.2s ease both}
+.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dash-panel{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--gb);border-radius:var(--radius);padding:13px 14px;transition:border-color var(--transition),transform var(--transition)}
+.dash-panel:hover{border-color:var(--gb2);transform:translateY(-1px)}
+.dash-label{font-family:var(--fm);font-size:0.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.dash-chart{height:120px;position:relative}
 
-        /* Progress bar for auto-refresh */
-        .progress-bar {
-            height:2px;
-            background:rgba(29,110,245,0.15);
-            position:relative;
-            overflow:hidden;
-        }
-        .progress-fill {
-            height:100%;
-            background:linear-gradient(90deg,var(--primary),#0ea5e9);
-            width:0%;
-            transition:width 1s linear;
-            box-shadow:0 0 8px var(--primary-glow);
-        }
+/* ── BRENT ───────────────────────────────────────────────────────────────── */
+.brent-section{margin-bottom:18px;animation:fadeUp 0.4s 0.25s ease both}
+.brent-panel{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--gb);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:16px;transition:border-color var(--transition)}
+.brent-panel:hover{border-color:var(--gb2)}
+.brent-left{flex:1;min-width:0}
+.brent-label-row{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.brent-label{font-family:var(--fm);font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.brent-live-dot{width:5px;height:5px;border-radius:50%;background:var(--uae);animation:pulseBeat 2s ease infinite}
+.brent-price{font-family:var(--ff);font-size:2.2rem;letter-spacing:1px;color:#60a5fa;line-height:1;transition:color var(--transition)}
+.brent-change{font-family:var(--fm);font-size:0.62rem;margin-top:3px;transition:color var(--transition)}
+.brent-change.up{color:#4ade80}.brent-change.down{color:var(--urgent)}.brent-change.flat{color:var(--muted)}
+.brent-note{font-size:0.57rem;color:var(--dim);margin-top:2px}
+.brent-chart-wrap{width:110px;height:48px;flex-shrink:0}
 
-        /* ── FEED ─────────────────────────────────────────────────────── */
-        #feed { padding:16px 16px 120px; position:relative; z-index:1; }
+/* ── NEWS CARDS ──────────────────────────────────────────────────────────── */
+@keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-        /* ── STATUS ROW ───────────────────────────────────────────────── */
-        .status-row {
-            display:flex; align-items:center; gap:8px;
-            font-family:var(--ff-mono);
-            font-size:0.65rem;
-            color:var(--text-dim);
-            margin-bottom:14px;
-            padding:0 4px;
-        }
-        .status-text { flex:1; }
-        .status-text.ok   { color:var(--uae); }
-        .status-text.warn { color:var(--gcc); }
-        .status-text.err  { color:var(--urgent); }
+.news-card{background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--gb);border-radius:var(--radius);margin-bottom:11px;overflow:hidden;transition:transform var(--transition),box-shadow var(--transition),border-color var(--transition);animation:cardIn 0.35s ease both;position:relative}
+.news-card::before{content:'';position:absolute;inset:0;border-radius:var(--radius);background:linear-gradient(135deg,rgba(255,255,255,0.04),transparent);pointer-events:none;opacity:0;transition:opacity var(--transition)}
+.news-card:hover::before{opacity:1}
+.news-card:hover{transform:translateY(-3px);border-color:var(--gb2);box-shadow:var(--card-shadow)}
+.news-card.uae{border-left:3px solid var(--uae)}
+.news-card.gcc{border-left:3px solid var(--gcc)}
+.news-card.global{border-left:3px solid var(--primary)}
+.news-card.urgent{border-left:3px solid var(--urgent);background:rgba(232,53,74,0.06);box-shadow:0 0 20px rgba(232,53,74,0.1)}
+.news-card.urgent:hover{box-shadow:0 0 32px rgba(232,53,74,0.18)}
 
-        /* ── CARDS ────────────────────────────────────────────────────── */
-        @keyframes cardIn {
-            from { opacity:0; transform:translateY(12px); }
-            to   { opacity:1; transform:translateY(0); }
-        }
+.card-img-wrap{position:relative;height:170px;overflow:hidden;background:var(--bg2)}
+.card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease}
+.news-card:hover .card-img-wrap img{transform:scale(1.05)}
+.card-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,6,15,0.92) 0%,transparent 55%)}
+.card-img-tag{position:absolute;top:10px;left:10px}
 
-        .news-card {
-            background:var(--glass-bg);
-            backdrop-filter:blur(16px) saturate(140%);
-            -webkit-backdrop-filter:blur(16px) saturate(140%);
-            border:1px solid var(--glass-border);
-            border-radius:16px;
-            margin-bottom:12px;
-            overflow:hidden;
-            transition:transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-            animation:cardIn 0.3s ease both;
-            cursor:pointer;
-        }
-        .news-card:hover {
-            transform:translateY(-2px);
-            border-color:var(--glass-border-strong);
-            box-shadow:0 8px 32px rgba(0,0,0,0.4);
-        }
-        .news-card.uae    { border-left:3px solid var(--uae);    box-shadow:inset 3px 0 20px rgba(0,196,140,0.05); }
-        .news-card.gcc    { border-left:3px solid var(--gcc);    box-shadow:inset 3px 0 20px rgba(245,166,35,0.05); }
-        .news-card.global { border-left:3px solid var(--primary);box-shadow:inset 3px 0 20px rgba(29,110,245,0.05); }
-        .news-card.urgent {
-            border-left:3px solid var(--urgent);
-            background:rgba(232,53,74,0.06);
-            box-shadow:0 0 24px rgba(232,53,74,0.12), inset 3px 0 20px rgba(232,53,74,0.08);
-        }
+.card-body{padding:13px 15px 11px}
+.card-body.wi{padding-top:8px}
+.card-meta{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:8px;flex-wrap:wrap}
 
-        /* Card with image */
-        .card-image-wrap {
-            position:relative;
-            height:180px;
-            overflow:hidden;
-            background:var(--bg-2);
-        }
-        .card-image-wrap img {
-            width:100%; height:100%;
-            object-fit:cover;
-            transition:transform 0.4s ease;
-        }
-        .news-card:hover .card-image-wrap img { transform:scale(1.03); }
-        .card-image-overlay {
-            position:absolute; inset:0;
-            background:linear-gradient(to top, rgba(3,6,15,0.85) 0%, transparent 60%);
-        }
-        .card-image-tag {
-            position:absolute; top:10px; left:10px;
-        }
+/* Tags with hover scale */
+.tag{display:inline-flex;align-items:center;font-family:var(--fm);font-size:0.57rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:6px;border:1px solid transparent;white-space:nowrap;transition:transform var(--transition),box-shadow var(--transition)}
+.tag:hover{transform:scale(1.06)}
+.tag.uae   {color:var(--uae); background:rgba(0,196,140,0.1); border-color:rgba(0,196,140,0.22); }
+.tag.uae:hover{box-shadow:0 0 8px var(--ug)}
+.tag.gcc   {color:var(--gcc); background:rgba(245,166,35,0.1); border-color:rgba(245,166,35,0.22);}
+.tag.gcc:hover{box-shadow:0 0 8px var(--gg)}
+.tag.global{color:#60a5fa; background:rgba(29,110,245,0.1); border-color:rgba(29,110,245,0.22);}
+.tag.global:hover{box-shadow:0 0 8px var(--pg)}
+.tag.urgent{color:#fff; background:rgba(232,53,74,0.22); border-color:rgba(232,53,74,0.42);}
+.tag.urgent:hover{box-shadow:0 0 10px var(--urg)}
 
-        /* Card body */
-        .card-body { padding:14px 16px 12px; }
-        .card-body.with-image { padding-top:10px; }
+/* Credibility badge */
+.cred-badge{display:inline-flex;align-items:center;gap:3px;font-family:var(--fm);font-size:0.54rem;padding:2px 6px;border-radius:5px;border:1px solid;white-space:nowrap;transition:transform var(--transition)}
+.cred-badge:hover{transform:scale(1.05)}
+.cred-high  {color:#4ade80;background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.25)}
+.cred-medium{color:#fbbf24;background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.25)}
+.cred-low   {color:#f87171;background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.25)}
 
-        .card-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; gap:8px; flex-wrap:wrap; }
+.card-ts{font-family:var(--fm);font-size:0.55rem;color:var(--dim);text-align:right;line-height:1.6}
+.card-title{font-family:var(--ff);font-size:1.08rem;letter-spacing:0.5px;color:var(--text);line-height:1.25;margin-bottom:7px}
+.card-title a{color:inherit;text-decoration:none;transition:color var(--transition)}
+.card-title a:hover{color:#93c5fd}
+.card-content{font-size:0.81rem;color:var(--muted);line-height:1.65;margin-bottom:10px}
+.card-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.read-more{font-family:var(--fm);font-size:0.62rem;color:var(--primary);text-decoration:none;display:flex;align-items:center;gap:3px;transition:all var(--transition)}
+.read-more:hover{color:#93c5fd;gap:5px}
+.wa-btn{display:inline-flex;align-items:center;gap:4px;font-family:var(--fm);font-size:0.62rem;color:#25d366;text-decoration:none;opacity:0.8;transition:all var(--transition)}
+.wa-btn:hover{opacity:1;transform:scale(1.05)}
+.wa-svg{width:13px;height:13px;fill:#25d366;flex-shrink:0}
+.read-aloud-btn{display:inline-flex;align-items:center;gap:3px;font-family:var(--fm);font-size:0.62rem;color:var(--muted);cursor:pointer;background:none;border:none;transition:color var(--transition)}
+.read-aloud-btn:hover{color:var(--text)}
 
-        .tag {
-            display:inline-flex; align-items:center; gap:4px;
-            font-family:var(--ff-mono);
-            font-size:0.6rem; font-weight:500;
-            letter-spacing:1.5px; text-transform:uppercase;
-            padding:3px 8px;
-            border-radius:6px;
-            border:1px solid transparent;
-        }
-        .tag.uae    { color:var(--uae);    background:rgba(0,196,140,0.1);  border-color:rgba(0,196,140,0.2); }
-        .tag.gcc    { color:var(--gcc);    background:rgba(245,166,35,0.1); border-color:rgba(245,166,35,0.2); }
-        .tag.global { color:#60a5fa;       background:rgba(29,110,245,0.1); border-color:rgba(29,110,245,0.2); }
-        .tag.urgent { color:#fff;          background:rgba(232,53,74,0.2);  border-color:rgba(232,53,74,0.4); }
+/* ── TOPIC TAGS ──────────────────────────────────────────────────────────── */
+.topic-tag{display:inline-flex;align-items:center;gap:3px;font-family:var(--fm);font-size:0.5rem;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;margin-left:4px;border:1px solid;transition:transform var(--transition)}
+.topic-tag:hover{transform:scale(1.07)}
+.topic-security{color:#f87171;background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.2)}
+.topic-energy  {color:#fbbf24;background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.2)}
+.topic-diplomacy{color:#a78bfa;background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.2)}
+.topic-military{color:#fb923c;background:rgba(251,146,60,0.08);border-color:rgba(251,146,60,0.2)}
 
-        .card-time-source {
-            font-family:var(--ff-mono);
-            font-size:0.58rem;
-            color:var(--text-dim);
-            text-align:right;
-            line-height:1.5;
-        }
+/* ── SKELETON ────────────────────────────────────────────────────────────── */
+.skeleton{background:linear-gradient(90deg,var(--glass) 25%,var(--glass2) 50%,var(--glass) 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite;border-radius:var(--radius);margin-bottom:11px;border:1px solid var(--gb)}
+.sk-img{height:140px;border-radius:var(--radius) var(--radius) 0 0}
+.sk-body{padding:13px 15px}
+.sk-line{height:9px;border-radius:4px;background:rgba(255,255,255,0.04);margin-bottom:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-        .card-title {
-            font-family:var(--ff-display);
-            font-size:1.15rem;
-            letter-spacing:0.5px;
-            color:#fff;
-            line-height:1.25;
-            margin-bottom:8px;
-        }
-        .card-title a {
-            color:inherit; text-decoration:none;
-        }
-        .card-title a:hover { color:var(--text); }
+/* ── EMPTY / ERROR ───────────────────────────────────────────────────────── */
+.empty-state{text-align:center;padding:50px 20px;color:var(--dim)}
+.empty-icon{font-size:2.2rem;margin-bottom:14px}
+.empty-title{font-family:var(--ff);font-size:1.3rem;letter-spacing:2px;color:var(--muted);margin-bottom:8px}
+.empty-sub{font-size:0.8rem;line-height:1.7}
+.feed-footer{text-align:center;font-family:var(--fm);font-size:0.57rem;color:var(--dim);padding:12px 10px 4px;line-height:1.9;opacity:0.5}
 
-        .card-content {
-            font-size:0.83rem;
-            color:var(--text-muted);
-            line-height:1.65;
-            margin-bottom:10px;
-        }
-
-        .card-footer { display:flex; align-items:center; justify-content:space-between; }
-        .read-more {
-            font-family:var(--ff-mono);
-            font-size:0.65rem;
-            color:var(--primary);
-            text-decoration:none;
-            letter-spacing:0.5px;
-            display:flex; align-items:center; gap:4px;
-            transition:color 0.2s, gap 0.2s;
-        }
-        .read-more:hover { color:#93c5fd; gap:6px; }
-
-        /* ── SKELETON ─────────────────────────────────────────────────── */
-        .skeleton {
-            background:linear-gradient(90deg, var(--glass-bg) 25%, var(--glass-bg-strong) 50%, var(--glass-bg) 75%);
-            background-size:200% 100%;
-            animation:shimmer 1.4s ease infinite;
-            border-radius:16px;
-            margin-bottom:12px;
-            border:1px solid var(--glass-border);
-        }
-        .sk-image { height:160px; border-radius:16px 16px 0 0; }
-        .sk-body { padding:14px 16px; }
-        .sk-line { height:10px; border-radius:4px; background:rgba(255,255,255,0.05); margin-bottom:8px; }
-        .sk-line.wide { width:85%; }
-        .sk-line.med  { width:60%; }
-        .sk-line.short{ width:40%; }
-        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-        /* ── EMPTY / ERROR ────────────────────────────────────────────── */
-        .empty-state {
-            text-align:center;
-            padding:60px 20px;
-            color:var(--text-dim);
-        }
-        .empty-icon {
-            font-size:2.5rem; margin-bottom:16px;
-            filter:grayscale(0.5);
-        }
-        .empty-title {
-            font-family:var(--ff-display);
-            font-size:1.4rem;
-            letter-spacing:2px;
-            color:var(--text-muted);
-            margin-bottom:8px;
-        }
-        .empty-sub { font-size:0.82rem; line-height:1.7; }
-
-        /* ── FOOTER ───────────────────────────────────────────────────── */
-        .feed-footer {
-            text-align:center;
-            font-family:var(--ff-mono);
-            font-size:0.6rem;
-            color:var(--text-dim);
-            padding:12px 10px 4px;
-            line-height:1.9;
-            opacity:0.6;
-        }
-    </style>
+/* ── LEAFLET OVERRIDES ───────────────────────────────────────────────────── */
+.leaflet-control-zoom a{background:rgba(7,16,40,0.9);color:var(--text);border-color:var(--gb)}
+</style>
 </head>
 <body>
-
-<!-- Ambient background -->
-<div class="bg-orbs">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-</div>
+<div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
 <div class="bg-grid"></div>
 
-<!-- ── STICKY CHROME ───────────────────────────────────────────── -->
+<!-- ── CHROME ── -->
 <div class="chrome">
 
-    <!-- Header -->
-    <div class="header">
-        <div class="header-row">
-            <div class="brand">
-                <div class="brand-icon">⚡</div>
-                <div>
-                    <div class="brand-name">West Asia Intel</div>
-                    <div class="brand-sub">Live Intelligence Feed</div>
-                </div>
-            </div>
-            <div class="header-right">
-                <div class="day-pill">
-                    <div class="pulse"></div>
-                    <span id="day-label">LIVE</span>
-                </div>
-            </div>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-row">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-name">GlobalIQ Hub</div>
+          <div class="brand-sub">West Asia Intelligence</div>
         </div>
-
-        <!-- Alert banner -->
-        <div class="alert-bar" id="alert-bar"></div>
-
-        <!-- Meta strip -->
-        <div class="meta-strip">
-            <span class="status-badge">
-                <span class="status-led" id="status-led"></span>
-                <span id="meta-source">Connecting…</span>
-            </span>
-            <span id="last-updated" style="font-family:var(--ff-mono)">–</span>
-        </div>
+      </div>
+      <div class="header-controls">
+        <button class="icon-btn" id="theme-btn"    title="Toggle dark/light mode"  onclick="toggleTheme(this)">🌙</button>
+        <button class="icon-btn" id="sound-btn"    title="Toggle sound alerts"      onclick="toggleSound(this)">🔕</button>
+        <button class="icon-btn" id="audio-toggle" title="Audio summary panel"     onclick="toggleAudio(this)">🔊</button>
+        <button class="icon-btn" id="video-toggle" title="Toggle live video"        onclick="toggleVideo(this)">📺</button>
+        <div class="day-pill"><div class="pulse"></div><span id="day-label">LIVE</span></div>
+      </div>
     </div>
-
-    <!-- Filter + Controls row -->
-    <div class="controls-row">
-        <button class="filter-btn active" data-cat="All"    onclick="doFilter(this,'All')">All</button>
-        <button class="filter-btn"        data-cat="UAE"    onclick="doFilter(this,'UAE')">🇦🇪 UAE</button>
-        <button class="filter-btn"        data-cat="GCC"    onclick="doFilter(this,'GCC')">🛢 Gulf</button>
-        <button class="filter-btn"        data-cat="Global" onclick="doFilter(this,'Global')">🌐 Global</button>
-
-        <div class="divider-v"></div>
-
-        <select class="refresh-select" id="refresh-select" onchange="onFreqChange()">
-            <option value="5">↺ 5 min</option>
-            <option value="15" selected>↺ 15 min</option>
-            <option value="30">↺ 30 min</option>
-            <option value="60">↺ 60 min</option>
-            <option value="0">↺ Manual</option>
-        </select>
-
-        <button class="refresh-btn" id="refresh-btn" onclick="doRefresh()">
-            <span id="refresh-icon">↺</span><span id="refresh-label">Refresh</span>
-        </button>
+    <div class="meta-strip">
+      <span><span class="status-led" id="status-led"></span><span id="meta-source">Connecting…</span></span>
+      <span id="last-updated" style="font-family:var(--fm)">–</span>
     </div>
+  </div>
 
-    <!-- Auto-refresh progress bar -->
-    <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill"></div>
+  <!-- Threat Level -->
+  <div class="threat-bar ELEVATED" id="threat-bar">
+    <div class="threat-label"><div class="threat-dot"></div><span id="threat-text">ELEVATED</span></div>
+    <div class="threat-right">
+      <div class="threat-desc" id="threat-desc">Analysing feed…</div>
     </div>
+  </div>
+
+  <!-- Audio Bar -->
+  <div class="audio-bar" id="audio-bar">
+    <button class="audio-btn" id="speak-btn" onclick="toggleSpeak()">▶ Read Headlines</button>
+    <button class="audio-btn" onclick="stopSpeak()" style="background:rgba(232,53,74,0.15);border-color:rgba(232,53,74,0.35);color:#f87171">■ Stop</button>
+    <select class="audio-speed" id="audio-speed" title="Playback speed">
+      <option value="0.8">0.8×</option>
+      <option value="1" selected>1×</option>
+      <option value="1.2">1.2×</option>
+      <option value="1.5">1.5×</option>
+    </select>
+    <div class="audio-status" id="audio-status">Press ▶ to read top headlines aloud</div>
+  </div>
+
+  <!-- Video Panel -->
+  <div class="video-bar" id="video-bar">
+    <div class="video-header">
+      <span style="color:var(--urgent);font-family:var(--ff);letter-spacing:2px">● LIVE — Al Jazeera English</span>
+      <span style="color:var(--dim)">Tap ⊠ to close</span>
+    </div>
+    <div class="video-wrap">
+      <iframe id="yt-frame" src="" allowfullscreen allow="autoplay;encrypted-media" loading="lazy"></iframe>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls-row">
+    <button class="filter-btn active" data-cat="All"    onclick="doFilter(this,'All')">All<span class="badge" id="cnt-all">–</span></button>
+    <button class="filter-btn"        data-cat="UAE"    onclick="doFilter(this,'UAE')">🇦🇪 UAE<span class="badge" id="cnt-uae">–</span></button>
+    <button class="filter-btn"        data-cat="GCC"    onclick="doFilter(this,'GCC')">🛢 Gulf<span class="badge" id="cnt-gcc">–</span></button>
+    <button class="filter-btn"        data-cat="Global" onclick="doFilter(this,'Global')">🌐 Global<span class="badge" id="cnt-global">–</span></button>
+    <div class="divider-v"></div>
+    <select class="refresh-select" id="refresh-sel" onchange="onFreqChange()">
+      <option value="5">↺ 5m</option>
+      <option value="15" selected>↺ 15m</option>
+      <option value="30">↺ 30m</option>
+      <option value="60">↺ 1hr</option>
+      <option value="0">↺ Off</option>
+    </select>
+    <button class="refresh-btn" id="refresh-btn" onclick="doRefresh()">
+      <span id="ri">↺</span><span id="rl">Refresh</span>
+    </button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="pf"></div></div>
 </div>
 
-<!-- ── FEED ────────────────────────────────────────────────────── -->
-<main id="feed"></main>
+<!-- ── PAGE ── -->
+<div class="page">
+
+  <!-- UAE Priority -->
+  <div class="uae-priority">
+    <div class="section-header">
+      <div class="section-title" style="color:var(--uae)">🇦🇪 UAE PRIORITY</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="uae-scroll" id="uae-scroll"><div class="uae-empty">Loading…</div></div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-section">
+    <div class="section-header">
+      <div class="section-title" style="color:var(--gcc)">⏱ CONFLICT TIMELINE</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="tl-scroll" id="tl"></div>
+  </div>
+
+  <!-- Map -->
+  <div class="map-section" style="margin-bottom:18px">
+    <div class="section-header">
+      <div class="section-title" style="color:#60a5fa">🗺 CONFLICT ZONES</div>
+      <div class="section-line"></div>
+    </div>
+    <div id="conflict-map"></div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="dashboard-section">
+    <div class="section-header">
+      <div class="section-title" style="color:#a78bfa">📊 INTELLIGENCE BREAKDOWN</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="dashboard-grid">
+      <div class="dash-panel">
+        <div class="dash-label">📁 Category Split</div>
+        <div class="dash-chart"><canvas id="donut-chart"></canvas></div>
+      </div>
+      <div class="dash-panel">
+        <div class="dash-label">📡 Source Volume</div>
+        <div class="dash-chart"><canvas id="bar-chart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Brent -->
+  <div class="brent-section">
+    <div class="section-header">
+      <div class="section-title" style="color:#60a5fa">🛢 BRENT CRUDE LIVE</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="brent-panel">
+      <div class="brent-left">
+        <div class="brent-label-row"><span class="brent-label">BZ=F Futures</span><div class="brent-live-dot"></div></div>
+        <div class="brent-price" id="brent-price">–</div>
+        <div class="brent-change flat" id="brent-chg">Fetching…</div>
+        <div class="brent-note">Hormuz disruption · Goldman Sachs: elevated through 2027</div>
+      </div>
+      <div class="brent-chart-wrap"><canvas id="brent-chart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Feed -->
+  <div class="section-header" style="margin-bottom:10px">
+    <div class="section-title" style="color:var(--primary)">📡 LIVE FEED</div>
+    <div class="section-line"></div>
+  </div>
+  <div id="feed"></div>
+</div>
 
 <script>
-// ── RSS FEEDS (confirmed working, NO &count= param) ──────────────────────────
+// ─── DATA ────────────────────────────────────────────────────────────────────
+
+const TL = [
+  {d:'Feb 28',t:'US-Israel strikes begin. Khamenei assassinated.',hi:true},
+  {d:'Mar 1', t:'Iran counterstrikes begin — missiles & drones.'},
+  {d:'Mar 2', t:'Hezbollah joins. Lebanon escalates.'},
+  {d:'Mar 5', t:'Iran fires 500+ missiles in first week.'},
+  {d:'Mar 10',t:'USS Gerald Ford damaged, withdraws to Crete.'},
+  {d:'Mar 16',t:'Strait of Hormuz effectively blocked.'},
+  {d:'Mar 18',t:'Israel strikes South Pars gas field.'},
+  {d:'Mar 19',t:'Brent hits $115/bbl — conflict high.'},
+  {d:'Mar 21',t:'Natanz struck. Diego Garcia targeted.'},
+  {d:'Mar 22',t:'Trump: Open Hormuz or power plants hit.',hi:true},
+];
+
+const MARKERS = [
+  {lat:35.689,lng:51.389,n:'Tehran',       s:'🔴 US-Israeli strikes ongoing',              c:'#e8354a',sz:15},
+  {lat:32.085,lng:34.782,n:'Tel Aviv',     s:'🔴 Iranian missile waves intercepted',        c:'#e8354a',sz:13},
+  {lat:33.574,lng:35.519,n:'Beirut',       s:'🟡 Hezbollah-Israel active clashes',          c:'#f5a623',sz:11},
+  {lat:25.205,lng:55.271,n:'Dubai — UAE', s:'⚠️ Iran issued direct threat warnings',       c:'#00c48c',sz:11},
+  {lat:26.5,  lng:56.5,  n:'Hormuz Strait',s:'🔴 CRITICAL — Navigation blocked',            c:'#e8354a',sz:16},
+  {lat:33.723,lng:51.723,n:'Natanz',       s:'🔴 Nuclear facility struck Mar 21',            c:'#e8354a',sz:13},
+  {lat:27.2,  lng:52.5,  n:'South Pars',  s:'🔴 Gas field struck Mar 18',                  c:'#e8354a',sz:12},
+  {lat:-7.32, lng:72.424,n:'Diego Garcia',s:'🟡 Iranian ballistic missiles fired — missed', c:'#f5a623',sz:10},
+  {lat:33.315,lng:44.366,n:'Baghdad',      s:'🟡 US Embassy repeated drone attacks',         c:'#f5a623',sz:10},
+  {lat:31.5,  lng:34.47, n:'Gaza',         s:'🟡 Ongoing — ceasefire talks active',          c:'#f5a623',sz:10},
+  {lat:25.286,lng:51.531,n:'Ras Laffan',  s:'🟠 Qatar energy facilities struck',            c:'#fb923c',sz:10},
+  {lat:29.376,lng:47.977,n:'Kuwait',       s:'🟡 9 missiles + 4 drones intercepted',         c:'#f5a623',sz:10},
+  {lat:26.217,lng:50.197,n:'Bahrain',      s:'🟡 2 Iranian missiles intercepted',            c:'#f5a623',sz:10},
+  {lat:24.688,lng:46.722,n:'Riyadh',       s:'⚠️ Drone threats intercepted — eastern prov.',c:'#fb923c',sz:10},
+];
+
+const SOURCE_CRED = {
+  'Al Jazeera':  {score:88,level:'high',  bias:'Regional', color:'#f59e0b'},
+  'BBC Mid East':{score:95,level:'high',  bias:'Intl standard',color:'#3b82f6'},
+  'Guardian':    {score:85,level:'high',  bias:'Progressive',color:'#10b981'},
+  'Arab News':   {score:72,level:'medium',bias:'Saudi-aligned',color:'#ef4444'},
+  'France 24':   {score:82,level:'high',  bias:'French state', color:'#8b5cf6'},
+  'The New Arab':{score:78,level:'medium',bias:'Opposition',  color:'#06b6d4'},
+  'The National':{score:80,level:'medium',bias:'UAE-based',   color:'#00c48c'},
+};
+
 const RSS_FEEDS = [
-    { name:'Al Jazeera',   url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.aljazeera.com%2Fxml%2Frss%2Fall.xml' },
-    { name:'BBC Mid East', url:'https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Ffeeds.bbci.co.uk%2Fnews%2Fworld%2Fmiddle_east%2Frss.xml' },
-    { name:'Guardian',     url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.theguardian.com%2Fworld%2Fmiddleeast%2Frss' },
-    { name:'Arab News',    url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.arabnews.com%2Fcat%2F2%2Frss.xml' },
-    { name:'France 24',    url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.france24.com%2Fen%2Frss' },
-    { name:'The New Arab', url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.newarab.com%2Frss' },
-    { name:'The National', url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.thenationalnews.com%2Frss' },
+  {name:'Al Jazeera',   url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.aljazeera.com%2Fxml%2Frss%2Fall.xml'},
+  {name:'BBC Mid East', url:'https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Ffeeds.bbci.co.uk%2Fnews%2Fworld%2Fmiddle_east%2Frss.xml'},
+  {name:'Guardian',     url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.theguardian.com%2Fworld%2Fmiddleeast%2Frss'},
+  {name:'Arab News',    url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.arabnews.com%2Fcat%2F2%2Frss.xml'},
+  {name:'France 24',    url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.france24.com%2Fen%2Frss'},
+  {name:'The New Arab', url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.newarab.com%2Frss'},
+  {name:'The National', url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.thenationalnews.com%2Frss'},
 ];
 
-const KEYWORDS = [
-    'iran','israel','west asia','middle east','hormuz','gulf','hezbollah',
-    'tehran','hamas','gaza','lebanon','missile','strike','war','crude','brent',
-    'trump','netanyahu','irgc','natanz','strait','nuclear','ceasefire',
-    'qatar','bahrain','kuwait','houthi','saudi','riyadh','pentagon',
-    'attack','conflict','military','airstrike','drone','bomb',
-    'oil','gas','energy','sanction','casualt','killed','dead','wounded',
-    'uae','dubai','abu dhabi','mena','ras al-khaimah','minhad'
-];
+const KW = ['iran','israel','west asia','middle east','hormuz','gulf','hezbollah','tehran','hamas','gaza','lebanon','missile','strike','war','crude','brent','trump','netanyahu','irgc','natanz','strait','nuclear','ceasefire','qatar','bahrain','kuwait','houthi','saudi','riyadh','pentagon','attack','conflict','military','airstrike','drone','bomb','oil','gas','energy','sanction','casualt','killed','dead','wounded','uae','dubai','abu dhabi','mena','ras al-khaimah','minhad'];
+const UAE_KW = ['uae','dubai','abu dhabi','al minhad','minhad','ras al-khaimah','rak','emirates','emirati','sharjah','ajman','fujairah','globaliqhub'];
 
-// ── STATE ────────────────────────────────────────────────────────────────────
-let currentFilter = 'All';
-let currentCards  = [];
-let workingFeeds  = [];
-let autoTimer     = null;
-let progressTimer = null;
-let freqMinutes   = 15;
-let nextRefreshAt = null;
-
-// ── HELPERS ──────────────────────────────────────────────────────────────────
-function stripHTML(h) { return (h||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim(); }
-function escHTML(s)   { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function setDayLabel() {
-    const start = new Date('2026-02-28');
-    const day   = Math.max(1, Math.floor((Date.now()-start)/86400000)+1);
-    document.getElementById('day-label').textContent = 'DAY ' + day;
+// ─── TOPIC CLASSIFIER ────────────────────────────────────────────────────────
+function getTopics(text) {
+  const t = text.toLowerCase();
+  const topics = [];
+  if (['missile','strike','airstrike','bomb','attack','military','weapon','army','navy'].some(k=>t.includes(k))) topics.push('security');
+  if (['oil','gas','crude','brent','energy','hormuz','pipeline','refinery'].some(k=>t.includes(k))) topics.push('energy');
+  if (['ceasefire','talks','deal','diplomat','sanction','agreement','treaty'].some(k=>t.includes(k))) topics.push('diplomacy');
+  if (['troop','soldier','tank','navy','force','battalion','idf','irgc'].some(k=>t.includes(k))) topics.push('military');
+  return topics.slice(0,2);
 }
 
-function fmtTime(ts) {
-    if (!ts) return '–';
-    return new Date(ts).toLocaleTimeString('en-AE',{hour:'2-digit',minute:'2-digit',hour12:false})+' UAE';
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let currentFilter='All', allCards=[], workingFeeds=[], freqMin=15;
+let autoTimer=null, brentChart=null, donutChart=null, barChart=null, mapInst=null;
+let soundEnabled=false, speaking=false, prevUrgentTitles=new Set();
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const strip = h=>(h||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+const esc   = s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fmtDate = str=>{if(!str)return'';const d=new Date(str),now=new Date(),diff=Math.floor((now-d)/60000);if(diff<1)return'just now';if(diff<60)return diff+'m ago';if(diff<1440)return Math.floor(diff/60)+'h ago';return d.toLocaleDateString('en-AE',{day:'numeric',month:'short'});};
+const fmtTime = ts=>new Date(ts).toLocaleTimeString('en-AE',{hour:'2-digit',minute:'2-digit',hour12:false})+' UAE';
+const waURL   = (t,u)=>'https://wa.me/?text='+encodeURIComponent((t||'').slice(0,100)+(u?'\n'+u:''));
+const waSVG   = `<svg class="wa-svg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+
+function setDayLabel(){const d=Math.max(1,Math.floor((Date.now()-new Date('2026-02-28'))/86400000)+1);document.getElementById('day-label').textContent='DAY '+d}
+
+// ─── RIPPLE ──────────────────────────────────────────────────────────────────
+function addRipple(e){const btn=e.currentTarget,r=document.createElement('span');r.className='ripple';const rect=btn.getBoundingClientRect(),sz=Math.max(rect.width,rect.height);r.style.cssText=`width:${sz}px;height:${sz}px;top:${e.clientY-rect.top-sz/2}px;left:${e.clientX-rect.left-sz/2}px`;btn.appendChild(r);setTimeout(()=>r.remove(),500);}
+document.querySelectorAll('.refresh-btn,.filter-btn,.icon-btn').forEach(b=>b.addEventListener('click',addRipple));
+
+// ─── THEME ───────────────────────────────────────────────────────────────────
+function toggleTheme(btn){
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',isDark?'light':'dark');
+  btn.textContent=isDark?'🌙':'☀️';
+  localStorage.setItem('giq-theme',isDark?'light':'dark');
+  if(mapInst)mapInst.invalidateSize();
+}
+const savedTheme=localStorage.getItem('giq-theme');
+if(savedTheme){document.documentElement.setAttribute('data-theme',savedTheme);document.getElementById('theme-btn').textContent=savedTheme==='light'?'🌙':'☀️';}
+
+// ─── SOUND ───────────────────────────────────────────────────────────────────
+function toggleSound(btn){
+  soundEnabled=!soundEnabled;
+  btn.textContent=soundEnabled?'🔔':'🔕';
+  btn.classList.toggle('sound-on',soundEnabled);
+  if(soundEnabled)playPing(440,0.05);
+}
+function playPing(freq=880,vol=0.08){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=ctx.createOscillator(),gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.type='sine';osc.frequency.setValueAtTime(freq,ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(freq*1.5,ctx.currentTime+0.1);
+    gain.gain.setValueAtTime(vol,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.6);
+    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.6);
+  }catch(e){}
 }
 
-function fmtDate(str) {
-    if (!str) return '';
-    const d = new Date(str);
-    if (isNaN(d)) return '';
-    const now = new Date();
-    const diff = Math.floor((now - d) / 60000);
-    if (diff < 1)  return 'just now';
-    if (diff < 60) return diff + 'm ago';
-    if (diff < 1440) return Math.floor(diff/60) + 'h ago';
-    return d.toLocaleDateString('en-AE',{day:'numeric',month:'short'});
+// ─── AUDIO SUMMARY ───────────────────────────────────────────────────────────
+function toggleAudio(btn){const bar=document.getElementById('audio-bar');bar.classList.toggle('open');btn.classList.toggle('active');}
+function toggleSpeak(){
+  if(speaking){stopSpeak();return;}
+  if(!window.speechSynthesis)return;
+  const headlines=allCards.slice(0,8).map((c,i)=>`${i+1}. ${c.title}`).join('. ');
+  const text=`West Asia Intelligence Briefing. Day ${Math.max(1,Math.floor((Date.now()-new Date('2026-02-28'))/86400000)+1)} of conflict. Top headlines: ${headlines}`;
+  const utt=new SpeechSynthesisUtterance(text);
+  utt.rate=parseFloat(document.getElementById('audio-speed').value)||1;
+  utt.pitch=0.95;
+  utt.onstart=()=>{speaking=true;document.getElementById('speak-btn').textContent='⏸ Reading…';document.getElementById('audio-status').textContent='Reading aloud…';};
+  utt.onend=utt.onerror=()=>{speaking=false;document.getElementById('speak-btn').textContent='▶ Read Headlines';document.getElementById('audio-status').textContent='Press ▶ to read top headlines aloud';};
+  window.speechSynthesis.speak(utt);
+}
+function stopSpeak(){window.speechSynthesis.cancel();speaking=false;document.getElementById('speak-btn').textContent='▶ Read Headlines';}
+
+// ─── VIDEO ───────────────────────────────────────────────────────────────────
+function toggleVideo(btn){
+  const bar=document.getElementById('video-bar'),frame=document.getElementById('yt-frame');
+  const open=!bar.classList.contains('open');
+  bar.classList.toggle('open',open);
+  btn.classList.toggle('active',open);
+  // Al Jazeera English YouTube live stream
+  frame.src=open?'https://www.youtube.com/embed/3kp4mKgcbZA?autoplay=1&mute=1':'';
 }
 
-// ── AUTO-REFRESH ──────────────────────────────────────────────────────────────
-function startAutoRefresh() {
-    clearInterval(autoTimer);
-    clearInterval(progressTimer);
-    const fill = document.getElementById('progress-fill');
-    fill.style.width = '0%';
-    fill.style.transition = 'none';
-
-    if (freqMinutes === 0) { fill.style.width='0%'; return; }
-
-    nextRefreshAt = Date.now() + freqMinutes * 60 * 1000;
-
-    // Animate progress bar
-    requestAnimationFrame(() => {
-        fill.style.transition = `width ${freqMinutes * 60}s linear`;
-        fill.style.width = '100%';
-    });
-
-    autoTimer = setTimeout(() => {
-        doRefresh();
-    }, freqMinutes * 60 * 1000);
+// ─── TIMELINE ────────────────────────────────────────────────────────────────
+function renderTimeline(){
+  const el=document.getElementById('tl');
+  el.innerHTML=TL.map(e=>`<div class="tl-item"><div class="tl-dot${e.hi?' hi':''}">${!e.hi?'<div class="tl-inner"></div>':''}</div><div class="tl-date">${e.d}</div><div class="tl-text">${e.t}</div></div>`).join('');
+  setTimeout(()=>{el.scrollLeft=el.scrollWidth},120);
 }
 
-function onFreqChange() {
-    freqMinutes = parseInt(document.getElementById('refresh-select').value);
-    startAutoRefresh();
+// ─── MAP ─────────────────────────────────────────────────────────────────────
+function initMap(){
+  if(mapInst||!window.L)return;
+  mapInst=L.map('conflict-map',{center:[28,48],zoom:4,zoomControl:true,attributionControl:false,scrollWheelZoom:false});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:8,minZoom:3}).addTo(mapInst);
+  MARKERS.forEach(m=>{
+    const icon=L.divIcon({className:'',html:`<div style="width:${m.sz}px;height:${m.sz}px;border-radius:50%;background:${m.c};border:2px solid rgba(255,255,255,0.4);box-shadow:0 0 ${m.sz+4}px ${m.c}66;animation:pulseBeat 2s ease infinite;cursor:pointer"></div>`,iconSize:[m.sz,m.sz],iconAnchor:[m.sz/2,m.sz/2]});
+    L.marker([m.lat,m.lng],{icon}).addTo(mapInst).bindPopup(`<div class="mp-name">${m.n}</div><div class="mp-status">${m.s}</div>`,{maxWidth:220,className:'dark-popup'});
+  });
+}
+function addMapBlip(lat,lng,color){
+  if(!mapInst||!window.L)return;
+  const icon=L.divIcon({className:'',html:`<div style="width:8px;height:8px;border-radius:50%;background:${color};box-shadow:0 0 12px ${color};animation:pulseBeat 1s ease 3"></div>`,iconSize:[8,8],iconAnchor:[4,4]});
+  const m=L.marker([lat,lng],{icon}).addTo(mapInst);
+  setTimeout(()=>{try{mapInst.removeLayer(m)}catch(e){}},4000);
 }
 
-// ── RSS FETCH ────────────────────────────────────────────────────────────────
-function isRelevant(item) {
-    const t = ((item.title||'')+(item.description||'')).toLowerCase();
-    return KEYWORDS.some(k => t.includes(k));
+// ─── BRENT ───────────────────────────────────────────────────────────────────
+async function fetchBrent(){
+  try{
+    const proxy='https://api.allorigins.win/raw?url=';
+    const target=encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=7d&includePrePost=false');
+    const res=await fetch(proxy+target,{cache:'no-store'});
+    const data=await res.json();
+    const r=data?.chart?.result?.[0];if(!r)throw new Error('no data');
+    const closes=r.indicators.quote[0].close.filter(Boolean);
+    const price=r.meta.regularMarketPrice||closes[closes.length-1];
+    const prev=r.meta.previousClose||closes[closes.length-2];
+    const chg=price-prev,pct=chg/prev*100;
+    document.getElementById('brent-price').textContent='$'+price.toFixed(2);
+    const el=document.getElementById('brent-chg');
+    el.textContent=(chg>=0?'+':'')+chg.toFixed(2)+' ('+(pct>=0?'+':'')+pct.toFixed(2)+'%) today';
+    el.className='brent-change '+(chg>0?'up':chg<0?'down':'flat');
+    if(brentChart)brentChart.destroy();
+    const ctx=document.getElementById('brent-chart').getContext('2d');
+    const up=closes[closes.length-1]>=closes[0];
+    brentChart=new Chart(ctx,{type:'line',data:{labels:closes.map(()=>''),datasets:[{data:closes,borderColor:up?'#4ade80':'#e8354a',borderWidth:2,fill:true,backgroundColor:up?'rgba(74,222,128,0.06)':'rgba(232,53,74,0.06)',tension:0.4,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}},animation:{duration:500}}});
+  }catch(e){
+    document.getElementById('brent-price').textContent='~$112';
+    document.getElementById('brent-chg').textContent='Live data unavailable';
+    document.getElementById('brent-chg').className='brent-change flat';
+  }
 }
 
-async function fetchOneFeed(feed) {
-    const res = await fetch(feed.url, { cache:'no-store' });
-    if (!res.ok) throw new Error('HTTP '+res.status);
-    const data = await res.json();
-    if (data.status !== 'ok') throw new Error(data.message || 'Feed error');
-    return (data.items||[]).map(i => ({ ...i, _source:feed.name }));
+// ─── DASHBOARD CHARTS ─────────────────────────────────────────────────────────
+function renderDashboard(cards){
+  const uaeCnt=cards.filter(c=>c.cat==='UAE').length;
+  const gccCnt=cards.filter(c=>c.cat==='GCC').length;
+  const glbCnt=cards.filter(c=>c.cat==='Global').length;
+  const isDark=document.documentElement.getAttribute('data-theme')!=='light';
+  const textColor=isDark?'rgba(136,153,187,0.8)':'rgba(58,74,106,0.8)';
+  const gridColor=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,60,0.07)';
+
+  // Donut
+  if(donutChart)donutChart.destroy();
+  const dc=document.getElementById('donut-chart').getContext('2d');
+  donutChart=new Chart(dc,{type:'doughnut',data:{labels:['UAE','Gulf','Global'],datasets:[{data:[uaeCnt,gccCnt,glbCnt],backgroundColor:['rgba(0,196,140,0.75)','rgba(245,166,35,0.75)','rgba(29,110,245,0.75)'],borderColor:['rgba(0,196,140,0.4)','rgba(245,166,35,0.4)','rgba(29,110,245,0.4)'],borderWidth:1,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:textColor,font:{size:9,family:'DM Mono'},boxWidth:10,padding:8}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} articles (${Math.round(ctx.raw/cards.length*100)}%)`}}},animation:{animateRotate:true,duration:600}}});
+
+  // Bar — articles per source
+  const srcCounts={};
+  cards.forEach(c=>{srcCounts[c.source]=(srcCounts[c.source]||0)+1;});
+  const srcNames=Object.keys(srcCounts);
+  const srcVals=srcNames.map(k=>srcCounts[k]);
+  const srcColors=srcNames.map(k=>(SOURCE_CRED[k]?.color||'#4a5a7a')+'cc');
+  if(barChart)barChart.destroy();
+  const bc=document.getElementById('bar-chart').getContext('2d');
+  barChart=new Chart(bc,{type:'bar',data:{labels:srcNames.map(n=>n.replace('Mid East','ME').replace('The New Arab','New Arab')),datasets:[{data:srcVals,backgroundColor:srcColors,borderRadius:4,borderWidth:0}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw} articles`}}},scales:{x:{grid:{color:gridColor},ticks:{color:textColor,font:{size:8,family:'DM Mono'}},border:{display:false}},y:{grid:{display:false},ticks:{color:textColor,font:{size:8,family:'DM Mono'}}}},animation:{duration:600}}});
 }
 
-async function fetchAllFeeds() {
-    const results = await Promise.allSettled(RSS_FEEDS.map(fetchOneFeed));
-
-    let allItems = [];
-    workingFeeds = [];
-
-    results.forEach((r, i) => {
-        if (r.status === 'fulfilled') {
-            allItems.push(...r.value);
-            workingFeeds.push(RSS_FEEDS[i].name);
-        } else {
-            console.warn(RSS_FEEDS[i].name+' failed:', r.reason.message);
-        }
-    });
-
-    if (workingFeeds.length === 0) throw new Error('All feeds unavailable — check network.');
-
-    // Deduplicate by title
-    const seen = new Set();
-    allItems = allItems.filter(i => {
-        if (!i.title || seen.has(i.title)) return false;
-        seen.add(i.title); return true;
-    });
-
-    // Filter relevant
-    let filtered = allItems.filter(isRelevant)
-        .sort((a,b) => new Date(b.pubDate) - new Date(a.pubDate));
-
-    // Safety net: if too few matches, show all feed items (already ME-focused)
-    if (filtered.length < 5) {
-        filtered = allItems.sort((a,b) => new Date(b.pubDate) - new Date(a.pubDate));
-    }
-
-    return filtered;
+// ─── THREAT LEVEL ─────────────────────────────────────────────────────────────
+function updateThreat(cards){
+  const u=cards.filter(c=>c.urgent).length;
+  let level,desc;
+  if(u>=5){level='CRITICAL';desc='Multiple breaking events — immediate attention required'}
+  else if(u>=3){level='HIGH';desc='Significant escalation detected in live feed'}
+  else if(u>=1){level='ELEVATED';desc='Active conflict indicators present'}
+  else{level='MODERATE';desc='No breaking events — situation monitored'}
+  const bar=document.getElementById('threat-bar');
+  bar.className='threat-bar '+level;
+  document.getElementById('threat-text').textContent=level;
+  document.getElementById('threat-desc').textContent=desc;
 }
 
-// ── CATEGORISE ───────────────────────────────────────────────────────────────
-function categorise(item) {
-    const t = ((item.title||'')+(item.description||'')).toLowerCase();
-    const urgent = [
-        'ultimatum','nuclear strike','ballistic missile','killed','airstrike on','bombed',
-        'attack on','ceasefire','casualties','dead','wounded','explosion','obliterate'
-    ].some(k => t.includes(k));
-
-    let cat = 'Global';
-    if (['uae','dubai','abu dhabi','al minhad','minhad','ras al-khaimah','rak','emirates','emirati'].some(k=>t.includes(k))) cat = 'UAE';
-    else if (['kuwait','bahrain','qatar','saudi','hormuz','ras laffan','houthi','gcc','riyadh','jeddah','persian gulf'].some(k=>t.includes(k))) cat = 'GCC';
-
-    return { cat, urgent };
+// ─── UAE PRIORITY ─────────────────────────────────────────────────────────────
+function renderUAE(cards){
+  const uae=cards.filter(c=>UAE_KW.some(k=>(c.title+c.content).toLowerCase().includes(k))).slice(0,8);
+  const el=document.getElementById('uae-scroll');
+  if(!uae.length){el.innerHTML='<div class="uae-empty">No UAE-specific articles in current feed.</div>';return;}
+  el.innerHTML=uae.map(c=>`<div class="uae-mini-card" onclick="${c.link?`window.open('${esc(c.link)}','_blank')`:''}"><div class="uae-mini-title">${esc(c.title)}</div><div class="uae-mini-meta"><span>${esc(c.time)} · ${esc(c.source)}</span><a class="wa-mini" href="${esc(waURL(c.title,c.link))}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Share on WhatsApp">📲 WA</a></div></div>`).join('');
 }
 
-function buildCards(items) {
-    return items.map(item => {
-        const { cat, urgent } = categorise(item);
-        const thumb = item.thumbnail || item.enclosure?.link || null;
-        return {
-            cat, urgent,
-            title:   item.title || 'Untitled',
-            content: stripHTML(item.description).slice(0,280) + (stripHTML(item.description).length > 280 ? '…' : ''),
-            time:    fmtDate(item.pubDate),
-            source:  item._source || '',
-            link:    item.link || null,
-            image:   thumb && thumb.startsWith('http') ? thumb : null,
-        };
-    });
+// ─── CATEGORISE ───────────────────────────────────────────────────────────────
+function categorise(item){
+  const t=((item.title||'')+(item.description||'')).toLowerCase();
+  const urgent=['ultimatum','ballistic','killed','airstrike','bombed','obliterate','casualties','dead','explosion','nuclear strike','ceasefire rejected'].some(k=>t.includes(k));
+  let cat='Global';
+  if(UAE_KW.some(k=>t.includes(k)))cat='UAE';
+  else if(['kuwait','bahrain','qatar','saudi','hormuz','ras laffan','houthi','gcc','riyadh','jeddah','persian gulf'].some(k=>t.includes(k)))cat='GCC';
+  return{cat,urgent};
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────────────
-function render() {
-    const feed    = document.getElementById('feed');
-    const showAll = currentFilter === 'All';
-    const cards   = showAll ? currentCards : currentCards.filter(c => c.cat === currentFilter);
+// ─── RSS ──────────────────────────────────────────────────────────────────────
+const isRel=item=>KW.some(k=>((item.title||'')+(item.description||'')).toLowerCase().includes(k));
+async function fetchOne(feed){
+  const r=await fetch(feed.url,{cache:'no-store'});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const d=await r.json();
+  if(d.status!=='ok')throw new Error(d.message||'error');
+  return(d.items||[]).map(i=>({...i,_src:feed.name}));
+}
+async function fetchAll(){
+  const results=await Promise.allSettled(RSS_FEEDS.map(fetchOne));
+  let all=[];workingFeeds=[];
+  results.forEach((r,i)=>{if(r.status==='fulfilled'){all.push(...r.value);workingFeeds.push(RSS_FEEDS[i].name);}else console.warn(RSS_FEEDS[i].name+':',r.reason.message);});
+  if(!workingFeeds.length)throw new Error('All feeds unavailable. Check network.');
+  const seen=new Set();
+  all=all.filter(i=>{if(!i.title||seen.has(i.title))return false;seen.add(i.title);return true;});
+  let filtered=all.filter(isRel).sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+  if(filtered.length<5)filtered=all.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+  return filtered;
+}
 
-    feed.innerHTML = '';
+function buildCards(items){
+  return items.map(item=>{
+    const{cat,urgent}=categorise(item);
+    const thumb=item.thumbnail||item.enclosure?.link||null;
+    const topics=getTopics((item.title||'')+(item.description||''));
+    return{cat,urgent,title:item.title||'Untitled',content:strip(item.description).slice(0,280)+(strip(item.description).length>280?'…':''),time:fmtDate(item.pubDate),source:item._src||'',link:item.link||null,image:thumb&&thumb.startsWith('http')?thumb:null,topics};
+  });
+}
 
-    if (!cards.length) {
-        feed.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">📡</div>
-                <div class="empty-title">No Articles Found</div>
-                <div class="empty-sub">
-                    ${currentCards.length ? 'No articles in this category. Try "All".' : 'Tap Refresh to load live news.'}
-                </div>
-            </div>`;
-        return;
-    }
+// ─── BADGES ───────────────────────────────────────────────────────────────────
+function updateBadges(cards){
+  document.getElementById('cnt-all').textContent=cards.length;
+  document.getElementById('cnt-uae').textContent=cards.filter(c=>c.cat==='UAE').length;
+  document.getElementById('cnt-gcc').textContent=cards.filter(c=>c.cat==='GCC').length;
+  document.getElementById('cnt-global').textContent=cards.filter(c=>c.cat==='Global').length;
+}
 
-    // Staggered animation
-    cards.forEach((card, idx) => {
-        const div = document.createElement('div');
-        const cl  = card.cat.toLowerCase();
-        div.className = `news-card ${cl}${card.urgent ? ' urgent' : ''}`;
-        div.style.animationDelay = (idx * 40) + 'ms';
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function render(){
+  const feed=document.getElementById('feed');
+  const showAll=currentFilter==='All';
+  const cards=showAll?allCards:allCards.filter(c=>c.cat===currentFilter);
+  feed.innerHTML='';
+  if(!cards.length){feed.innerHTML=`<div class="empty-state"><div class="empty-icon">📡</div><div class="empty-title">No Articles</div><div class="empty-sub">${allCards.length?'Try "All" filter.':'Tap Refresh.'}</div></div>`;return;}
 
-        const tagHtml = `<span class="tag ${card.urgent ? 'urgent' : cl}">${card.urgent ? '🚨 BREAKING' : card.cat.toUpperCase()}</span>`;
-        const metaHtml = `
-            <div class="card-time-source">
-                <div>${escHTML(card.time)}</div>
-                <div>${escHTML(card.source)}</div>
-            </div>`;
-        const titleHtml = card.link
-            ? `<a href="${escHTML(card.link)}" target="_blank" rel="noopener">${escHTML(card.title)}</a>`
-            : escHTML(card.title);
-        const footerHtml = card.link
-            ? `<a class="read-more" href="${escHTML(card.link)}" target="_blank" rel="noopener">Full story <span>→</span></a>`
-            : '';
+  cards.forEach((card,idx)=>{
+    const div=document.createElement('div');
+    const cl=card.cat.toLowerCase();
+    div.className=`news-card ${cl}${card.urgent?' urgent':''}`;
+    div.style.animationDelay=(idx*40)+'ms';
 
-        if (card.image) {
-            div.innerHTML = `
-                <div class="card-image-wrap">
-                    <img src="${escHTML(card.image)}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'">
-                    <div class="card-image-overlay"></div>
-                    <div class="card-image-tag">${tagHtml}</div>
-                </div>
-                <div class="card-body with-image">
-                    <div class="card-meta">
-                        <div></div>
-                        ${metaHtml}
-                    </div>
-                    <div class="card-title">${titleHtml}</div>
-                    <div class="card-content">${escHTML(card.content)}</div>
-                    <div class="card-footer">${footerHtml}</div>
-                </div>`;
-        } else {
-            div.innerHTML = `
-                <div class="card-body">
-                    <div class="card-meta">
-                        ${tagHtml}
-                        ${metaHtml}
-                    </div>
-                    <div class="card-title">${titleHtml}</div>
-                    <div class="card-content">${escHTML(card.content)}</div>
-                    <div class="card-footer">${footerHtml}</div>
-                </div>`;
-        }
+    const cred=SOURCE_CRED[card.source]||{score:75,level:'medium',bias:'Unknown'};
+    const credClass='cred-'+(cred.score>=85?'high':cred.score>=75?'medium':'low');
+    const credHtml=`<span class="cred-badge ${credClass}" title="${cred.bias}">✓ ${cred.score}</span>`;
 
-        feed.appendChild(div);
-    });
+    const topicsHtml=card.topics.map(t=>`<span class="topic-tag topic-${t}">${t}</span>`).join('');
 
-    feed.innerHTML += `<div class="feed-footer">
-        ${workingFeeds.join(' · ')}<br>
-        ${currentCards.length} articles · Auto-categorised by keyword · Tap Refresh or set interval above
+    const tagH=`<span class="tag ${card.urgent?'urgent':cl}">${card.urgent?'🚨 BREAKING':card.cat.toUpperCase()}</span>${topicsHtml}`;
+    const metaH=`<div class="card-ts"><div>${esc(card.time)}</div><div style="display:flex;align-items:center;gap:4px;justify-content:flex-end;">${credHtml}<span style="font-size:0.52rem;color:var(--dim)">${esc(card.source)}</span></div></div>`;
+    const titleH=card.link?`<a href="${esc(card.link)}" target="_blank" rel="noopener">${esc(card.title)}</a>`:esc(card.title);
+
+    const actH=`<div class="card-actions">
+      ${card.link?`<a class="read-more" href="${esc(card.link)}" target="_blank" rel="noopener">Full story →</a>`:''}
+      <a class="wa-btn" href="${esc(waURL(card.title,card.link))}" target="_blank" rel="noopener">${waSVG} Share</a>
+      <button class="read-aloud-btn" onclick="readCardAloud('${esc(card.title).replace(/'/g,"\\'")}')">🔊</button>
     </div>`;
-}
 
-// ── FILTER ────────────────────────────────────────────────────────────────────
-function doFilter(btn, cat) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentFilter = cat;
-    render();
-}
-
-// ── SKELETONS ─────────────────────────────────────────────────────────────────
-function showSkeletons() {
-    document.getElementById('feed').innerHTML = [1,2,3].map(() => `
-        <div class="skeleton">
-            <div class="sk-image"></div>
-            <div class="sk-body">
-                <div class="sk-line short" style="margin-bottom:12px"></div>
-                <div class="sk-line wide"></div>
-                <div class="sk-line wide"></div>
-                <div class="sk-line med"></div>
-            </div>
-        </div>`).join('');
-}
-
-// ── REFRESH ───────────────────────────────────────────────────────────────────
-async function doRefresh() {
-    const btn   = document.getElementById('refresh-btn');
-    const icon  = document.getElementById('refresh-icon');
-    const label = document.getElementById('refresh-label');
-    const led   = document.getElementById('status-led');
-
-    btn.disabled = true;
-    icon.className = 'spinning';
-    label.textContent = 'Loading…';
-    led.style.background = 'var(--gcc)';
-    showSkeletons();
-
-    try {
-        const items = await fetchAllFeeds();
-        currentCards = buildCards(items);
-
-        // Alert bar — most urgent
-        const urgent = currentCards.find(c => c.urgent);
-        const alertBar = document.getElementById('alert-bar');
-        if (urgent) {
-            alertBar.innerHTML = `<span>🚨</span><span>${escHTML(urgent.title)}</span>`;
-            alertBar.classList.add('show');
-        } else {
-            alertBar.classList.remove('show');
-        }
-
-        // Update meta
-        document.getElementById('meta-source').textContent = workingFeeds.join(' · ');
-        document.getElementById('last-updated').textContent = fmtTime(Date.now());
-        led.style.background = 'var(--uae)';
-
-        render();
-        startAutoRefresh();
-
-    } catch(e) {
-        console.error(e);
-        led.style.background = 'var(--urgent)';
-        document.getElementById('feed').innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">⚠️</div>
-                <div class="empty-title">Feed Error</div>
-                <div class="empty-sub">${escHTML(e.message)}<br><br>Check network and tap Refresh.</div>
-            </div>`;
-    } finally {
-        btn.disabled = false;
-        icon.className = '';
-        label.textContent = 'Refresh';
+    if(card.image){
+      div.innerHTML=`<div class="card-img-wrap"><img src="${esc(card.image)}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"><div class="card-img-overlay"></div><div class="card-img-tag">${tagH}</div></div><div class="card-body wi"><div class="card-meta"><div></div>${metaH}</div><div class="card-title">${titleH}</div><div class="card-content">${esc(card.content)}</div>${actH}</div>`;
+    }else{
+      div.innerHTML=`<div class="card-body"><div class="card-meta"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">${tagH}</div>${metaH}</div><div class="card-title">${titleH}</div><div class="card-content">${esc(card.content)}</div>${actH}</div>`;
     }
+    feed.appendChild(div);
+  });
+
+  feed.innerHTML+=`<div class="feed-footer">${workingFeeds.join(' · ')}<br>${allCards.length} articles · Keyword-categorised · Source credibility scored</div>`;
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
+function readCardAloud(title){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const utt=new SpeechSynthesisUtterance(title);
+  utt.rate=1;utt.pitch=0.95;
+  window.speechSynthesis.speak(utt);
+}
+
+// ─── AUTO REFRESH ─────────────────────────────────────────────────────────────
+function startAuto(){
+  clearTimeout(autoTimer);
+  const pf=document.getElementById('pf');
+  pf.style.transition='none';pf.style.width='0%';
+  if(freqMin===0)return;
+  requestAnimationFrame(()=>{pf.style.transition=`width ${freqMin*60}s linear`;pf.style.width='100%';});
+  autoTimer=setTimeout(doRefresh,freqMin*60*1000);
+}
+function onFreqChange(){freqMin=parseInt(document.getElementById('refresh-sel').value);startAuto();}
+
+// ─── FILTER ───────────────────────────────────────────────────────────────────
+function doFilter(btn,cat){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');currentFilter=cat;render();
+}
+
+// ─── SKELETONS ────────────────────────────────────────────────────────────────
+function showSkel(){document.getElementById('feed').innerHTML=[1,2,3].map(()=>`<div class="skeleton"><div class="sk-img"></div><div class="sk-body"><div class="sk-line" style="width:50%;margin-bottom:12px"></div><div class="sk-line" style="width:90%"></div><div class="sk-line" style="width:90%"></div><div class="sk-line" style="width:65%"></div></div></div>`).join('');}
+
+// ─── SOUND ALERT FOR NEW URGENTS ──────────────────────────────────────────────
+function checkNewUrgents(cards){
+  if(!soundEnabled)return;
+  const newTitles=new Set(cards.filter(c=>c.urgent).map(c=>c.title));
+  let hasNew=false;
+  newTitles.forEach(t=>{if(!prevUrgentTitles.has(t))hasNew=true;});
+  if(hasNew&&prevUrgentTitles.size>0){playPing(660,0.1);setTimeout(()=>playPing(880,0.08),300);}
+  prevUrgentTitles=newTitles;
+}
+
+// ─── MAIN REFRESH ─────────────────────────────────────────────────────────────
+async function doRefresh(){
+  const btn=document.getElementById('refresh-btn'),ri=document.getElementById('ri'),rl=document.getElementById('rl'),led=document.getElementById('status-led');
+  btn.disabled=true;ri.className='spinning';rl.textContent='Loading…';led.style.background='var(--gcc)';
+  showSkel();
+  try{
+    const items=await fetchAll();
+    allCards=buildCards(items);
+    checkNewUrgents(allCards);
+    updateBadges(allCards);
+    updateThreat(allCards);
+    renderUAE(allCards);
+    renderDashboard(allCards);
+    // Animate map blip for top urgent item
+    const top=allCards.find(c=>c.urgent);
+    if(top)addMapBlip(28+Math.random()*4-2,48+Math.random()*4-2,top.cat==='UAE'?'#00c48c':top.cat==='GCC'?'#f5a623':'#e8354a');
+    document.getElementById('meta-source').textContent=workingFeeds.join(' · ');
+    document.getElementById('last-updated').textContent=fmtTime(Date.now());
+    led.style.background='var(--uae)';
+    render();
+    startAuto();
+  }catch(e){
+    console.error(e);led.style.background='var(--urgent)';
+    document.getElementById('feed').innerHTML=`<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Feed Error</div><div class="empty-sub">${esc(e.message)}<br><br>Check network and tap Refresh.</div></div>`;
+  }finally{
+    btn.disabled=false;ri.className='';rl.textContent='Refresh';
+  }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
 setDayLabel();
+renderTimeline();
+initMap();
+fetchBrent();
 doRefresh();
 </script>
 </body>
