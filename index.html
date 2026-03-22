@@ -9,486 +9,494 @@
 <title>GlobalIQ Hub — West Asia Intel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-/* ── THEME TOKENS ─────────────────────────────────────────────────────────── */
+/* ── THEME ── */
 :root {
-  --bg:#03060f; --bg2:#070d1c; --bg3:#0c1428;
-  --glass:rgba(255,255,255,0.038); --glass2:rgba(255,255,255,0.07);
-  --gb:rgba(255,255,255,0.08); --gb2:rgba(255,255,255,0.15);
-  --chrome:rgba(3,6,15,0.85);
-  --text:#e8f0fe; --muted:#8899bb; --dim:#4a5a7a;
-  --primary:#1d6ef5; --pg:rgba(29,110,245,0.35);
-  --uae:#00c48c; --ug:rgba(0,196,140,0.28);
-  --gcc:#f5a623; --gg:rgba(245,166,35,0.28);
-  --urgent:#e8354a; --urg:rgba(232,53,74,0.32);
-  --card-shadow:0 8px 32px rgba(0,0,0,0.45);
-  --ff:'Bebas Neue',sans-serif; --fs:'DM Sans',sans-serif; --fm:'DM Mono',monospace;
-  --radius:14px; --transition:0.22s cubic-bezier(0.4,0,0.2,1);
+  --bg:#03060f;--bg2:#070d1c;--bg3:#0c1428;
+  --glass:rgba(255,255,255,0.036);--glass2:rgba(255,255,255,0.068);
+  --gb:rgba(255,255,255,0.08);--gb2:rgba(255,255,255,0.15);
+  --chrome:rgba(3,6,15,0.86);
+  --text:#e8f0fe;--muted:#8899bb;--dim:#4a5a7a;
+  --primary:#1d6ef5;--pg:rgba(29,110,245,0.32);
+  --uae:#00c48c;--ug:rgba(0,196,140,0.26);
+  --gcc:#f5a623;--gg:rgba(245,166,35,0.26);
+  --urgent:#e8354a;--urg:rgba(232,53,74,0.3);
+  --ff:'Bebas Neue',sans-serif;--fs:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+  --r:14px;--tr:0.22s cubic-bezier(0.4,0,0.2,1);
 }
-[data-theme="light"] {
-  --bg:#f0f4ff; --bg2:#e4eaf8; --bg3:#d8e2f5;
-  --glass:rgba(255,255,255,0.7); --glass2:rgba(255,255,255,0.85);
-  --gb:rgba(0,0,60,0.1); --gb2:rgba(0,0,60,0.18);
-  --chrome:rgba(240,244,255,0.92);
-  --text:#0f1a3a; --muted:#3a4a6a; --dim:#7a8aaa;
-  --card-shadow:0 4px 20px rgba(0,0,60,0.12);
+[data-theme="light"]{
+  --bg:#f0f4ff;--bg2:#e4eaf8;--bg3:#d8e2f5;
+  --glass:rgba(255,255,255,0.72);--glass2:rgba(255,255,255,0.88);
+  --gb:rgba(0,0,60,0.09);--gb2:rgba(0,0,60,0.17);
+  --chrome:rgba(240,244,255,0.93);
+  --text:#0f1a3a;--muted:#3a4a6a;--dim:#7a8aaa;
 }
-
-/* ── RESET ───────────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100vh;padding-top:env(safe-area-inset-top);overflow-x:hidden;transition:background var(--transition),color var(--transition)}
+body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100vh;padding-top:env(safe-area-inset-top);overflow-x:hidden;transition:background var(--tr),color var(--tr)}
 
-/* ── AMBIENT BACKGROUND ─────────────────────────────────────────────────── */
+/* ── AMBIENT ── */
 .bg-orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.orb{position:absolute;border-radius:50%;filter:blur(90px);animation:orbFloat 24s ease-in-out infinite}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:0.15;animation:orbFloat 24s ease-in-out infinite}
 .orb-1{width:520px;height:520px;background:radial-gradient(circle,rgba(29,78,216,0.22),transparent);top:-140px;left:-140px}
 .orb-2{width:420px;height:420px;background:radial-gradient(circle,rgba(15,118,110,0.2),transparent);bottom:-90px;right:-90px;animation-delay:-9s}
 .orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(124,45,18,0.18),transparent);top:42%;left:68%;animation-delay:-17s}
-@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(25px,-18px) scale(1.06)}66%{transform:translate(-18px,25px) scale(0.94)}}
-[data-theme="light"] .orb{opacity:0.4}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(24px,-16px) scale(1.05)}66%{transform:translate(-16px,24px) scale(0.95)}}
+[data-theme="light"] .orb{opacity:0.35}
 .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(var(--gb) 1px,transparent 1px),linear-gradient(90deg,var(--gb) 1px,transparent 1px);background-size:60px 60px;opacity:0.35}
 
-/* ── STICKY CHROME ───────────────────────────────────────────────────────── */
-.chrome{position:sticky;top:0;z-index:300;background:var(--chrome);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--gb);transition:background var(--transition)}
+/* ── CHROME ── */
+.chrome{position:sticky;top:0;z-index:300;background:var(--chrome);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--gb);transition:background var(--tr)}
 
-/* ── HEADER ──────────────────────────────────────────────────────────────── */
+/* ── HEADER ── */
 .header{padding:12px 18px 8px}
 .header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .brand{display:flex;align-items:center;gap:10px}
-.brand-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--primary),#0ea5e9);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 16px var(--pg);transition:transform var(--transition),box-shadow var(--transition)}
-.brand-icon:hover{transform:scale(1.1) rotate(-5deg);box-shadow:0 0 28px var(--pg)}
+.brand-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--primary),#0ea5e9);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 16px var(--pg);transition:transform var(--tr)}
+.brand-icon:hover{transform:scale(1.1) rotate(-5deg)}
 .brand-name{font-family:var(--ff);font-size:1.4rem;letter-spacing:3px;color:var(--text);line-height:1}
 .brand-sub{font-size:0.52rem;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-top:2px}
-.header-controls{display:flex;align-items:center;gap:8px}
-
-/* Icon buttons */
-.icon-btn{width:32px;height:32px;border-radius:50%;background:var(--glass2);border:1px solid var(--gb);color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--transition);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
+.hctrl{display:flex;align-items:center;gap:7px}
+.icon-btn{width:32px;height:32px;border-radius:50%;background:var(--glass2);border:1px solid var(--gb);color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--tr);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
 .icon-btn:hover{background:var(--glass2);color:var(--text);border-color:var(--gb2);transform:scale(1.08)}
-.icon-btn:active{transform:scale(0.94)}
+.icon-btn:active{transform:scale(0.93)}
 .icon-btn.active{background:rgba(29,110,245,0.25);border-color:rgba(29,110,245,0.5);color:#60a5fa}
 .icon-btn.sound-on{background:rgba(0,196,140,0.2);border-color:rgba(0,196,140,0.4);color:var(--uae)}
-
-/* Ripple effect */
-.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.25);transform:scale(0);animation:ripple-anim 0.5s ease;pointer-events:none}
-@keyframes ripple-anim{to{transform:scale(4);opacity:0}}
-
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.22);transform:scale(0);animation:rippleA 0.5s ease;pointer-events:none}
+@keyframes rippleA{to{transform:scale(4);opacity:0}}
 .day-pill{display:flex;align-items:center;gap:5px;background:rgba(232,53,74,0.12);border:1px solid rgba(232,53,74,0.25);border-radius:20px;padding:4px 10px;font-family:var(--fm);font-size:0.6rem;color:var(--urgent);letter-spacing:1px}
 .pulse{width:5px;height:5px;background:var(--urgent);border-radius:50%;animation:pulseBeat 1.4s ease infinite}
 @keyframes pulseBeat{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.55)}}
 .meta-strip{display:flex;justify-content:space-between;align-items:center;font-size:0.6rem;color:var(--dim);gap:8px;flex-wrap:wrap}
 .status-led{width:5px;height:5px;border-radius:50%;background:var(--dim);transition:background 0.5s;display:inline-block;margin-right:4px;vertical-align:middle}
 
-/* ── THREAT BAR ──────────────────────────────────────────────────────────── */
-.threat-bar{padding:7px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--gb);transition:background 0.6s,border-color 0.6s}
-.threat-bar.CRITICAL{background:rgba(232,53,74,0.18);border-bottom-color:rgba(232,53,74,0.3)}
+/* ── THREAT BAR ── */
+.threat-bar{padding:7px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--gb);transition:background 0.6s}
+.threat-bar.CRITICAL{background:rgba(232,53,74,0.18)}
 .threat-bar.HIGH{background:rgba(234,88,12,0.14)}
-.threat-bar.ELEVATED{background:rgba(202,138,4,0.1)}
+.threat-bar.ELEVATED{background:rgba(202,138,4,0.10)}
 .threat-bar.MODERATE{background:rgba(0,196,140,0.06)}
-.threat-label{font-family:var(--ff);font-size:0.88rem;letter-spacing:3px;display:flex;align-items:center;gap:7px}
-.threat-dot{width:7px;height:7px;border-radius:50%;animation:pulseBeat 1.2s ease infinite}
-.CRITICAL .threat-dot{background:var(--urgent)}   .CRITICAL .threat-label{color:var(--urgent)}
-.HIGH     .threat-dot{background:#fb923c}          .HIGH     .threat-label{color:#fb923c}
-.ELEVATED .threat-dot{background:var(--gcc)}       .ELEVATED .threat-label{color:var(--gcc)}
-.MODERATE .threat-dot{background:var(--uae)}       .MODERATE .threat-label{color:var(--uae)}
-.threat-right{display:flex;align-items:center;gap:10px}
-.threat-desc{font-size:0.6rem;color:var(--muted);font-style:italic}
+.tlabel{font-family:var(--ff);font-size:0.88rem;letter-spacing:3px;display:flex;align-items:center;gap:7px}
+.tdot{width:7px;height:7px;border-radius:50%;animation:pulseBeat 1.2s ease infinite}
+.CRITICAL .tdot{background:var(--urgent)} .CRITICAL .tlabel{color:var(--urgent)}
+.HIGH     .tdot{background:#fb923c}       .HIGH     .tlabel{color:#fb923c}
+.ELEVATED .tdot{background:var(--gcc)}    .ELEVATED .tlabel{color:var(--gcc)}
+.MODERATE .tdot{background:var(--uae)}    .MODERATE .tlabel{color:var(--uae)}
+.tdesc{font-size:0.6rem;color:var(--muted);font-style:italic}
 
-/* ── CONTROLS ROW ────────────────────────────────────────────────────────── */
-.controls-row{display:flex;align-items:center;gap:6px;padding:7px 18px;border-top:1px solid var(--gb);overflow-x:auto;-webkit-overflow-scrolling:touch}
-.controls-row::-webkit-scrollbar{display:none}
-.filter-btn{flex-shrink:0;background:var(--glass);border:1px solid var(--gb);color:var(--muted);font-family:var(--fs);font-size:0.72rem;font-weight:500;padding:5px 11px;border-radius:20px;cursor:pointer;transition:all var(--transition);white-space:nowrap;-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
-.filter-btn:hover{background:var(--glass2);color:var(--text);border-color:var(--gb2)}
+/* ── CONTROLS ── */
+.ctrl-row{display:flex;align-items:center;gap:6px;padding:7px 18px;border-top:1px solid var(--gb);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ctrl-row::-webkit-scrollbar{display:none}
+.fbtn{flex-shrink:0;background:var(--glass);border:1px solid var(--gb);color:var(--muted);font-family:var(--fs);font-size:0.72rem;font-weight:500;padding:5px 11px;border-radius:20px;cursor:pointer;transition:all var(--tr);white-space:nowrap;-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
+.fbtn:hover{background:var(--glass2);color:var(--text)}
 .badge{background:rgba(255,255,255,0.1);border-radius:8px;padding:0 5px;font-size:0.57rem;margin-left:3px;font-family:var(--fm)}
-.filter-btn.active{color:#fff;font-weight:600}
-.filter-btn[data-cat="All"].active   {background:rgba(29,110,245,0.28);border-color:rgba(29,110,245,0.55);box-shadow:0 0 12px rgba(29,110,245,0.2)}
-.filter-btn[data-cat="UAE"].active   {background:rgba(0,196,140,0.22);border-color:rgba(0,196,140,0.55);color:var(--uae)}
-.filter-btn[data-cat="GCC"].active   {background:rgba(245,166,35,0.22);border-color:rgba(245,166,35,0.55);color:var(--gcc)}
-.filter-btn[data-cat="Global"].active{background:rgba(232,53,74,0.2);border-color:rgba(232,53,74,0.45)}
-.divider-v{width:1px;height:18px;background:var(--gb);flex-shrink:0}
-.refresh-select{flex-shrink:0;background:var(--glass);border:1px solid var(--gb);color:var(--muted);font-family:var(--fm);font-size:0.64rem;padding:5px 7px;border-radius:8px;cursor:pointer;outline:none;-webkit-appearance:none;transition:border-color var(--transition)}
-.refresh-select:focus{border-color:rgba(29,110,245,0.5)}
-.refresh-btn{flex-shrink:0;display:flex;align-items:center;gap:5px;background:rgba(29,110,245,0.2);border:1px solid rgba(29,110,245,0.45);color:#60a5fa;font-family:var(--fs);font-size:0.72rem;font-weight:600;padding:5px 14px;border-radius:20px;cursor:pointer;white-space:nowrap;transition:all var(--transition);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
-.refresh-btn:not(:disabled):hover{background:rgba(29,110,245,0.35);box-shadow:0 0 16px rgba(29,110,245,0.3)}
-.refresh-btn:disabled{opacity:0.4;cursor:not-allowed}
+.fbtn.active{color:#fff;font-weight:600}
+.fbtn[data-cat="All"].active   {background:rgba(29,110,245,0.28);border-color:rgba(29,110,245,0.55)}
+.fbtn[data-cat="UAE"].active   {background:rgba(0,196,140,0.22);border-color:rgba(0,196,140,0.55);color:var(--uae)}
+.fbtn[data-cat="GCC"].active   {background:rgba(245,166,35,0.22);border-color:rgba(245,166,35,0.55);color:var(--gcc)}
+.fbtn[data-cat="Global"].active{background:rgba(232,53,74,0.20);border-color:rgba(232,53,74,0.45)}
+.dvdr{width:1px;height:18px;background:var(--gb);flex-shrink:0}
+.rsel{flex-shrink:0;background:var(--glass);border:1px solid var(--gb);color:var(--muted);font-family:var(--fm);font-size:0.64rem;padding:5px 7px;border-radius:8px;cursor:pointer;outline:none;-webkit-appearance:none}
+.rbtn{flex-shrink:0;display:flex;align-items:center;gap:5px;background:rgba(29,110,245,0.2);border:1px solid rgba(29,110,245,0.45);color:#60a5fa;font-family:var(--fs);font-size:0.72rem;font-weight:600;padding:5px 14px;border-radius:20px;cursor:pointer;white-space:nowrap;transition:all var(--tr);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden}
+.rbtn:not(:disabled):hover{background:rgba(29,110,245,0.35);box-shadow:0 0 16px var(--pg)}
+.rbtn:disabled{opacity:0.4;cursor:not-allowed}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinning{animation:spin 0.75s linear infinite;display:inline-block}
-.progress-bar{height:2px;background:rgba(29,110,245,0.08);overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),#0ea5e9,var(--uae));width:0%;box-shadow:0 0 8px var(--pg)}
+.pbar{height:2px;background:rgba(29,110,245,0.08);overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--primary),#0ea5e9,var(--uae));width:0%;box-shadow:0 0 8px var(--pg)}
 
-/* ── AUDIO BAR ───────────────────────────────────────────────────────────── */
+/* ── AUDIO BAR ── */
 .audio-bar{display:none;align-items:center;gap:10px;padding:8px 18px;background:rgba(29,110,245,0.08);border-bottom:1px solid rgba(29,110,245,0.15);animation:slideDown 0.25s ease}
 .audio-bar.open{display:flex}
 @keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.audio-btn{display:flex;align-items:center;gap:5px;background:rgba(29,110,245,0.18);border:1px solid rgba(29,110,245,0.4);color:#60a5fa;font-family:var(--fm);font-size:0.68rem;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all var(--transition);white-space:nowrap}
-.audio-btn:hover{background:rgba(29,110,245,0.32)}
-.audio-status{font-family:var(--fm);font-size:0.62rem;color:var(--muted);flex:1}
-.audio-speed{background:var(--glass);border:1px solid var(--gb);color:var(--muted);font-family:var(--fm);font-size:0.62rem;padding:4px 6px;border-radius:6px;cursor:pointer;outline:none;-webkit-appearance:none}
+.abtn{display:flex;align-items:center;gap:5px;background:rgba(29,110,245,0.18);border:1px solid rgba(29,110,245,0.4);color:#60a5fa;font-family:var(--fm);font-size:0.68rem;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all var(--tr);white-space:nowrap}
+.abtn:hover{background:rgba(29,110,245,0.32)}
+.aspd{background:var(--glass);border:1px solid var(--gb);color:var(--muted);font-family:var(--fm);font-size:0.62rem;padding:4px 6px;border-radius:6px;cursor:pointer;outline:none;-webkit-appearance:none}
+.astat{font-family:var(--fm);font-size:0.62rem;color:var(--muted);flex:1}
 
-/* ── VIDEO PANEL ─────────────────────────────────────────────────────────── */
-.video-bar{display:none;padding:0 18px 12px;border-bottom:1px solid var(--gb);animation:slideDown 0.25s ease}
-.video-bar.open{display:block}
-.video-header{display:flex;justify-content:space-between;align-items:center;padding:8px 0 6px;font-family:var(--fm);font-size:0.65rem;color:var(--muted)}
-.video-wrap{position:relative;border-radius:10px;overflow:hidden;background:#000;aspect-ratio:16/9}
-.video-wrap iframe{width:100%;height:100%;border:none}
+/* ── VIDEO BAR ── */
+.vbar{display:none;padding:0 18px 12px;border-bottom:1px solid var(--gb);animation:slideDown 0.25s ease}
+.vbar.open{display:block}
+.vhdr{display:flex;justify-content:space-between;align-items:center;padding:8px 0 6px;font-family:var(--fm);font-size:0.65rem;color:var(--muted)}
 
-/* ── PAGE ────────────────────────────────────────────────────────────────── */
+/* ── PAGE ── */
 .page{position:relative;z-index:1;padding:14px 16px 120px}
-
-/* ── SECTION HEADERS ─────────────────────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .section-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.section-title{font-family:var(--ff);font-size:0.92rem;letter-spacing:3px;white-space:nowrap}
-.section-line{flex:1;height:1px;background:var(--gb)}
+.stitle{font-family:var(--ff);font-size:0.92rem;letter-spacing:3px;white-space:nowrap}
+.sline{flex:1;height:1px;background:var(--gb)}
 
-/* ── UAE PRIORITY ────────────────────────────────────────────────────────── */
+/* ── UAE ── */
 .uae-priority{margin-bottom:18px;animation:fadeUp 0.4s ease both}
 .uae-scroll{display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
 .uae-scroll::-webkit-scrollbar{height:2px}
 .uae-scroll::-webkit-scrollbar-thumb{background:rgba(0,196,140,0.3);border-radius:2px}
-.uae-mini-card{flex-shrink:0;width:248px;background:rgba(0,196,140,0.06);border:1px solid rgba(0,196,140,0.18);border-radius:12px;padding:12px 13px;cursor:pointer;transition:transform var(--transition),box-shadow var(--transition),border-color var(--transition)}
-.uae-mini-card:hover{transform:translateY(-3px);box-shadow:0 6px 22px var(--ug);border-color:rgba(0,196,140,0.38)}
-.uae-mini-title{font-size:0.82rem;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:7px}
-.uae-mini-meta{font-family:var(--fm);font-size:0.56rem;color:var(--uae);display:flex;justify-content:space-between;align-items:center}
+.umc{flex-shrink:0;width:248px;background:rgba(0,196,140,0.06);border:1px solid rgba(0,196,140,0.18);border-radius:12px;padding:12px 13px;cursor:pointer;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr)}
+.umc:hover{transform:translateY(-3px);box-shadow:0 6px 22px var(--ug);border-color:rgba(0,196,140,0.38)}
+.umt{font-size:0.82rem;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:7px}
+.umm{font-family:var(--fm);font-size:0.56rem;color:var(--uae);display:flex;justify-content:space-between;align-items:center}
 .uae-empty{font-size:0.78rem;color:var(--dim);font-style:italic;padding:8px 0}
-.wa-mini{color:var(--uae);font-size:0.72rem;text-decoration:none;opacity:0.8;transition:opacity var(--transition)}
-.wa-mini:hover{opacity:1}
+.wam{color:var(--uae);font-size:0.72rem;text-decoration:none;opacity:0.8;transition:opacity var(--tr)}
+.wam:hover{opacity:1}
 
-/* ── TIMELINE ────────────────────────────────────────────────────────────── */
-.timeline-section{margin-bottom:18px;animation:fadeUp 0.4s 0.1s ease both}
+/* ── TIMELINE ── */
+.tl-section{margin-bottom:18px;animation:fadeUp 0.4s 0.08s ease both}
 .tl-scroll{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px}
 .tl-scroll::-webkit-scrollbar{height:2px}
 .tl-scroll::-webkit-scrollbar-thumb{background:rgba(245,166,35,0.3);border-radius:2px}
-.tl-item{flex-shrink:0;display:flex;flex-direction:column;align-items:center;width:112px;position:relative;cursor:default}
-.tl-item:not(:last-child)::after{content:'';position:absolute;top:11px;left:calc(50% + 7px);width:calc(100% - 14px);height:1px;background:linear-gradient(90deg,var(--gcc),rgba(245,166,35,0.12))}
-.tl-dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--gcc);background:var(--bg);display:flex;align-items:center;justify-content:center;position:relative;z-index:1;margin-bottom:5px;transition:transform var(--transition),box-shadow var(--transition)}
-.tl-item:hover .tl-dot{transform:scale(1.2);box-shadow:0 0 12px var(--gg)}
-.tl-dot.hi{background:var(--gcc);box-shadow:0 0 12px var(--gg)}
-.tl-inner{width:5px;height:5px;border-radius:50%;background:var(--gcc)}
-.tl-date{font-family:var(--fm);font-size:0.53rem;color:var(--gcc);margin-bottom:3px;text-align:center}
-.tl-text{font-size:0.62rem;color:var(--muted);text-align:center;line-height:1.4;padding:0 3px;transition:color var(--transition)}
-.tl-item:hover .tl-text{color:var(--text)}
+.tli{flex-shrink:0;display:flex;flex-direction:column;align-items:center;width:112px;position:relative}
+.tli:not(:last-child)::after{content:'';position:absolute;top:11px;left:calc(50% + 7px);width:calc(100% - 14px);height:1px;background:linear-gradient(90deg,var(--gcc),rgba(245,166,35,0.12))}
+.tld{width:13px;height:13px;border-radius:50%;border:2px solid var(--gcc);background:var(--bg);display:flex;align-items:center;justify-content:center;position:relative;z-index:1;margin-bottom:5px;transition:transform var(--tr),box-shadow var(--tr)}
+.tli:hover .tld{transform:scale(1.2);box-shadow:0 0 12px var(--gg)}
+.tld.hi{background:var(--gcc);box-shadow:0 0 12px var(--gg)}
+.tldi{width:5px;height:5px;border-radius:50%;background:var(--gcc)}
+.tldt{font-family:var(--fm);font-size:0.53rem;color:var(--gcc);margin-bottom:3px;text-align:center}
+.tltx{font-size:0.62rem;color:var(--muted);text-align:center;line-height:1.4;padding:0 3px;transition:color var(--tr)}
+.tli:hover .tltx{color:var(--text)}
 
-/* ── MAP ─────────────────────────────────────────────────────────────────── */
-.map-section{margin-bottom:18px;animation:fadeUp 0.4s 0.15s ease both}
-#conflict-map{height:240px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--gb);background:var(--bg2);transition:border-color var(--transition)}
-#conflict-map:hover{border-color:var(--gb2)}
-.leaflet-container{background:#071020!important}
-.leaflet-tile{filter:brightness(0.6) saturate(0.45) hue-rotate(190deg)}
-[data-theme="light"] .leaflet-tile{filter:brightness(0.9) saturate(0.7)}
-.leaflet-popup-content-wrapper{background:rgba(7,16,40,0.96);color:var(--text);border:1px solid var(--gb2);border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,0.6)}
-[data-theme="light"] .leaflet-popup-content-wrapper{background:rgba(240,244,255,0.97);color:var(--text)}
-.leaflet-popup-tip{background:rgba(7,16,40,0.96)}
-.leaflet-popup-content{margin:10px 13px;font-family:var(--fs)}
-.mp-name{font-family:var(--ff);font-size:0.9rem;letter-spacing:1px;color:var(--text);margin-bottom:4px}
-.mp-status{font-size:0.7rem;color:var(--muted);line-height:1.55}
+/* ── SVG MAP ── */
+.map-section{margin-bottom:18px;animation:fadeUp 0.4s 0.14s ease both}
+.map-container{height:260px;border-radius:var(--r);overflow:hidden;border:1px solid var(--gb);background:#071525;position:relative;transition:border-color var(--tr)}
+.map-container:hover{border-color:var(--gb2)}
+#map-svg{width:100%;height:100%;display:block;cursor:default}
+.map-tip{position:absolute;background:rgba(3,6,22,0.96);border:1px solid var(--gb2);border-radius:8px;padding:8px 12px;font-family:var(--fs);font-size:0.72rem;color:var(--text);pointer-events:none;z-index:10;box-shadow:0 4px 16px rgba(0,0,0,0.6);max-width:200px;display:none;line-height:1.5}
+.map-tip strong{display:block;font-family:var(--ff);font-size:0.88rem;letter-spacing:1px;margin-bottom:3px}
+@keyframes svgPulse{0%,100%{opacity:0.25}50%{opacity:0.06}}
+@keyframes svgBlip{0%{r:4;opacity:0.9}100%{r:22;opacity:0}}
 
-/* ── DATA DASHBOARD ──────────────────────────────────────────────────────── */
-.dashboard-section{margin-bottom:18px;animation:fadeUp 0.4s 0.2s ease both}
-.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.dash-panel{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--gb);border-radius:var(--radius);padding:13px 14px;transition:border-color var(--transition),transform var(--transition)}
+/* ── DASHBOARD ── */
+.dash-section{margin-bottom:18px;animation:fadeUp 0.4s 0.2s ease both}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dash-panel{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--gb);border-radius:var(--r);padding:12px 14px;transition:border-color var(--tr),transform var(--tr)}
 .dash-panel:hover{border-color:var(--gb2);transform:translateY(-1px)}
-.dash-label{font-family:var(--fm);font-size:0.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:5px}
-.dash-chart{height:120px;position:relative}
+.dlbl{font-family:var(--fm);font-size:0.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.dchart{height:118px}
 
-/* ── BRENT ───────────────────────────────────────────────────────────────── */
-.brent-section{margin-bottom:18px;animation:fadeUp 0.4s 0.25s ease both}
-.brent-panel{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--gb);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:16px;transition:border-color var(--transition)}
+/* ── BRENT ── */
+.brent-section{margin-bottom:18px;animation:fadeUp 0.4s 0.26s ease both}
+.brent-panel{background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--gb);border-radius:var(--r);overflow:hidden;transition:border-color var(--tr)}
 .brent-panel:hover{border-color:var(--gb2)}
-.brent-left{flex:1;min-width:0}
-.brent-label-row{display:flex;align-items:center;gap:6px;margin-bottom:3px}
-.brent-label{font-family:var(--fm);font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
-.brent-live-dot{width:5px;height:5px;border-radius:50%;background:var(--uae);animation:pulseBeat 2s ease infinite}
-.brent-price{font-family:var(--ff);font-size:2.2rem;letter-spacing:1px;color:#60a5fa;line-height:1;transition:color var(--transition)}
-.brent-change{font-family:var(--fm);font-size:0.62rem;margin-top:3px;transition:color var(--transition)}
-.brent-change.up{color:#4ade80}.brent-change.down{color:var(--urgent)}.brent-change.flat{color:var(--muted)}
-.brent-note{font-size:0.57rem;color:var(--dim);margin-top:2px}
-.brent-chart-wrap{width:110px;height:48px;flex-shrink:0}
+.brent-top{display:flex;align-items:flex-end;justify-content:space-between;padding:14px 16px 8px;flex-wrap:wrap;gap:8px}
+.blr{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.blbl{font-family:var(--fm);font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.bldot{width:5px;height:5px;border-radius:50%;background:var(--uae);animation:pulseBeat 2s ease infinite}
+.bprice{font-family:var(--ff);font-size:2.6rem;letter-spacing:1px;color:#4ade80;line-height:1;transition:color var(--tr)}
+.bchg{font-family:var(--fm);font-size:0.65rem;margin-top:3px;transition:color var(--tr)}
+.bchg.up{color:#4ade80}.bchg.down{color:var(--urgent)}.bchg.flat{color:var(--muted)}
+.bstats{display:flex;gap:14px;flex-wrap:wrap}
+.bstat{text-align:right}
+.bsval{font-family:var(--ff);font-size:0.9rem;letter-spacing:1px}
+.bslbl{font-family:var(--fm);font-size:0.52rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.bchart{width:100%;height:140px}
+.bticker{overflow:hidden;background:rgba(0,0,0,0.25);border-top:1px solid var(--gb);padding:5px 0;height:26px;position:relative}
+.bti{display:flex;gap:0;white-space:nowrap;animation:tickerScroll 45s linear infinite;position:absolute;top:5px}
+.btitem{font-family:var(--fm);font-size:0.6rem;padding:0 24px;display:inline-flex;align-items:center;gap:6px;border-right:1px solid var(--gb)}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* ── NEWS CARDS ──────────────────────────────────────────────────────────── */
-@keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-.news-card{background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--gb);border-radius:var(--radius);margin-bottom:11px;overflow:hidden;transition:transform var(--transition),box-shadow var(--transition),border-color var(--transition);animation:cardIn 0.35s ease both;position:relative}
-.news-card::before{content:'';position:absolute;inset:0;border-radius:var(--radius);background:linear-gradient(135deg,rgba(255,255,255,0.04),transparent);pointer-events:none;opacity:0;transition:opacity var(--transition)}
-.news-card:hover::before{opacity:1}
-.news-card:hover{transform:translateY(-3px);border-color:var(--gb2);box-shadow:var(--card-shadow)}
-.news-card.uae{border-left:3px solid var(--uae)}
-.news-card.gcc{border-left:3px solid var(--gcc)}
-.news-card.global{border-left:3px solid var(--primary)}
-.news-card.urgent{border-left:3px solid var(--urgent);background:rgba(232,53,74,0.06);box-shadow:0 0 20px rgba(232,53,74,0.1)}
-.news-card.urgent:hover{box-shadow:0 0 32px rgba(232,53,74,0.18)}
-
-.card-img-wrap{position:relative;height:170px;overflow:hidden;background:var(--bg2)}
-.card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease}
-.news-card:hover .card-img-wrap img{transform:scale(1.05)}
-.card-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,6,15,0.92) 0%,transparent 55%)}
-.card-img-tag{position:absolute;top:10px;left:10px}
-
-.card-body{padding:13px 15px 11px}
-.card-body.wi{padding-top:8px}
-.card-meta{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:8px;flex-wrap:wrap}
-
-/* Tags with hover scale */
-.tag{display:inline-flex;align-items:center;font-family:var(--fm);font-size:0.57rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:6px;border:1px solid transparent;white-space:nowrap;transition:transform var(--transition),box-shadow var(--transition)}
+/* ── NEWS CARDS ── */
+@keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--gb);border-radius:var(--r);margin-bottom:11px;overflow:hidden;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);animation:cardIn 0.35s ease both;position:relative}
+.card::before{content:'';position:absolute;inset:0;border-radius:var(--r);background:linear-gradient(135deg,rgba(255,255,255,0.04),transparent);pointer-events:none;opacity:0;transition:opacity var(--tr)}
+.card:hover::before{opacity:1}
+.card:hover{transform:translateY(-3px);border-color:var(--gb2);box-shadow:0 8px 32px rgba(0,0,0,0.45)}
+.card.uae{border-left:3px solid var(--uae)}
+.card.gcc{border-left:3px solid var(--gcc)}
+.card.global{border-left:3px solid var(--primary)}
+.card.urgent{border-left:3px solid var(--urgent);background:rgba(232,53,74,0.06);box-shadow:0 0 20px rgba(232,53,74,0.1)}
+.card.urgent:hover{box-shadow:0 0 32px rgba(232,53,74,0.2)}
+.cimg{position:relative;height:170px;overflow:hidden;background:var(--bg2)}
+.cimg img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease}
+.card:hover .cimg img{transform:scale(1.05)}
+.cimg-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,6,15,0.92) 0%,transparent 55%)}
+.cimg-tag{position:absolute;top:10px;left:10px}
+.cbody{padding:13px 15px 11px}
+.cbody.wi{padding-top:8px}
+.cmeta{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:8px;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;font-family:var(--fm);font-size:0.57rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:6px;border:1px solid transparent;white-space:nowrap;transition:transform var(--tr),box-shadow var(--tr)}
 .tag:hover{transform:scale(1.06)}
-.tag.uae   {color:var(--uae); background:rgba(0,196,140,0.1); border-color:rgba(0,196,140,0.22); }
+.tag.uae   {color:var(--uae);background:rgba(0,196,140,0.1);border-color:rgba(0,196,140,0.22)}
 .tag.uae:hover{box-shadow:0 0 8px var(--ug)}
-.tag.gcc   {color:var(--gcc); background:rgba(245,166,35,0.1); border-color:rgba(245,166,35,0.22);}
+.tag.gcc   {color:var(--gcc);background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.22)}
 .tag.gcc:hover{box-shadow:0 0 8px var(--gg)}
-.tag.global{color:#60a5fa; background:rgba(29,110,245,0.1); border-color:rgba(29,110,245,0.22);}
+.tag.global{color:#60a5fa;background:rgba(29,110,245,0.1);border-color:rgba(29,110,245,0.22)}
 .tag.global:hover{box-shadow:0 0 8px var(--pg)}
-.tag.urgent{color:#fff; background:rgba(232,53,74,0.22); border-color:rgba(232,53,74,0.42);}
+.tag.urgent{color:#fff;background:rgba(232,53,74,0.22);border-color:rgba(232,53,74,0.42)}
 .tag.urgent:hover{box-shadow:0 0 10px var(--urg)}
+.cred{display:inline-flex;align-items:center;gap:3px;font-family:var(--fm);font-size:0.54rem;padding:2px 6px;border-radius:5px;border:1px solid;white-space:nowrap;transition:transform var(--tr)}
+.cred:hover{transform:scale(1.05)}
+.cred.hi{color:#4ade80;background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.25)}
+.cred.md{color:#fbbf24;background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.25)}
+.cred.lo{color:#f87171;background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.25)}
+.ttag{display:inline-flex;align-items:center;font-family:var(--fm);font-size:0.5rem;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;margin-left:4px;border:1px solid;transition:transform var(--tr)}
+.ttag:hover{transform:scale(1.07)}
+.ttag.security{color:#f87171;background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.2)}
+.ttag.energy{color:#fbbf24;background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.2)}
+.ttag.diplomacy{color:#a78bfa;background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.2)}
+.ttag.military{color:#fb923c;background:rgba(251,146,60,0.08);border-color:rgba(251,146,60,0.2)}
+.cts{font-family:var(--fm);font-size:0.55rem;color:var(--dim);text-align:right;line-height:1.6}
+.ctitle{font-family:var(--ff);font-size:1.08rem;letter-spacing:0.5px;color:var(--text);line-height:1.25;margin-bottom:7px}
+.ctitle a{color:inherit;text-decoration:none;transition:color var(--tr)}
+.ctitle a:hover{color:#93c5fd}
+.ccontent{font-size:0.81rem;color:var(--muted);line-height:1.65;margin-bottom:10px}
+.cactions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.rmore{font-family:var(--fm);font-size:0.62rem;color:var(--primary);text-decoration:none;display:flex;align-items:center;gap:3px;transition:all var(--tr)}
+.rmore:hover{color:#93c5fd;gap:5px}
+.wabtn{display:inline-flex;align-items:center;gap:4px;font-family:var(--fm);font-size:0.62rem;color:#25d366;text-decoration:none;opacity:0.8;transition:all var(--tr)}
+.wabtn:hover{opacity:1;transform:scale(1.05)}
+.wasvg{width:13px;height:13px;fill:#25d366;flex-shrink:0}
+.ralbtn{display:inline-flex;align-items:center;gap:3px;font-family:var(--fm);font-size:0.62rem;color:var(--muted);cursor:pointer;background:none;border:none;transition:color var(--tr)}
+.ralbtn:hover{color:var(--text)}
 
-/* Credibility badge */
-.cred-badge{display:inline-flex;align-items:center;gap:3px;font-family:var(--fm);font-size:0.54rem;padding:2px 6px;border-radius:5px;border:1px solid;white-space:nowrap;transition:transform var(--transition)}
-.cred-badge:hover{transform:scale(1.05)}
-.cred-high  {color:#4ade80;background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.25)}
-.cred-medium{color:#fbbf24;background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.25)}
-.cred-low   {color:#f87171;background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.25)}
-
-.card-ts{font-family:var(--fm);font-size:0.55rem;color:var(--dim);text-align:right;line-height:1.6}
-.card-title{font-family:var(--ff);font-size:1.08rem;letter-spacing:0.5px;color:var(--text);line-height:1.25;margin-bottom:7px}
-.card-title a{color:inherit;text-decoration:none;transition:color var(--transition)}
-.card-title a:hover{color:#93c5fd}
-.card-content{font-size:0.81rem;color:var(--muted);line-height:1.65;margin-bottom:10px}
-.card-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.read-more{font-family:var(--fm);font-size:0.62rem;color:var(--primary);text-decoration:none;display:flex;align-items:center;gap:3px;transition:all var(--transition)}
-.read-more:hover{color:#93c5fd;gap:5px}
-.wa-btn{display:inline-flex;align-items:center;gap:4px;font-family:var(--fm);font-size:0.62rem;color:#25d366;text-decoration:none;opacity:0.8;transition:all var(--transition)}
-.wa-btn:hover{opacity:1;transform:scale(1.05)}
-.wa-svg{width:13px;height:13px;fill:#25d366;flex-shrink:0}
-.read-aloud-btn{display:inline-flex;align-items:center;gap:3px;font-family:var(--fm);font-size:0.62rem;color:var(--muted);cursor:pointer;background:none;border:none;transition:color var(--transition)}
-.read-aloud-btn:hover{color:var(--text)}
-
-/* ── TOPIC TAGS ──────────────────────────────────────────────────────────── */
-.topic-tag{display:inline-flex;align-items:center;gap:3px;font-family:var(--fm);font-size:0.5rem;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;margin-left:4px;border:1px solid;transition:transform var(--transition)}
-.topic-tag:hover{transform:scale(1.07)}
-.topic-security{color:#f87171;background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.2)}
-.topic-energy  {color:#fbbf24;background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.2)}
-.topic-diplomacy{color:#a78bfa;background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.2)}
-.topic-military{color:#fb923c;background:rgba(251,146,60,0.08);border-color:rgba(251,146,60,0.2)}
-
-/* ── SKELETON ────────────────────────────────────────────────────────────── */
-.skeleton{background:linear-gradient(90deg,var(--glass) 25%,var(--glass2) 50%,var(--glass) 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite;border-radius:var(--radius);margin-bottom:11px;border:1px solid var(--gb)}
-.sk-img{height:140px;border-radius:var(--radius) var(--radius) 0 0}
-.sk-body{padding:13px 15px}
-.sk-line{height:9px;border-radius:4px;background:rgba(255,255,255,0.04);margin-bottom:8px}
+/* ── SKELETON ── */
+.skel{background:linear-gradient(90deg,var(--glass) 25%,var(--glass2) 50%,var(--glass) 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite;border-radius:var(--r);margin-bottom:11px;border:1px solid var(--gb)}
+.ski{height:140px;border-radius:var(--r) var(--r) 0 0}
+.skb{padding:13px 15px}
+.skl{height:9px;border-radius:4px;background:rgba(255,255,255,0.04);margin-bottom:8px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-/* ── EMPTY / ERROR ───────────────────────────────────────────────────────── */
-.empty-state{text-align:center;padding:50px 20px;color:var(--dim)}
+/* ── EMPTY/ERROR ── */
+.empty{text-align:center;padding:50px 20px;color:var(--dim)}
 .empty-icon{font-size:2.2rem;margin-bottom:14px}
 .empty-title{font-family:var(--ff);font-size:1.3rem;letter-spacing:2px;color:var(--muted);margin-bottom:8px}
 .empty-sub{font-size:0.8rem;line-height:1.7}
-.feed-footer{text-align:center;font-family:var(--fm);font-size:0.57rem;color:var(--dim);padding:12px 10px 4px;line-height:1.9;opacity:0.5}
-
-/* ── LEAFLET OVERRIDES ───────────────────────────────────────────────────── */
-.leaflet-control-zoom a{background:rgba(7,16,40,0.9);color:var(--text);border-color:var(--gb)}
+.ffooter{text-align:center;font-family:var(--fm);font-size:0.57rem;color:var(--dim);padding:12px 10px 4px;line-height:1.9;opacity:0.5}
 </style>
 </head>
 <body>
 <div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
 <div class="bg-grid"></div>
 
-<!-- ── CHROME ── -->
 <div class="chrome">
-
-  <!-- Header -->
   <div class="header">
     <div class="header-row">
       <div class="brand">
         <div class="brand-icon">⚡</div>
-        <div>
-          <div class="brand-name">GlobalIQ Hub</div>
-          <div class="brand-sub">West Asia Intelligence</div>
-        </div>
+        <div><div class="brand-name">GlobalIQ Hub</div><div class="brand-sub">West Asia Intelligence</div></div>
       </div>
-      <div class="header-controls">
-        <button class="icon-btn" id="theme-btn"    title="Toggle dark/light mode"  onclick="toggleTheme(this)">🌙</button>
-        <button class="icon-btn" id="sound-btn"    title="Toggle sound alerts"      onclick="toggleSound(this)">🔕</button>
-        <button class="icon-btn" id="audio-toggle" title="Audio summary panel"     onclick="toggleAudio(this)">🔊</button>
-        <button class="icon-btn" id="video-toggle" title="Toggle live video"        onclick="toggleVideo(this)">📺</button>
+      <div class="hctrl">
+        <button class="icon-btn" id="theme-btn" title="Dark/Light mode" onclick="toggleTheme(this)">🌙</button>
+        <button class="icon-btn" id="sound-btn" title="Sound alerts" onclick="toggleSound(this)">🔕</button>
+        <button class="icon-btn" id="audio-tog" title="Audio summary" onclick="toggleAudio(this)">🔊</button>
+        <button class="icon-btn" id="video-tog" title="Live streams" onclick="toggleVideo(this)">📺</button>
         <div class="day-pill"><div class="pulse"></div><span id="day-label">LIVE</span></div>
       </div>
     </div>
     <div class="meta-strip">
-      <span><span class="status-led" id="status-led"></span><span id="meta-source">Connecting…</span></span>
-      <span id="last-updated" style="font-family:var(--fm)">–</span>
+      <span><span class="status-led" id="sled"></span><span id="msrc">Connecting…</span></span>
+      <span id="lupd" style="font-family:var(--fm)">–</span>
     </div>
   </div>
 
-  <!-- Threat Level -->
-  <div class="threat-bar ELEVATED" id="threat-bar">
-    <div class="threat-label"><div class="threat-dot"></div><span id="threat-text">ELEVATED</span></div>
-    <div class="threat-right">
-      <div class="threat-desc" id="threat-desc">Analysing feed…</div>
-    </div>
+  <div class="threat-bar ELEVATED" id="tbar">
+    <div class="tlabel"><div class="tdot"></div><span id="ttxt">ELEVATED</span></div>
+    <div class="tdesc" id="tdesc">Analysing feed…</div>
   </div>
 
-  <!-- Audio Bar -->
   <div class="audio-bar" id="audio-bar">
-    <button class="audio-btn" id="speak-btn" onclick="toggleSpeak()">▶ Read Headlines</button>
-    <button class="audio-btn" onclick="stopSpeak()" style="background:rgba(232,53,74,0.15);border-color:rgba(232,53,74,0.35);color:#f87171">■ Stop</button>
-    <select class="audio-speed" id="audio-speed" title="Playback speed">
-      <option value="0.8">0.8×</option>
-      <option value="1" selected>1×</option>
-      <option value="1.2">1.2×</option>
-      <option value="1.5">1.5×</option>
-    </select>
-    <div class="audio-status" id="audio-status">Press ▶ to read top headlines aloud</div>
+    <button class="abtn" id="speak-btn" onclick="toggleSpeak()">▶ Read Headlines</button>
+    <button class="abtn" onclick="stopSpeak()" style="background:rgba(232,53,74,0.15);border-color:rgba(232,53,74,0.35);color:#f87171">■ Stop</button>
+    <select class="aspd" id="aspd"><option value="0.8">0.8×</option><option value="1" selected>1×</option><option value="1.2">1.2×</option><option value="1.5">1.5×</option></select>
+    <div class="astat" id="astat">Press ▶ to read top headlines aloud</div>
   </div>
 
-  <!-- Video Panel -->
-  <div class="video-bar" id="video-bar">
-    <div class="video-header">
-      <span style="color:var(--urgent);font-family:var(--ff);letter-spacing:2px">● LIVE — Al Jazeera English</span>
-      <span style="color:var(--dim)">Tap ⊠ to close</span>
+  <div class="vbar" id="vbar">
+    <div class="vhdr">
+      <span style="color:var(--urgent);font-family:var(--ff);letter-spacing:2px">● LIVE NEWS STREAMS</span>
+      <button onclick="document.getElementById('vbar').classList.remove('open');document.getElementById('video-tog').classList.remove('active')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem">✕</button>
     </div>
-    <div class="video-wrap">
-      <iframe id="yt-frame" src="" allowfullscreen allow="autoplay;encrypted-media" loading="lazy"></iframe>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
+      <a href="https://www.aljazeera.com/video/live" target="_blank" rel="noopener" class="stream-link" style="--sc:rgba(232,53,74,0.3)">
+        <span style="font-size:1.3rem">📡</span><div><div style="font-family:var(--ff);font-size:0.85rem;letter-spacing:1px">AL JAZEERA</div><div style="font-size:0.6rem;color:var(--muted);margin-top:2px">English Live ↗</div></div>
+      </a>
+      <a href="https://www.bbc.co.uk/news/av/10318089" target="_blank" rel="noopener" class="stream-link" style="--sc:rgba(29,110,245,0.3)">
+        <span style="font-size:1.3rem">🇬🇧</span><div><div style="font-family:var(--ff);font-size:0.85rem;letter-spacing:1px">BBC NEWS</div><div style="font-size:0.6rem;color:var(--muted);margin-top:2px">Live Stream ↗</div></div>
+      </a>
+      <a href="https://www.france24.com/en/live-news/" target="_blank" rel="noopener" class="stream-link" style="--sc:rgba(139,92,246,0.3)">
+        <span style="font-size:1.3rem">🇫🇷</span><div><div style="font-family:var(--ff);font-size:0.85rem;letter-spacing:1px">FRANCE 24</div><div style="font-size:0.6rem;color:var(--muted);margin-top:2px">Live English ↗</div></div>
+      </a>
+      <a href="https://www.thenationalnews.com/video/" target="_blank" rel="noopener" class="stream-link" style="--sc:rgba(0,196,140,0.25)">
+        <span style="font-size:1.3rem">🇦🇪</span><div><div style="font-family:var(--ff);font-size:0.85rem;letter-spacing:1px">THE NATIONAL</div><div style="font-size:0.6rem;color:var(--muted);margin-top:2px">UAE Video ↗</div></div>
+      </a>
     </div>
+    <div style="font-size:0.58rem;color:var(--dim);font-style:italic;padding:4px 0">YouTube blocks live embedding. Tap any source to open in a new tab.</div>
   </div>
+  <style>.stream-link{display:flex;align-items:center;gap:8px;background:var(--sc,rgba(255,255,255,0.05));border:1px solid var(--sc,var(--gb));border-radius:10px;padding:10px;text-decoration:none;color:var(--text);transition:all var(--tr)}.stream-link:hover{filter:brightness(1.2)}</style>
 
-  <!-- Controls -->
-  <div class="controls-row">
-    <button class="filter-btn active" data-cat="All"    onclick="doFilter(this,'All')">All<span class="badge" id="cnt-all">–</span></button>
-    <button class="filter-btn"        data-cat="UAE"    onclick="doFilter(this,'UAE')">🇦🇪 UAE<span class="badge" id="cnt-uae">–</span></button>
-    <button class="filter-btn"        data-cat="GCC"    onclick="doFilter(this,'GCC')">🛢 Gulf<span class="badge" id="cnt-gcc">–</span></button>
-    <button class="filter-btn"        data-cat="Global" onclick="doFilter(this,'Global')">🌐 Global<span class="badge" id="cnt-global">–</span></button>
-    <div class="divider-v"></div>
-    <select class="refresh-select" id="refresh-sel" onchange="onFreqChange()">
-      <option value="5">↺ 5m</option>
-      <option value="15" selected>↺ 15m</option>
-      <option value="30">↺ 30m</option>
-      <option value="60">↺ 1hr</option>
-      <option value="0">↺ Off</option>
+  <div class="ctrl-row">
+    <button class="fbtn active" data-cat="All"    onclick="doFilter(this,'All')">All<span class="badge" id="cnt-all">–</span></button>
+    <button class="fbtn"        data-cat="UAE"    onclick="doFilter(this,'UAE')">🇦🇪 UAE<span class="badge" id="cnt-uae">–</span></button>
+    <button class="fbtn"        data-cat="GCC"    onclick="doFilter(this,'GCC')">🛢 Gulf<span class="badge" id="cnt-gcc">–</span></button>
+    <button class="fbtn"        data-cat="Global" onclick="doFilter(this,'Global')">🌐 Global<span class="badge" id="cnt-global">–</span></button>
+    <div class="dvdr"></div>
+    <select class="rsel" id="rsel" onchange="onFreqChange()">
+      <option value="5">↺ 5m</option><option value="15" selected>↺ 15m</option>
+      <option value="30">↺ 30m</option><option value="60">↺ 1hr</option><option value="0">↺ Off</option>
     </select>
-    <button class="refresh-btn" id="refresh-btn" onclick="doRefresh()">
-      <span id="ri">↺</span><span id="rl">Refresh</span>
-    </button>
+    <button class="rbtn" id="rbtn" onclick="doRefresh()"><span id="ri">↺</span><span id="rl">Refresh</span></button>
   </div>
-  <div class="progress-bar"><div class="progress-fill" id="pf"></div></div>
+  <div class="pbar"><div class="pfill" id="pf"></div></div>
 </div>
 
-<!-- ── PAGE ── -->
 <div class="page">
 
   <!-- UAE Priority -->
   <div class="uae-priority">
-    <div class="section-header">
-      <div class="section-title" style="color:var(--uae)">🇦🇪 UAE PRIORITY</div>
-      <div class="section-line"></div>
-    </div>
+    <div class="section-header"><div class="stitle" style="color:var(--uae)">🇦🇪 UAE PRIORITY</div><div class="sline"></div></div>
     <div class="uae-scroll" id="uae-scroll"><div class="uae-empty">Loading…</div></div>
   </div>
 
   <!-- Timeline -->
-  <div class="timeline-section">
-    <div class="section-header">
-      <div class="section-title" style="color:var(--gcc)">⏱ CONFLICT TIMELINE</div>
-      <div class="section-line"></div>
-    </div>
+  <div class="tl-section">
+    <div class="section-header"><div class="stitle" style="color:var(--gcc)">⏱ CONFLICT TIMELINE</div><div class="sline"></div></div>
     <div class="tl-scroll" id="tl"></div>
   </div>
 
   <!-- Map -->
-  <div class="map-section" style="margin-bottom:18px">
-    <div class="section-header">
-      <div class="section-title" style="color:#60a5fa">🗺 CONFLICT ZONES</div>
-      <div class="section-line"></div>
+  <div class="map-section">
+    <div class="section-header"><div class="stitle" style="color:#60a5fa">🗺 CONFLICT ZONES</div><div class="sline"></div></div>
+    <div class="map-container">
+      <svg id="map-svg" viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="map-tip" id="map-tip"></div>
     </div>
-    <div id="conflict-map"></div>
   </div>
 
   <!-- Dashboard -->
-  <div class="dashboard-section">
-    <div class="section-header">
-      <div class="section-title" style="color:#a78bfa">📊 INTELLIGENCE BREAKDOWN</div>
-      <div class="section-line"></div>
-    </div>
-    <div class="dashboard-grid">
-      <div class="dash-panel">
-        <div class="dash-label">📁 Category Split</div>
-        <div class="dash-chart"><canvas id="donut-chart"></canvas></div>
-      </div>
-      <div class="dash-panel">
-        <div class="dash-label">📡 Source Volume</div>
-        <div class="dash-chart"><canvas id="bar-chart"></canvas></div>
-      </div>
+  <div class="dash-section">
+    <div class="section-header"><div class="stitle" style="color:#a78bfa">📊 INTELLIGENCE BREAKDOWN</div><div class="sline"></div></div>
+    <div class="dash-grid">
+      <div class="dash-panel"><div class="dlbl">📁 Category Split</div><div class="dchart"><canvas id="donut-chart"></canvas></div></div>
+      <div class="dash-panel"><div class="dlbl">📡 Source Volume</div><div class="dchart"><canvas id="bar-chart"></canvas></div></div>
     </div>
   </div>
 
   <!-- Brent -->
   <div class="brent-section">
-    <div class="section-header">
-      <div class="section-title" style="color:#60a5fa">🛢 BRENT CRUDE LIVE</div>
-      <div class="section-line"></div>
-    </div>
+    <div class="section-header"><div class="stitle" style="color:#4ade80">🛢 BRENT CRUDE LIVE</div><div class="sline"></div></div>
     <div class="brent-panel">
-      <div class="brent-left">
-        <div class="brent-label-row"><span class="brent-label">BZ=F Futures</span><div class="brent-live-dot"></div></div>
-        <div class="brent-price" id="brent-price">–</div>
-        <div class="brent-change flat" id="brent-chg">Fetching…</div>
-        <div class="brent-note">Hormuz disruption · Goldman Sachs: elevated through 2027</div>
+      <div class="brent-top">
+        <div>
+          <div class="blr"><span class="blbl">BRENT · BZ=F</span><div class="bldot"></div><span id="bmkt" style="font-family:var(--fm);font-size:0.52rem;color:var(--dim)">LIVE</span></div>
+          <div class="bprice" id="bprice">–</div>
+          <div class="bchg flat" id="bchg">Fetching…</div>
+        </div>
+        <div class="bstats">
+          <div class="bstat"><div class="bsval" id="b-high" style="color:#f87171">–</div><div class="bslbl">WAR HIGH</div></div>
+          <div class="bstat"><div class="bsval" style="color:var(--muted)">$72.29</div><div class="bslbl">PRE-WAR</div></div>
+          <div class="bstat"><div class="bsval" id="b-pct" style="color:var(--urgent)">–</div><div class="bslbl">↑ SINCE FEB 28</div></div>
+        </div>
       </div>
-      <div class="brent-chart-wrap"><canvas id="brent-chart"></canvas></div>
+      <div class="bchart"><canvas id="bchart"></canvas></div>
+      <div class="bticker">
+        <div class="bti" id="bti">
+          <span class="btitem"><span style="color:var(--muted)">Feb 1</span><span style="color:var(--text)">$74.20 — Pre-conflict baseline</span></span>
+          <span class="btitem"><span style="color:var(--urgent)">Feb 28 🔴</span><span style="color:#f87171">$79.40 — US-Israel strikes begin, Khamenei killed</span></span>
+          <span class="btitem"><span style="color:var(--urgent)">Mar 1</span><span style="color:#f87171">$88.60 — Iran counterstrikes, Hormuz threatened</span></span>
+          <span class="btitem"><span style="color:var(--urgent)">Mar 3</span><span style="color:#f87171">$95.80 — Hormuz effectively blocked</span></span>
+          <span class="btitem"><span style="color:var(--urgent)">Mar 18 🔴</span><span style="color:#f87171">$107.10 — Israel strikes South Pars gas field</span></span>
+          <span class="btitem"><span style="color:var(--urgent)">Mar 19 📈</span><span style="color:#f87171">$107.40 — Conflict high · Goldman: elevated through 2027</span></span>
+          <span class="btitem"><span style="color:var(--gcc)">Mar 20–22</span><span style="color:var(--text)">$106.77 — Trump 48-hr Hormuz ultimatum</span></span>
+          <!-- duplicate for seamless loop -->
+          <span class="btitem"><span style="color:var(--muted)">Feb 1</span><span style="color:var(--text)">$74.20 — Pre-conflict baseline</span></span>
+          <span class="btitem"><span style="color:var(--urgent)">Feb 28 🔴</span><span style="color:#f87171">$79.40 — US-Israel strikes begin, Khamenei killed</span></span>
+          <span class="btitem"><span style="color:var(--urgent)">Mar 1</span><span style="color:#f87171">$88.60 — Iran counterstrikes, Hormuz threatened</span></span>
+          <span class="btitem"><span style="color:var(--urgent)">Mar 3</span><span style="color:#f87171">$95.80 — Hormuz effectively blocked</span></span>
+          <span class="btitem"><span style="color:var(--urgent)">Mar 18 🔴</span><span style="color:#f87171">$107.10 — Israel strikes South Pars gas field</span></span>
+          <span class="btitem"><span style="color:var(--urgent)">Mar 19 📈</span><span style="color:#f87171">$107.40 — Conflict high · Goldman: elevated through 2027</span></span>
+          <span class="btitem"><span style="color:var(--gcc)">Mar 20–22</span><span style="color:var(--text)">$106.77 — Trump 48-hr Hormuz ultimatum</span></span>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Feed -->
-  <div class="section-header" style="margin-bottom:10px">
-    <div class="section-title" style="color:var(--primary)">📡 LIVE FEED</div>
-    <div class="section-line"></div>
-  </div>
+  <div class="section-header" style="margin-bottom:10px"><div class="stitle" style="color:var(--primary)">📡 LIVE FEED</div><div class="sline"></div></div>
   <div id="feed"></div>
 </div>
 
 <script>
-// ─── DATA ────────────────────────────────────────────────────────────────────
-
-const TL = [
-  {d:'Feb 28',t:'US-Israel strikes begin. Khamenei assassinated.',hi:true},
-  {d:'Mar 1', t:'Iran counterstrikes begin — missiles & drones.'},
+// ── STATIC DATA ───────────────────────────────────────────────────────────────
+const TL_EVENTS = [
+  {d:'Feb 28',t:'US-Israel strikes begin. Khamenei killed.',hi:true},
+  {d:'Mar 1', t:'Iran counterstrikes — missiles & drones.'},
   {d:'Mar 2', t:'Hezbollah joins. Lebanon escalates.'},
   {d:'Mar 5', t:'Iran fires 500+ missiles in first week.'},
-  {d:'Mar 10',t:'USS Gerald Ford damaged, withdraws to Crete.'},
-  {d:'Mar 16',t:'Strait of Hormuz effectively blocked.'},
+  {d:'Mar 10',t:'USS Gerald Ford damaged, withdraws.'},
+  {d:'Mar 16',t:'Strait of Hormuz blocked.'},
   {d:'Mar 18',t:'Israel strikes South Pars gas field.'},
-  {d:'Mar 19',t:'Brent hits $115/bbl — conflict high.'},
+  {d:'Mar 19',t:'Brent hits $107.4 — conflict high.'},
   {d:'Mar 21',t:'Natanz struck. Diego Garcia targeted.'},
   {d:'Mar 22',t:'Trump: Open Hormuz or power plants hit.',hi:true},
 ];
 
-const MARKERS = [
-  {lat:35.689,lng:51.389,n:'Tehran',       s:'🔴 US-Israeli strikes ongoing',              c:'#e8354a',sz:15},
-  {lat:32.085,lng:34.782,n:'Tel Aviv',     s:'🔴 Iranian missile waves intercepted',        c:'#e8354a',sz:13},
-  {lat:33.574,lng:35.519,n:'Beirut',       s:'🟡 Hezbollah-Israel active clashes',          c:'#f5a623',sz:11},
-  {lat:25.205,lng:55.271,n:'Dubai — UAE', s:'⚠️ Iran issued direct threat warnings',       c:'#00c48c',sz:11},
-  {lat:26.5,  lng:56.5,  n:'Hormuz Strait',s:'🔴 CRITICAL — Navigation blocked',            c:'#e8354a',sz:16},
-  {lat:33.723,lng:51.723,n:'Natanz',       s:'🔴 Nuclear facility struck Mar 21',            c:'#e8354a',sz:13},
-  {lat:27.2,  lng:52.5,  n:'South Pars',  s:'🔴 Gas field struck Mar 18',                  c:'#e8354a',sz:12},
-  {lat:-7.32, lng:72.424,n:'Diego Garcia',s:'🟡 Iranian ballistic missiles fired — missed', c:'#f5a623',sz:10},
-  {lat:33.315,lng:44.366,n:'Baghdad',      s:'🟡 US Embassy repeated drone attacks',         c:'#f5a623',sz:10},
-  {lat:31.5,  lng:34.47, n:'Gaza',         s:'🟡 Ongoing — ceasefire talks active',          c:'#f5a623',sz:10},
-  {lat:25.286,lng:51.531,n:'Ras Laffan',  s:'🟠 Qatar energy facilities struck',            c:'#fb923c',sz:10},
-  {lat:29.376,lng:47.977,n:'Kuwait',       s:'🟡 9 missiles + 4 drones intercepted',         c:'#f5a623',sz:10},
-  {lat:26.217,lng:50.197,n:'Bahrain',      s:'🟡 2 Iranian missiles intercepted',            c:'#f5a623',sz:10},
-  {lat:24.688,lng:46.722,n:'Riyadh',       s:'⚠️ Drone threats intercepted — eastern prov.',c:'#fb923c',sz:10},
+// Brent data Feb 1 → Mar 22 2026 (Google Finance confirmed: Feb 27=$72.29, Mar 20=$106.77)
+const BRENT_LABELS = ['Feb 1','','Feb 3','','Feb 5','','Feb 7','','Feb 10','','Feb 12','','Feb 14','','Feb 17','','Feb 19','','Feb 21','','Feb 24','','Feb 27','Feb 28','Mar 1','Mar 3','Mar 5','Mar 7','Mar 10','Mar 12','Mar 14','Mar 17','Mar 18','Mar 19','Mar 20','Mar 21','Mar 22'];
+const BRENT_DATA  = [74.2,73.8,73.5,73.1,72.9,72.6,72.3,72.0,71.8,71.5,71.8,72.1,72.4,72.1,71.9,72.0,72.3,72.1,71.8,72.0,72.2,72.3,72.29,79.4,88.6,95.8,99.2,101.5,103.4,104.8,105.6,106.2,107.1,107.4,106.77,106.5,106.77];
+const BRENT_WAR   = 23; // index of Feb 28
+const BRENT_EVENTS= {23:{l:'WAR STARTS',c:'#f59e0b'},32:{l:'S.PARS STRUCK',c:'#e8354a'}};
+
+const MAP_COUNTRIES = [
+  {c:'#1a2a1a',s:'#2a4a2a',pts:[[38,44],[39.5,47],[39,48.5],[37.5,49.5],[36.5,52],[37.2,54.5],[36.8,56.2],[35.5,58.5],[34,60.5],[31,60.5],[28,60],[25.5,59],[24.5,57.5],[25,55.5],[26.5,56.5],[27,57],[26.8,55],[25,53.5],[24.8,50.5],[25.5,49.5],[26.5,49.5],[28.5,48],[30,48.5],[31.5,48],[33.5,46],[34.5,45.5],[35.5,45],[36.5,44],[37.5,44.5],[38,44]]},
+  {c:'#1a1a28',s:'#2a2a48',pts:[[37.5,42.5],[37.5,44],[36.5,44],[35.5,45],[34.5,45.5],[33.5,46],[31.5,48],[30,48.5],[29.5,47.5],[29.5,46],[30.5,45.5],[31,44],[30.5,43],[31,40],[32,39.5],[33,38.5],[34.5,38],[35.5,38.5],[36.8,38],[37.5,40.5],[37.5,42.5]]},
+  {c:'#1e1a14',s:'#3a3020',pts:[[29.5,34.8],[29.2,36],[28,36.5],[26.5,37],[24.5,37.5],[22,39],[18,41.5],[15,42.5],[16,43.5],[17.5,44],[19,44.5],[20.5,46.5],[21.5,47.5],[22,48.5],[22.5,50],[23.5,51.5],[24,55],[22.5,55.5],[22,57],[23,58.5],[24,58.5],[26,56.5],[26.5,56.5],[25,55.5],[25,53.5],[26.5,49.5],[25.5,49.5],[26.5,47.5],[28.5,48],[29.5,47.5],[30,48.5],[31,44],[30.5,43],[31,40],[32,39.5],[30,37],[29.5,34.8]]},
+  {c:'#1a1a20',s:'#2a2a40',pts:[[37.5,42.5],[37.5,40.5],[36.8,38],[35.5,38.5],[34.5,38],[33,38.5],[33,36.5],[33.5,36],[34.5,36.5],[35.5,36],[36.5,36.5],[37,36.5],[37,37.5],[38,37.5],[38.5,39.5],[38,40.5],[38.5,41.5],[37.5,42.5]]},
+  {c:'#1a1a18',s:'#303030',pts:[[33,38.5],[32,39.5],[31,40],[30.5,38.5],[29.5,34.8],[30,34.5],[31.5,35],[32.5,35.5],[33.5,36.5],[33,38.5]]},
+  {c:'#181820',s:'#303050',pts:[[33.5,35.2],[33,36.5],[32.5,35.5],[31.5,35],[30,34.5],[29.5,34.8],[31.5,35],[32.5,34.8],[33.5,35.2]]},
+  {c:'#181820',s:'#303040',pts:[[34.5,36.5],[33.5,36],[33,36.5],[33.5,35.2],[34,35.5],[34.5,36.5]]},
+  {c:'#1a1a1e',s:'#2a2a3a',pts:[[42,36],[42,38],[40,38.5],[38.5,39.5],[38,37.5],[37,36.5],[36.5,36.5],[36,36],[36.5,35],[38,34],[39,33.5],[40,33.5],[41.5,33],[42.5,33.5],[42,36]]},
+  {c:'#181814',s:'#303020',pts:[[29.5,47.5],[29.5,46],[30.5,46.5],[30.5,48.5],[29.5,47.5]]},
+  {c:'#141818',s:'#203028',pts:[[26,51.5],[24,51.5],[22.5,55.5],[24,55],[25,55.5],[25.5,55.8],[26,56.5],[26.8,55],[26,51.5]]},
+  {c:'#141818',s:'#203028',pts:[[26,50.8],[25.5,50.5],[24.5,51],[25,51.5],[26,51.5],[26,50.8]]},
+  {c:'#141818',s:'#203028',pts:[[26.3,50.4],[26,50.4],[26,50.7],[26.3,50.7],[26.3,50.4]]},
+  {c:'#1a1814',s:'#302820',pts:[[22,57],[22.5,55.5],[24,55],[26,56.5],[26.8,55],[25.5,55.8],[25,55.5],[25,57],[23,58.5],[22,57]]},
+  {c:'#1a1814',s:'#302820',pts:[[18,41.5],[15,42.5],[13,44],[13,45.5],[14,48],[15.5,50],[16.5,52],[18,54],[18.5,53],[17.5,52],[16.5,50],[15,48],[14.5,45.5],[15,44],[17,43],[18,41.5]]},
+  {c:'#1a1a14',s:'#2a2a20',pts:[[31.5,25],[31.5,29],[30,32.5],[29.5,34.8],[30,34.5],[31,32],[31.5,30.5],[32,29],[31.5,25]]},
+];
+
+const MAP_MARKERS = [
+  {lat:35.7,lng:51.4,n:'Tehran',       s:'🔴 US-Israeli strikes ongoing',           c:'#e8354a',r:7},
+  {lat:32.1,lng:34.8,n:'Tel Aviv',     s:'🔴 Iranian missile waves intercepted',     c:'#e8354a',r:6},
+  {lat:33.9,lng:35.5,n:'Beirut',       s:'🟡 Hezbollah-Israel active clashes',       c:'#f5a623',r:5},
+  {lat:25.2,lng:55.3,n:'Dubai — UAE', s:'⚠️ Iran threat warnings issued',           c:'#00c48c',r:5},
+  {lat:26.5,lng:56.5,n:'Hormuz',       s:'🔴 CRITICAL — Navigation blocked',         c:'#e8354a',r:9},
+  {lat:33.7,lng:51.7,n:'Natanz',       s:'🔴 Nuclear facility struck Mar 21',        c:'#e8354a',r:6},
+  {lat:27.2,lng:52.5,n:'South Pars',  s:'🔴 Gas field struck Mar 18',               c:'#e8354a',r:5},
+  {lat:33.3,lng:44.4,n:'Baghdad',      s:'🟡 US Embassy drone attacks',              c:'#f5a623',r:5},
+  {lat:29.4,lng:47.9,n:'Kuwait',       s:'🟡 9 missiles + 4 drones intercepted',     c:'#f5a623',r:4},
+  {lat:26.2,lng:50.2,n:'Bahrain',      s:'🟡 2 missiles intercepted',                c:'#f5a623',r:4},
+  {lat:25.3,lng:51.5,n:'Ras Laffan',  s:'🟠 Qatar energy facilities struck',        c:'#fb923c',r:4},
+  {lat:24.7,lng:46.7,n:'Riyadh',       s:'⚠️ Drone threats intercepted',             c:'#fb923c',r:4},
+];
+
+const MAP_LABELS = [
+  {lat:32.5,lng:52, t:'IRAN',         fs:12,fw:700,c:'rgba(180,200,230,0.7)'},
+  {lat:33.5,lng:43, t:'IRAQ',         fs:10,fw:600,c:'rgba(160,180,210,0.65)'},
+  {lat:23.5,lng:45, t:'SAUDI ARABIA', fs:10,fw:600,c:'rgba(160,180,210,0.6)'},
+  {lat:36.5,lng:38, t:'SYRIA',        fs: 8,fw:600,c:'rgba(150,170,200,0.6)'},
+  {lat:31.5,lng:36.5,t:'JORDAN',      fs: 8,fw:600,c:'rgba(150,170,200,0.6)'},
+  {lat:23.2,lng:53.5,t:'UAE',         fs: 9,fw:700,c:'rgba(0,196,140,0.85)'},
+  {lat:25.2,lng:51, t:'QATAR',        fs: 7,fw:600,c:'rgba(150,170,200,0.6)'},
+  {lat:40,  lng:35.5,t:'TURKEY',      fs:10,fw:600,c:'rgba(150,170,200,0.6)'},
+  {lat:15.5,lng:47, t:'YEMEN',        fs: 9,fw:600,c:'rgba(150,170,200,0.6)'},
+  {lat:23,  lng:57.5,t:'OMAN',        fs: 9,fw:600,c:'rgba(150,170,200,0.6)'},
+  {lat:29.5,lng:30, t:'EGYPT',        fs: 9,fw:600,c:'rgba(150,170,200,0.6)'},
+  {lat:34.1,lng:35.7,t:'LEB',         fs: 7,fw:600,c:'rgba(150,170,200,0.6)'},
+  {lat:31.7,lng:34.9,t:'ISR',         fs: 7,fw:700,c:'rgba(180,200,230,0.7)'},
+  {lat:29.4,lng:47.3,t:'KWT',         fs: 7,fw:600,c:'rgba(150,170,200,0.6)'},
+  {lat:27.5,lng:50.5,t:'PERSIAN GULF',fs: 8,fw:400,c:'rgba(100,150,200,0.5)',i:true},
+  {lat:26.2,lng:34.5,t:'RED SEA',     fs: 8,fw:400,c:'rgba(100,150,200,0.5)',i:true},
+  {lat:26.6,lng:56.8,t:'HORMUZ',      fs: 8,fw:700,c:'rgba(232,53,74,0.9)'},
 ];
 
 const SOURCE_CRED = {
-  'Al Jazeera':  {score:88,level:'high',  bias:'Regional', color:'#f59e0b'},
-  'BBC Mid East':{score:95,level:'high',  bias:'Intl standard',color:'#3b82f6'},
-  'Guardian':    {score:85,level:'high',  bias:'Progressive',color:'#10b981'},
-  'Arab News':   {score:72,level:'medium',bias:'Saudi-aligned',color:'#ef4444'},
-  'France 24':   {score:82,level:'high',  bias:'French state', color:'#8b5cf6'},
-  'The New Arab':{score:78,level:'medium',bias:'Opposition',  color:'#06b6d4'},
-  'The National':{score:80,level:'medium',bias:'UAE-based',   color:'#00c48c'},
+  'Al Jazeera':  {score:88,level:'hi',  bias:'Regional'},
+  'BBC Mid East':{score:95,level:'hi',  bias:'Intl standard'},
+  'Guardian':    {score:85,level:'hi',  bias:'Progressive'},
+  'Arab News':   {score:72,level:'md',  bias:'Saudi-aligned'},
+  'France 24':   {score:82,level:'hi',  bias:'French state'},
+  'The New Arab':{score:78,level:'md',  bias:'Opposition'},
+  'The National':{score:80,level:'md',  bias:'UAE-based'},
 };
 
 const RSS_FEEDS = [
@@ -502,354 +510,328 @@ const RSS_FEEDS = [
 ];
 
 const KW = ['iran','israel','west asia','middle east','hormuz','gulf','hezbollah','tehran','hamas','gaza','lebanon','missile','strike','war','crude','brent','trump','netanyahu','irgc','natanz','strait','nuclear','ceasefire','qatar','bahrain','kuwait','houthi','saudi','riyadh','pentagon','attack','conflict','military','airstrike','drone','bomb','oil','gas','energy','sanction','casualt','killed','dead','wounded','uae','dubai','abu dhabi','mena','ras al-khaimah','minhad'];
-const UAE_KW = ['uae','dubai','abu dhabi','al minhad','minhad','ras al-khaimah','rak','emirates','emirati','sharjah','ajman','fujairah','globaliqhub'];
+const UAE_KW = ['uae','dubai','abu dhabi','al minhad','minhad','ras al-khaimah','emirates','emirati','sharjah','ajman','fujairah'];
 
-// ─── TOPIC CLASSIFIER ────────────────────────────────────────────────────────
-function getTopics(text) {
-  const t = text.toLowerCase();
-  const topics = [];
-  if (['missile','strike','airstrike','bomb','attack','military','weapon','army','navy'].some(k=>t.includes(k))) topics.push('security');
-  if (['oil','gas','crude','brent','energy','hormuz','pipeline','refinery'].some(k=>t.includes(k))) topics.push('energy');
-  if (['ceasefire','talks','deal','diplomat','sanction','agreement','treaty'].some(k=>t.includes(k))) topics.push('diplomacy');
-  if (['troop','soldier','tank','navy','force','battalion','idf','irgc'].some(k=>t.includes(k))) topics.push('military');
-  return topics.slice(0,2);
-}
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let curFilter='All', allCards=[], workingFeeds=[], freqMin=15;
+let autoTimer=null, bChart=null, donutChart=null, barChart=null;
+let soundOn=false, speaking=false, prevUrgents=new Set();
 
-// ─── STATE ───────────────────────────────────────────────────────────────────
-let currentFilter='All', allCards=[], workingFeeds=[], freqMin=15;
-let autoTimer=null, brentChart=null, donutChart=null, barChart=null, mapInst=null;
-let soundEnabled=false, speaking=false, prevUrgentTitles=new Set();
-
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
+// ── HELPERS ───────────────────────────────────────────────────────────────────
 const strip = h=>(h||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
 const esc   = s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const fmtDate = str=>{if(!str)return'';const d=new Date(str),now=new Date(),diff=Math.floor((now-d)/60000);if(diff<1)return'just now';if(diff<60)return diff+'m ago';if(diff<1440)return Math.floor(diff/60)+'h ago';return d.toLocaleDateString('en-AE',{day:'numeric',month:'short'});};
-const fmtTime = ts=>new Date(ts).toLocaleTimeString('en-AE',{hour:'2-digit',minute:'2-digit',hour12:false})+' UAE';
-const waURL   = (t,u)=>'https://wa.me/?text='+encodeURIComponent((t||'').slice(0,100)+(u?'\n'+u:''));
-const waSVG   = `<svg class="wa-svg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+const fmtD  = str=>{if(!str)return'';const d=new Date(str),now=new Date(),diff=Math.floor((now-d)/60000);if(diff<1)return'just now';if(diff<60)return diff+'m ago';if(diff<1440)return Math.floor(diff/60)+'h ago';return d.toLocaleDateString('en-AE',{day:'numeric',month:'short'});};
+const fmtT  = ts=>new Date(ts).toLocaleTimeString('en-AE',{hour:'2-digit',minute:'2-digit',hour12:false})+' UAE';
+const waURL = (t,u)=>'https://wa.me/?text='+encodeURIComponent((t||'').slice(0,100)+(u?'\n'+u:''));
+const waSVG = `<svg class="wasvg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+// Add wasvg style
+const st=document.createElement('style');
+st.textContent='.wasvg{width:13px;height:13px;fill:#25d366;flex-shrink:0}';
+document.head.appendChild(st);
 
-function setDayLabel(){const d=Math.max(1,Math.floor((Date.now()-new Date('2026-02-28'))/86400000)+1);document.getElementById('day-label').textContent='DAY '+d}
+function setDay(){const d=Math.max(1,Math.floor((Date.now()-new Date('2026-02-28'))/86400000)+1);document.getElementById('day-label').textContent='DAY '+d;}
+function ripple(e){const b=e.currentTarget,r=document.createElement('span');r.className='ripple';const rc=b.getBoundingClientRect(),sz=Math.max(rc.width,rc.height);r.style.cssText=`width:${sz}px;height:${sz}px;top:${e.clientY-rc.top-sz/2}px;left:${e.clientX-rc.left-sz/2}px`;b.appendChild(r);setTimeout(()=>r.remove(),500);}
+document.querySelectorAll('.rbtn,.fbtn,.icon-btn').forEach(b=>b.addEventListener('click',ripple));
 
-// ─── RIPPLE ──────────────────────────────────────────────────────────────────
-function addRipple(e){const btn=e.currentTarget,r=document.createElement('span');r.className='ripple';const rect=btn.getBoundingClientRect(),sz=Math.max(rect.width,rect.height);r.style.cssText=`width:${sz}px;height:${sz}px;top:${e.clientY-rect.top-sz/2}px;left:${e.clientX-rect.left-sz/2}px`;btn.appendChild(r);setTimeout(()=>r.remove(),500);}
-document.querySelectorAll('.refresh-btn,.filter-btn,.icon-btn').forEach(b=>b.addEventListener('click',addRipple));
+// ── THEME ─────────────────────────────────────────────────────────────────────
+function toggleTheme(btn){const l=document.documentElement.getAttribute('data-theme')==='light';document.documentElement.setAttribute('data-theme',l?'dark':'light');btn.textContent=l?'🌙':'☀️';localStorage.setItem('giq-t',l?'dark':'light');}
+(()=>{const t=localStorage.getItem('giq-t');if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-btn').textContent=t==='light'?'☀️':'🌙';}})();
 
-// ─── THEME ───────────────────────────────────────────────────────────────────
-function toggleTheme(btn){
-  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
-  document.documentElement.setAttribute('data-theme',isDark?'light':'dark');
-  btn.textContent=isDark?'🌙':'☀️';
-  localStorage.setItem('giq-theme',isDark?'light':'dark');
-  if(mapInst)mapInst.invalidateSize();
-}
-const savedTheme=localStorage.getItem('giq-theme');
-if(savedTheme){document.documentElement.setAttribute('data-theme',savedTheme);document.getElementById('theme-btn').textContent=savedTheme==='light'?'🌙':'☀️';}
+// ── SOUND ─────────────────────────────────────────────────────────────────────
+function toggleSound(btn){soundOn=!soundOn;btn.textContent=soundOn?'🔔':'🔕';btn.classList.toggle('sound-on',soundOn);if(soundOn)ping(440,0.05);}
+function ping(f=880,v=0.08){try{const c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.setValueAtTime(f,c.currentTime);o.frequency.exponentialRampToValueAtTime(f*1.5,c.currentTime+0.1);g.gain.setValueAtTime(v,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.6);o.start();o.stop(c.currentTime+0.6);}catch(e){}}
+function checkSound(cards){if(!soundOn)return;const nu=new Set(cards.filter(c=>c.urgent).map(c=>c.title));let nw=false;nu.forEach(t=>{if(!prevUrgents.has(t))nw=true;});if(nw&&prevUrgents.size>0){ping(660,0.1);setTimeout(()=>ping(880,0.08),300);}prevUrgents=nu;}
 
-// ─── SOUND ───────────────────────────────────────────────────────────────────
-function toggleSound(btn){
-  soundEnabled=!soundEnabled;
-  btn.textContent=soundEnabled?'🔔':'🔕';
-  btn.classList.toggle('sound-on',soundEnabled);
-  if(soundEnabled)playPing(440,0.05);
-}
-function playPing(freq=880,vol=0.08){
-  try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    const osc=ctx.createOscillator(),gain=ctx.createGain();
-    osc.connect(gain);gain.connect(ctx.destination);
-    osc.type='sine';osc.frequency.setValueAtTime(freq,ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(freq*1.5,ctx.currentTime+0.1);
-    gain.gain.setValueAtTime(vol,ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.6);
-    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.6);
-  }catch(e){}
-}
-
-// ─── AUDIO SUMMARY ───────────────────────────────────────────────────────────
-function toggleAudio(btn){const bar=document.getElementById('audio-bar');bar.classList.toggle('open');btn.classList.toggle('active');}
-function toggleSpeak(){
-  if(speaking){stopSpeak();return;}
-  if(!window.speechSynthesis)return;
-  const headlines=allCards.slice(0,8).map((c,i)=>`${i+1}. ${c.title}`).join('. ');
-  const text=`West Asia Intelligence Briefing. Day ${Math.max(1,Math.floor((Date.now()-new Date('2026-02-28'))/86400000)+1)} of conflict. Top headlines: ${headlines}`;
-  const utt=new SpeechSynthesisUtterance(text);
-  utt.rate=parseFloat(document.getElementById('audio-speed').value)||1;
-  utt.pitch=0.95;
-  utt.onstart=()=>{speaking=true;document.getElementById('speak-btn').textContent='⏸ Reading…';document.getElementById('audio-status').textContent='Reading aloud…';};
-  utt.onend=utt.onerror=()=>{speaking=false;document.getElementById('speak-btn').textContent='▶ Read Headlines';document.getElementById('audio-status').textContent='Press ▶ to read top headlines aloud';};
-  window.speechSynthesis.speak(utt);
-}
+// ── AUDIO ─────────────────────────────────────────────────────────────────────
+function toggleAudio(btn){document.getElementById('audio-bar').classList.toggle('open');btn.classList.toggle('active');}
+function toggleSpeak(){if(speaking){stopSpeak();return;}if(!window.speechSynthesis)return;const hl=allCards.slice(0,8).map((c,i)=>`${i+1}. ${c.title}`).join('. ');const utt=new SpeechSynthesisUtterance(`West Asia Intel Briefing. Day ${Math.max(1,Math.floor((Date.now()-new Date('2026-02-28'))/86400000)+1)}. ${hl}`);utt.rate=parseFloat(document.getElementById('aspd').value)||1;utt.pitch=0.95;utt.onstart=()=>{speaking=true;document.getElementById('speak-btn').textContent='⏸ Reading…';};utt.onend=utt.onerror=()=>{speaking=false;document.getElementById('speak-btn').textContent='▶ Read Headlines';};window.speechSynthesis.speak(utt);}
 function stopSpeak(){window.speechSynthesis.cancel();speaking=false;document.getElementById('speak-btn').textContent='▶ Read Headlines';}
+function readCard(t){if(!window.speechSynthesis)return;window.speechSynthesis.cancel();window.speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(t),{rate:1,pitch:0.95}));}
 
-// ─── VIDEO ───────────────────────────────────────────────────────────────────
-function toggleVideo(btn){
-  const bar=document.getElementById('video-bar'),frame=document.getElementById('yt-frame');
-  const open=!bar.classList.contains('open');
-  bar.classList.toggle('open',open);
-  btn.classList.toggle('active',open);
-  // Al Jazeera English YouTube live stream
-  frame.src=open?'https://www.youtube.com/embed/3kp4mKgcbZA?autoplay=1&mute=1':'';
-}
+// ── VIDEO ─────────────────────────────────────────────────────────────────────
+function toggleVideo(btn){const v=document.getElementById('vbar');v.classList.toggle('open');btn.classList.toggle('active',v.classList.contains('open'));}
 
-// ─── TIMELINE ────────────────────────────────────────────────────────────────
+// ── TIMELINE ─────────────────────────────────────────────────────────────────
 function renderTimeline(){
   const el=document.getElementById('tl');
-  el.innerHTML=TL.map(e=>`<div class="tl-item"><div class="tl-dot${e.hi?' hi':''}">${!e.hi?'<div class="tl-inner"></div>':''}</div><div class="tl-date">${e.d}</div><div class="tl-text">${e.t}</div></div>`).join('');
-  setTimeout(()=>{el.scrollLeft=el.scrollWidth},120);
+  el.innerHTML=TL_EVENTS.map(e=>`<div class="tli"><div class="tld${e.hi?' hi':''}">${!e.hi?'<div class="tldi"></div>':''}</div><div class="tldt">${e.d}</div><div class="tltx">${e.t}</div></div>`).join('');
+  setTimeout(()=>{el.scrollLeft=el.scrollWidth;},120);
 }
 
-// ─── MAP ─────────────────────────────────────────────────────────────────────
+// ── SVG MAP ───────────────────────────────────────────────────────────────────
 function initMap(){
-  if(mapInst||!window.L)return;
-  mapInst=L.map('conflict-map',{center:[28,48],zoom:4,zoomControl:true,attributionControl:false,scrollWheelZoom:false});
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:8,minZoom:3}).addTo(mapInst);
-  MARKERS.forEach(m=>{
-    const icon=L.divIcon({className:'',html:`<div style="width:${m.sz}px;height:${m.sz}px;border-radius:50%;background:${m.c};border:2px solid rgba(255,255,255,0.4);box-shadow:0 0 ${m.sz+4}px ${m.c}66;animation:pulseBeat 2s ease infinite;cursor:pointer"></div>`,iconSize:[m.sz,m.sz],iconAnchor:[m.sz/2,m.sz/2]});
-    L.marker([m.lat,m.lng],{icon}).addTo(mapInst).bindPopup(`<div class="mp-name">${m.n}</div><div class="mp-status">${m.s}</div>`,{maxWidth:220,className:'dark-popup'});
+  const svg=document.getElementById('map-svg');
+  if(!svg||svg.dataset.done)return;
+  svg.dataset.done='1';
+  const ns='http://www.w3.org/2000/svg';
+  const W=900,H=480,minLng=29,maxLng=66,minLat=11,maxLat=43;
+  const px=(lat,lng)=>({x:((lng-minLng)/(maxLng-minLng)*W).toFixed(1),y:((maxLat-lat)/(maxLat-minLat)*H).toFixed(1)});
+
+  // Ocean background
+  const oc=document.createElementNS(ns,'rect');
+  oc.setAttribute('width',W);oc.setAttribute('height',H);oc.setAttribute('fill','#071520');
+  svg.appendChild(oc);
+
+  // Countries
+  MAP_COUNTRIES.forEach(co=>{
+    const poly=document.createElementNS(ns,'polygon');
+    poly.setAttribute('points',co.pts.map(([lat,lng])=>{const p=px(lat,lng);return p.x+','+p.y;}).join(' '));
+    poly.setAttribute('fill',co.c);poly.setAttribute('stroke',co.s);poly.setAttribute('stroke-width','0.8');poly.setAttribute('stroke-linejoin','round');
+    svg.appendChild(poly);
+  });
+
+  // Persian Gulf water
+  const gp=[[29.5,47.5],[28.5,48],[26.5,49.5],[25.5,49.5],[24.8,50.5],[24,51.5],[25,51.5],[26,51.5],[26,56.5],[26.8,55],[25,55.5],[25,53.5],[26.5,49.5],[28.5,48],[30,48.5],[29.5,47.5]];
+  const gf=document.createElementNS(ns,'polygon');
+  gf.setAttribute('points',gp.map(([a,b])=>{const p=px(a,b);return p.x+','+p.y;}).join(' '));
+  gf.setAttribute('fill','#0d2035');gf.setAttribute('stroke','#1a3050');gf.setAttribute('stroke-width','0.5');
+  svg.appendChild(gf);
+
+  // Red Sea
+  const rp=[[30,32.5],[29.5,34.8],[22,37],[18,41.5],[16,43.5],[15.5,42.5],[17.5,41],[22,37.5],[26.5,35],[28.5,33.5],[30,32.5]];
+  const rf=document.createElementNS(ns,'polygon');
+  rf.setAttribute('points',rp.map(([a,b])=>{const p=px(a,b);return p.x+','+p.y;}).join(' '));
+  rf.setAttribute('fill','#0d2035');rf.setAttribute('stroke','#1a3050');rf.setAttribute('stroke-width','0.5');
+  svg.appendChild(rf);
+
+  // English text labels
+  MAP_LABELS.forEach(l=>{
+    const p=px(l.lat,l.lng);
+    const t=document.createElementNS(ns,'text');
+    t.setAttribute('x',p.x);t.setAttribute('y',p.y);
+    t.setAttribute('fill',l.c);t.setAttribute('font-size',l.fs);
+    t.setAttribute('font-family',"'DM Mono',monospace");t.setAttribute('font-weight',l.fw);
+    t.setAttribute('letter-spacing','1.5');t.setAttribute('text-anchor','middle');
+    t.setAttribute('style','pointer-events:none;paint-order:stroke;stroke:rgba(0,0,0,0.8);stroke-width:3px;stroke-linejoin:round');
+    if(l.i)t.setAttribute('font-style','italic');
+    t.textContent=l.t;
+    svg.appendChild(t);
+  });
+
+  // Tooltip
+  const tip=document.getElementById('map-tip');
+
+  // Conflict markers
+  MAP_MARKERS.forEach((m,i)=>{
+    const{x,y}=px(m.lat,m.lng);
+    const ring=document.createElementNS(ns,'circle');
+    ring.setAttribute('cx',x);ring.setAttribute('cy',y);ring.setAttribute('r',m.r+6);
+    ring.setAttribute('fill','none');ring.setAttribute('stroke',m.c);ring.setAttribute('stroke-width','1');ring.setAttribute('opacity','0.22');
+    ring.style.animation=`svgPulse ${1.6+i*0.12}s ease-in-out infinite`;
+    svg.appendChild(ring);
+    const dot=document.createElementNS(ns,'circle');
+    dot.setAttribute('cx',x);dot.setAttribute('cy',y);dot.setAttribute('r',m.r);
+    dot.setAttribute('fill',m.c);dot.setAttribute('stroke','rgba(255,255,255,0.4)');dot.setAttribute('stroke-width','1.5');
+    dot.style.cursor='pointer';dot.style.filter=`drop-shadow(0 0 ${m.r+2}px ${m.c}88)`;
+    const show=(e)=>{tip.style.display='block';tip.innerHTML=`<strong>${m.n}</strong>${m.s}`;const rc=svg.parentElement.getBoundingClientRect();tip.style.left=Math.min(e.clientX-rc.left+10,rc.width-210)+'px';tip.style.top=Math.max(e.clientY-rc.top-55,2)+'px';};
+    dot.addEventListener('mouseenter',show);dot.addEventListener('mousemove',show);
+    dot.addEventListener('mouseleave',()=>{tip.style.display='none';});
+    dot.addEventListener('click',()=>{tip.style.display=tip.style.display==='block'?'none':'block';tip.innerHTML=`<strong>${m.n}</strong>${m.s}`;const{x:sx,y:sy}=px(m.lat,m.lng);const rc=svg.parentElement.getBoundingClientRect();const sc=rc.width/W;tip.style.left=Math.min(parseFloat(sx)*sc+10,rc.width-210)+'px';tip.style.top=Math.max(parseFloat(sy)*(rc.height/H)-55,2)+'px';});
+    svg.appendChild(dot);
+  });
+
+  function addBlip(lat,lng,color){
+    const{x,y}=px(lat,lng);
+    const b=document.createElementNS(ns,'circle');
+    b.setAttribute('cx',x);b.setAttribute('cy',y);b.setAttribute('r','4');b.setAttribute('fill',color);b.setAttribute('opacity','0.9');
+    b.style.animation='svgBlip 1.5s ease-out forwards';
+    svg.appendChild(b);setTimeout(()=>{try{svg.removeChild(b);}catch(e){}},1500);
+  }
+  window._mapBlip=addBlip;
+}
+
+// ── BRENT CHART ───────────────────────────────────────────────────────────────
+async function buildBrent(){
+  const hist=[...BRENT_DATA];
+  let live=hist[hist.length-1], chg=0, pct=0;
+  try{
+    const r=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=5d'),{cache:'no-store'});
+    const d=await r.json();const rs=d?.chart?.result?.[0];
+    if(rs){live=rs.meta.regularMarketPrice||live;const prev=rs.meta.previousClose||hist[hist.length-2];chg=live-prev;pct=chg/prev*100;hist[hist.length-1]=live;}
+  }catch(e){console.warn('Brent live price unavailable');}
+  document.getElementById('bprice').textContent='$'+live.toFixed(2);
+  const ce=document.getElementById('bchg');
+  ce.textContent=(chg>=0?'+':'')+chg.toFixed(2)+' ('+(pct>=0?'+':'')+pct.toFixed(2)+'%) today';
+  ce.className='bchg '+(chg>0?'up':chg<0?'down':'flat');
+  const warHigh=Math.max(...hist.slice(BRENT_WAR));
+  const preWar=72.29;
+  const pctUp=(live-preWar)/preWar*100;
+  document.getElementById('b-high').textContent='$'+warHigh.toFixed(2);
+  document.getElementById('b-pct').textContent='+'+pctUp.toFixed(1)+'%';
+
+  if(bChart)bChart.destroy();
+  const ctx=document.getElementById('bchart').getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,0,140);
+  grad.addColorStop(0,'rgba(74,222,128,0.3)');
+  grad.addColorStop(0.55,'rgba(74,222,128,0.1)');
+  grad.addColorStop(1,'rgba(74,222,128,0.01)');
+  const evIdxs=Object.keys(BRENT_EVENTS).map(Number);
+  bChart=new Chart(ctx,{
+    type:'line',
+    data:{labels:BRENT_LABELS,datasets:[{
+      data:hist,borderColor:'#4ade80',borderWidth:2,fill:true,backgroundColor:grad,tension:0.3,
+      pointRadius:hist.map((_,i)=>evIdxs.includes(i)?5:0),
+      pointBackgroundColor:hist.map((_,i)=>BRENT_EVENTS[i]?.c||'transparent'),
+      pointBorderColor:hist.map((_,i)=>evIdxs.includes(i)?'#fff':'transparent'),
+      pointBorderWidth:hist.map((_,i)=>evIdxs.includes(i)?2:0),
+      pointHoverRadius:6,pointHoverBackgroundColor:'#4ade80',
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(3,6,15,0.96)',borderColor:'rgba(74,222,128,0.3)',borderWidth:1,padding:10,
+          titleFont:{family:'DM Mono',size:9},bodyFont:{family:'DM Mono',size:12},
+          titleColor:'rgba(136,153,187,0.8)',bodyColor:'#4ade80',
+          callbacks:{title:c=>c[0].label,label:c=>{const ev=BRENT_EVENTS[c.dataIndex];return' $'+c.raw.toFixed(2)+(ev?' — '+ev.l:'')+'/bbl';}}
+        },
+      },
+      scales:{
+        x:{display:true,grid:{color:'rgba(255,255,255,0.04)',drawTicks:false},border:{display:false},
+          ticks:{color:'rgba(136,153,187,0.55)',font:{family:'DM Mono',size:9},maxRotation:0,autoSkip:true,maxTicksLimit:7}},
+        y:{display:true,position:'right',grid:{color:'rgba(255,255,255,0.04)',drawTicks:false},border:{display:false},
+          min:Math.floor(Math.min(...hist)/10)*10-4,
+          ticks:{color:'rgba(136,153,187,0.55)',font:{family:'DM Mono',size:9},callback:v=>'$'+v,maxTicksLimit:5}},
+      },
+      animation:{duration:900,easing:'easeInOutQuart'},
+    },
+    plugins:[{id:'evLines',afterDraw(chart){
+      const ctx2=chart.ctx;const{top,bottom}=chart.chartArea;
+      Object.entries(BRENT_EVENTS).forEach(([i,ev])=>{
+        const m=chart.getDatasetMeta(0).data[parseInt(i)];if(!m)return;
+        ctx2.save();ctx2.beginPath();ctx2.setLineDash([3,4]);
+        ctx2.strokeStyle=ev.c+'aa';ctx2.lineWidth=1.5;
+        ctx2.moveTo(m.x,top+14);ctx2.lineTo(m.x,bottom);ctx2.stroke();
+        ctx2.setLineDash([]);ctx2.fillStyle=ev.c;
+        ctx2.font='bold 8px DM Mono';ctx2.textAlign='center';
+        ctx2.fillText(ev.l,m.x,top+10);ctx2.restore();
+      });
+    }}]
   });
 }
-function addMapBlip(lat,lng,color){
-  if(!mapInst||!window.L)return;
-  const icon=L.divIcon({className:'',html:`<div style="width:8px;height:8px;border-radius:50%;background:${color};box-shadow:0 0 12px ${color};animation:pulseBeat 1s ease 3"></div>`,iconSize:[8,8],iconAnchor:[4,4]});
-  const m=L.marker([lat,lng],{icon}).addTo(mapInst);
-  setTimeout(()=>{try{mapInst.removeLayer(m)}catch(e){}},4000);
-}
 
-// ─── BRENT ───────────────────────────────────────────────────────────────────
-async function fetchBrent(){
-  try{
-    const proxy='https://api.allorigins.win/raw?url=';
-    const target=encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=7d&includePrePost=false');
-    const res=await fetch(proxy+target,{cache:'no-store'});
-    const data=await res.json();
-    const r=data?.chart?.result?.[0];if(!r)throw new Error('no data');
-    const closes=r.indicators.quote[0].close.filter(Boolean);
-    const price=r.meta.regularMarketPrice||closes[closes.length-1];
-    const prev=r.meta.previousClose||closes[closes.length-2];
-    const chg=price-prev,pct=chg/prev*100;
-    document.getElementById('brent-price').textContent='$'+price.toFixed(2);
-    const el=document.getElementById('brent-chg');
-    el.textContent=(chg>=0?'+':'')+chg.toFixed(2)+' ('+(pct>=0?'+':'')+pct.toFixed(2)+'%) today';
-    el.className='brent-change '+(chg>0?'up':chg<0?'down':'flat');
-    if(brentChart)brentChart.destroy();
-    const ctx=document.getElementById('brent-chart').getContext('2d');
-    const up=closes[closes.length-1]>=closes[0];
-    brentChart=new Chart(ctx,{type:'line',data:{labels:closes.map(()=>''),datasets:[{data:closes,borderColor:up?'#4ade80':'#e8354a',borderWidth:2,fill:true,backgroundColor:up?'rgba(74,222,128,0.06)':'rgba(232,53,74,0.06)',tension:0.4,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}},animation:{duration:500}}});
-  }catch(e){
-    document.getElementById('brent-price').textContent='~$112';
-    document.getElementById('brent-chg').textContent='Live data unavailable';
-    document.getElementById('brent-chg').className='brent-change flat';
-  }
-}
-
-// ─── DASHBOARD CHARTS ─────────────────────────────────────────────────────────
-function renderDashboard(cards){
-  const uaeCnt=cards.filter(c=>c.cat==='UAE').length;
-  const gccCnt=cards.filter(c=>c.cat==='GCC').length;
-  const glbCnt=cards.filter(c=>c.cat==='Global').length;
+// ── DASHBOARD CHARTS ──────────────────────────────────────────────────────────
+function buildDashboard(cards){
   const isDark=document.documentElement.getAttribute('data-theme')!=='light';
-  const textColor=isDark?'rgba(136,153,187,0.8)':'rgba(58,74,106,0.8)';
-  const gridColor=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,60,0.07)';
-
-  // Donut
+  const tc=isDark?'rgba(136,153,187,0.8)':'rgba(58,74,106,0.8)';
+  const gc=isDark?'rgba(255,255,255,0.05)':'rgba(0,0,60,0.06)';
   if(donutChart)donutChart.destroy();
-  const dc=document.getElementById('donut-chart').getContext('2d');
-  donutChart=new Chart(dc,{type:'doughnut',data:{labels:['UAE','Gulf','Global'],datasets:[{data:[uaeCnt,gccCnt,glbCnt],backgroundColor:['rgba(0,196,140,0.75)','rgba(245,166,35,0.75)','rgba(29,110,245,0.75)'],borderColor:['rgba(0,196,140,0.4)','rgba(245,166,35,0.4)','rgba(29,110,245,0.4)'],borderWidth:1,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:textColor,font:{size:9,family:'DM Mono'},boxWidth:10,padding:8}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} articles (${Math.round(ctx.raw/cards.length*100)}%)`}}},animation:{animateRotate:true,duration:600}}});
-
-  // Bar — articles per source
-  const srcCounts={};
-  cards.forEach(c=>{srcCounts[c.source]=(srcCounts[c.source]||0)+1;});
-  const srcNames=Object.keys(srcCounts);
-  const srcVals=srcNames.map(k=>srcCounts[k]);
-  const srcColors=srcNames.map(k=>(SOURCE_CRED[k]?.color||'#4a5a7a')+'cc');
+  donutChart=new Chart(document.getElementById('donut-chart').getContext('2d'),{type:'doughnut',data:{labels:['UAE','Gulf','Global'],datasets:[{data:[cards.filter(c=>c.cat==='UAE').length,cards.filter(c=>c.cat==='GCC').length,cards.filter(c=>c.cat==='Global').length],backgroundColor:['rgba(0,196,140,0.75)','rgba(245,166,35,0.75)','rgba(29,110,245,0.75)'],borderColor:['rgba(0,196,140,0.4)','rgba(245,166,35,0.4)','rgba(29,110,245,0.4)'],borderWidth:1,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:tc,font:{size:9,family:'DM Mono'},boxWidth:10,padding:8}},tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} (${Math.round(c.raw/cards.length*100)}%)`}}},animation:{animateRotate:true,duration:600}}});
+  const sc={};cards.forEach(c=>{sc[c.source]=(sc[c.source]||0)+1;});
+  const sn=Object.keys(sc),sv=sn.map(k=>sc[k]);
+  const scol={'Al Jazeera':'#f59e0bcc','BBC Mid East':'#3b82f6cc','Guardian':'#10b981cc','Arab News':'#ef4444cc','France 24':'#8b5cf6cc','The New Arab':'#06b6d4cc','The National':'#00c48ccc'};
   if(barChart)barChart.destroy();
-  const bc=document.getElementById('bar-chart').getContext('2d');
-  barChart=new Chart(bc,{type:'bar',data:{labels:srcNames.map(n=>n.replace('Mid East','ME').replace('The New Arab','New Arab')),datasets:[{data:srcVals,backgroundColor:srcColors,borderRadius:4,borderWidth:0}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw} articles`}}},scales:{x:{grid:{color:gridColor},ticks:{color:textColor,font:{size:8,family:'DM Mono'}},border:{display:false}},y:{grid:{display:false},ticks:{color:textColor,font:{size:8,family:'DM Mono'}}}},animation:{duration:600}}});
+  barChart=new Chart(document.getElementById('bar-chart').getContext('2d'),{type:'bar',data:{labels:sn.map(n=>n.replace('Mid East','ME').replace('The New Arab','New Arab')),datasets:[{data:sv,backgroundColor:sn.map(n=>scol[n]||'#4a5a7acc'),borderRadius:4,borderWidth:0}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw} articles`}}},scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:8,family:'DM Mono'}},border:{display:false}},y:{grid:{display:false},ticks:{color:tc,font:{size:8,family:'DM Mono'}}}},animation:{duration:600}}});
 }
 
-// ─── THREAT LEVEL ─────────────────────────────────────────────────────────────
+// ── THREAT ────────────────────────────────────────────────────────────────────
 function updateThreat(cards){
   const u=cards.filter(c=>c.urgent).length;
-  let level,desc;
-  if(u>=5){level='CRITICAL';desc='Multiple breaking events — immediate attention required'}
-  else if(u>=3){level='HIGH';desc='Significant escalation detected in live feed'}
-  else if(u>=1){level='ELEVATED';desc='Active conflict indicators present'}
-  else{level='MODERATE';desc='No breaking events — situation monitored'}
-  const bar=document.getElementById('threat-bar');
-  bar.className='threat-bar '+level;
-  document.getElementById('threat-text').textContent=level;
-  document.getElementById('threat-desc').textContent=desc;
+  let lv,ds;
+  if(u>=5){lv='CRITICAL';ds='Multiple breaking events — immediate attention required';}
+  else if(u>=3){lv='HIGH';ds='Significant escalation in live feed';}
+  else if(u>=1){lv='ELEVATED';ds='Active conflict indicators present';}
+  else{lv='MODERATE';ds='No breaking events — situation monitored';}
+  document.getElementById('tbar').className='threat-bar '+lv;
+  document.getElementById('ttxt').textContent=lv;
+  document.getElementById('tdesc').textContent=ds;
 }
 
-// ─── UAE PRIORITY ─────────────────────────────────────────────────────────────
+// ── UAE PRIORITY ──────────────────────────────────────────────────────────────
 function renderUAE(cards){
   const uae=cards.filter(c=>UAE_KW.some(k=>(c.title+c.content).toLowerCase().includes(k))).slice(0,8);
   const el=document.getElementById('uae-scroll');
   if(!uae.length){el.innerHTML='<div class="uae-empty">No UAE-specific articles in current feed.</div>';return;}
-  el.innerHTML=uae.map(c=>`<div class="uae-mini-card" onclick="${c.link?`window.open('${esc(c.link)}','_blank')`:''}"><div class="uae-mini-title">${esc(c.title)}</div><div class="uae-mini-meta"><span>${esc(c.time)} · ${esc(c.source)}</span><a class="wa-mini" href="${esc(waURL(c.title,c.link))}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Share on WhatsApp">📲 WA</a></div></div>`).join('');
+  el.innerHTML=uae.map(c=>`<div class="umc" onclick="${c.link?`window.open('${esc(c.link)}','_blank')`:''}"><div class="umt">${esc(c.title)}</div><div class="umm"><span>${esc(c.time)} · ${esc(c.source)}</span><a class="wam" href="${esc(waURL(c.title,c.link))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📲 WA</a></div></div>`).join('');
 }
 
-// ─── CATEGORISE ───────────────────────────────────────────────────────────────
-function categorise(item){
-  const t=((item.title||'')+(item.description||'')).toLowerCase();
-  const urgent=['ultimatum','ballistic','killed','airstrike','bombed','obliterate','casualties','dead','explosion','nuclear strike','ceasefire rejected'].some(k=>t.includes(k));
-  let cat='Global';
-  if(UAE_KW.some(k=>t.includes(k)))cat='UAE';
-  else if(['kuwait','bahrain','qatar','saudi','hormuz','ras laffan','houthi','gcc','riyadh','jeddah','persian gulf'].some(k=>t.includes(k)))cat='GCC';
-  return{cat,urgent};
-}
+// ── CATEGORISE ────────────────────────────────────────────────────────────────
+function topics(text){const t=text.toLowerCase();const r=[];if(['missile','airstrike','bomb','attack','weapon'].some(k=>t.includes(k)))r.push('security');if(['oil','gas','crude','brent','hormuz','energy'].some(k=>t.includes(k)))r.push('energy');if(['ceasefire','deal','diplomat','sanction','agreement'].some(k=>t.includes(k)))r.push('diplomacy');if(['troop','soldier','navy','idf','irgc','force'].some(k=>t.includes(k)))r.push('military');return r.slice(0,2);}
+function categorise(item){const t=((item.title||'')+(item.description||'')).toLowerCase();const urgent=['ultimatum','ballistic','killed','airstrike','bombed','casualties','dead','explosion','ceasefire rejected'].some(k=>t.includes(k));let cat='Global';if(UAE_KW.some(k=>t.includes(k)))cat='UAE';else if(['kuwait','bahrain','qatar','saudi','hormuz','ras laffan','houthi','gcc','riyadh','jeddah','persian gulf'].some(k=>t.includes(k)))cat='GCC';return{cat,urgent};}
 
-// ─── RSS ──────────────────────────────────────────────────────────────────────
+// ── RSS ───────────────────────────────────────────────────────────────────────
 const isRel=item=>KW.some(k=>((item.title||'')+(item.description||'')).toLowerCase().includes(k));
-async function fetchOne(feed){
-  const r=await fetch(feed.url,{cache:'no-store'});
-  if(!r.ok)throw new Error('HTTP '+r.status);
-  const d=await r.json();
-  if(d.status!=='ok')throw new Error(d.message||'error');
-  return(d.items||[]).map(i=>({...i,_src:feed.name}));
-}
+async function fetchOne(feed){const r=await fetch(feed.url,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();if(d.status!=='ok')throw new Error(d.message||'error');return(d.items||[]).map(i=>({...i,_src:feed.name}));}
 async function fetchAll(){
-  const results=await Promise.allSettled(RSS_FEEDS.map(fetchOne));
+  const res=await Promise.allSettled(RSS_FEEDS.map(fetchOne));
   let all=[];workingFeeds=[];
-  results.forEach((r,i)=>{if(r.status==='fulfilled'){all.push(...r.value);workingFeeds.push(RSS_FEEDS[i].name);}else console.warn(RSS_FEEDS[i].name+':',r.reason.message);});
-  if(!workingFeeds.length)throw new Error('All feeds unavailable. Check network.');
+  res.forEach((r,i)=>{if(r.status==='fulfilled'){all.push(...r.value);workingFeeds.push(RSS_FEEDS[i].name);}else console.warn(RSS_FEEDS[i].name+':',r.reason.message);});
+  if(!workingFeeds.length)throw new Error('All feeds failed. Check network.');
   const seen=new Set();
   all=all.filter(i=>{if(!i.title||seen.has(i.title))return false;seen.add(i.title);return true;});
-  let filtered=all.filter(isRel).sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
-  if(filtered.length<5)filtered=all.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
-  return filtered;
+  let f=all.filter(isRel).sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+  if(f.length<5)f=all.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+  return f;
 }
+function buildCards(items){return items.map(item=>{const{cat,urgent}=categorise(item);const th=item.thumbnail||item.enclosure?.link||null;const tp=topics((item.title||'')+(item.description||''));return{cat,urgent,title:item.title||'Untitled',content:strip(item.description).slice(0,280)+(strip(item.description).length>280?'…':''),time:fmtD(item.pubDate),source:item._src||'',link:item.link||null,image:th&&th.startsWith('http')?th:null,topics:tp};});}
 
-function buildCards(items){
-  return items.map(item=>{
-    const{cat,urgent}=categorise(item);
-    const thumb=item.thumbnail||item.enclosure?.link||null;
-    const topics=getTopics((item.title||'')+(item.description||''));
-    return{cat,urgent,title:item.title||'Untitled',content:strip(item.description).slice(0,280)+(strip(item.description).length>280?'…':''),time:fmtDate(item.pubDate),source:item._src||'',link:item.link||null,image:thumb&&thumb.startsWith('http')?thumb:null,topics};
-  });
-}
+// ── BADGES ────────────────────────────────────────────────────────────────────
+function updateBadges(cards){document.getElementById('cnt-all').textContent=cards.length;document.getElementById('cnt-uae').textContent=cards.filter(c=>c.cat==='UAE').length;document.getElementById('cnt-gcc').textContent=cards.filter(c=>c.cat==='GCC').length;document.getElementById('cnt-global').textContent=cards.filter(c=>c.cat==='Global').length;}
 
-// ─── BADGES ───────────────────────────────────────────────────────────────────
-function updateBadges(cards){
-  document.getElementById('cnt-all').textContent=cards.length;
-  document.getElementById('cnt-uae').textContent=cards.filter(c=>c.cat==='UAE').length;
-  document.getElementById('cnt-gcc').textContent=cards.filter(c=>c.cat==='GCC').length;
-  document.getElementById('cnt-global').textContent=cards.filter(c=>c.cat==='Global').length;
-}
-
-// ─── RENDER ───────────────────────────────────────────────────────────────────
+// ── RENDER ────────────────────────────────────────────────────────────────────
 function render(){
   const feed=document.getElementById('feed');
-  const showAll=currentFilter==='All';
-  const cards=showAll?allCards:allCards.filter(c=>c.cat===currentFilter);
+  const cards=curFilter==='All'?allCards:allCards.filter(c=>c.cat===curFilter);
   feed.innerHTML='';
-  if(!cards.length){feed.innerHTML=`<div class="empty-state"><div class="empty-icon">📡</div><div class="empty-title">No Articles</div><div class="empty-sub">${allCards.length?'Try "All" filter.':'Tap Refresh.'}</div></div>`;return;}
-
+  if(!cards.length){feed.innerHTML=`<div class="empty"><div class="empty-icon">📡</div><div class="empty-title">No Articles</div><div class="empty-sub">${allCards.length?'Try "All" filter.':'Tap Refresh.'}</div></div>`;return;}
   cards.forEach((card,idx)=>{
     const div=document.createElement('div');
     const cl=card.cat.toLowerCase();
-    div.className=`news-card ${cl}${card.urgent?' urgent':''}`;
-    div.style.animationDelay=(idx*40)+'ms';
-
-    const cred=SOURCE_CRED[card.source]||{score:75,level:'medium',bias:'Unknown'};
-    const credClass='cred-'+(cred.score>=85?'high':cred.score>=75?'medium':'low');
-    const credHtml=`<span class="cred-badge ${credClass}" title="${cred.bias}">✓ ${cred.score}</span>`;
-
-    const topicsHtml=card.topics.map(t=>`<span class="topic-tag topic-${t}">${t}</span>`).join('');
-
-    const tagH=`<span class="tag ${card.urgent?'urgent':cl}">${card.urgent?'🚨 BREAKING':card.cat.toUpperCase()}</span>${topicsHtml}`;
-    const metaH=`<div class="card-ts"><div>${esc(card.time)}</div><div style="display:flex;align-items:center;gap:4px;justify-content:flex-end;">${credHtml}<span style="font-size:0.52rem;color:var(--dim)">${esc(card.source)}</span></div></div>`;
+    div.className=`card ${cl}${card.urgent?' urgent':''}`;
+    div.style.animationDelay=(idx*38)+'ms';
+    const cred=SOURCE_CRED[card.source]||{score:75,level:'md',bias:'Unknown'};
+    const tagH=`<span class="tag ${card.urgent?'urgent':cl}">${card.urgent?'🚨 BREAKING':card.cat.toUpperCase()}</span>${card.topics.map(t=>`<span class="ttag ${t}">${t}</span>`).join('')}`;
+    const metaH=`<div class="cts"><div>${esc(card.time)}</div><div style="display:flex;align-items:center;gap:4px;justify-content:flex-end"><span class="cred ${cred.level}" title="${cred.bias}">✓${cred.score}</span><span style="font-size:0.52rem;color:var(--dim)">${esc(card.source)}</span></div></div>`;
     const titleH=card.link?`<a href="${esc(card.link)}" target="_blank" rel="noopener">${esc(card.title)}</a>`:esc(card.title);
-
-    const actH=`<div class="card-actions">
-      ${card.link?`<a class="read-more" href="${esc(card.link)}" target="_blank" rel="noopener">Full story →</a>`:''}
-      <a class="wa-btn" href="${esc(waURL(card.title,card.link))}" target="_blank" rel="noopener">${waSVG} Share</a>
-      <button class="read-aloud-btn" onclick="readCardAloud('${esc(card.title).replace(/'/g,"\\'")}')">🔊</button>
-    </div>`;
-
-    if(card.image){
-      div.innerHTML=`<div class="card-img-wrap"><img src="${esc(card.image)}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"><div class="card-img-overlay"></div><div class="card-img-tag">${tagH}</div></div><div class="card-body wi"><div class="card-meta"><div></div>${metaH}</div><div class="card-title">${titleH}</div><div class="card-content">${esc(card.content)}</div>${actH}</div>`;
-    }else{
-      div.innerHTML=`<div class="card-body"><div class="card-meta"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">${tagH}</div>${metaH}</div><div class="card-title">${titleH}</div><div class="card-content">${esc(card.content)}</div>${actH}</div>`;
-    }
+    const actH=`<div class="cactions">${card.link?`<a class="rmore" href="${esc(card.link)}" target="_blank" rel="noopener">Full story →</a>`:''}<a class="wabtn" href="${esc(waURL(card.title,card.link))}" target="_blank" rel="noopener">${waSVG} Share</a><button class="ralbtn" onclick="readCard('${esc(card.title).replace(/'/g,"\\'")}')">🔊</button></div>`;
+    if(card.image){div.innerHTML=`<div class="cimg"><img src="${esc(card.image)}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"><div class="cimg-ov"></div><div class="cimg-tag">${tagH}</div></div><div class="cbody wi"><div class="cmeta"><div></div>${metaH}</div><div class="ctitle">${titleH}</div><div class="ccontent">${esc(card.content)}</div>${actH}</div>`;}
+    else{div.innerHTML=`<div class="cbody"><div class="cmeta"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">${tagH}</div>${metaH}</div><div class="ctitle">${titleH}</div><div class="ccontent">${esc(card.content)}</div>${actH}</div>`;}
     feed.appendChild(div);
   });
-
-  feed.innerHTML+=`<div class="feed-footer">${workingFeeds.join(' · ')}<br>${allCards.length} articles · Keyword-categorised · Source credibility scored</div>`;
+  feed.innerHTML+=`<div class="ffooter">${workingFeeds.join(' · ')}<br>${allCards.length} articles · Keyword-categorised · Source credibility scored</div>`;
 }
 
-function readCardAloud(title){
-  if(!window.speechSynthesis)return;
-  window.speechSynthesis.cancel();
-  const utt=new SpeechSynthesisUtterance(title);
-  utt.rate=1;utt.pitch=0.95;
-  window.speechSynthesis.speak(utt);
-}
+// ── AUTO REFRESH ──────────────────────────────────────────────────────────────
+function startAuto(){clearTimeout(autoTimer);const pf=document.getElementById('pf');pf.style.transition='none';pf.style.width='0%';if(freqMin===0)return;requestAnimationFrame(()=>{pf.style.transition=`width ${freqMin*60}s linear`;pf.style.width='100%';});autoTimer=setTimeout(doRefresh,freqMin*60*1000);}
+function onFreqChange(){freqMin=parseInt(document.getElementById('rsel').value);startAuto();}
 
-// ─── AUTO REFRESH ─────────────────────────────────────────────────────────────
-function startAuto(){
-  clearTimeout(autoTimer);
-  const pf=document.getElementById('pf');
-  pf.style.transition='none';pf.style.width='0%';
-  if(freqMin===0)return;
-  requestAnimationFrame(()=>{pf.style.transition=`width ${freqMin*60}s linear`;pf.style.width='100%';});
-  autoTimer=setTimeout(doRefresh,freqMin*60*1000);
-}
-function onFreqChange(){freqMin=parseInt(document.getElementById('refresh-sel').value);startAuto();}
+// ── FILTER ────────────────────────────────────────────────────────────────────
+function doFilter(btn,cat){document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');curFilter=cat;render();}
 
-// ─── FILTER ───────────────────────────────────────────────────────────────────
-function doFilter(btn,cat){
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');currentFilter=cat;render();
-}
+// ── SKELETONS ─────────────────────────────────────────────────────────────────
+function showSkel(){document.getElementById('feed').innerHTML=[1,2,3].map(()=>`<div class="skel"><div class="ski"></div><div class="skb"><div class="skl" style="width:50%;margin-bottom:12px"></div><div class="skl" style="width:90%"></div><div class="skl" style="width:90%"></div><div class="skl" style="width:65%"></div></div></div>`).join('');}
 
-// ─── SKELETONS ────────────────────────────────────────────────────────────────
-function showSkel(){document.getElementById('feed').innerHTML=[1,2,3].map(()=>`<div class="skeleton"><div class="sk-img"></div><div class="sk-body"><div class="sk-line" style="width:50%;margin-bottom:12px"></div><div class="sk-line" style="width:90%"></div><div class="sk-line" style="width:90%"></div><div class="sk-line" style="width:65%"></div></div></div>`).join('');}
-
-// ─── SOUND ALERT FOR NEW URGENTS ──────────────────────────────────────────────
-function checkNewUrgents(cards){
-  if(!soundEnabled)return;
-  const newTitles=new Set(cards.filter(c=>c.urgent).map(c=>c.title));
-  let hasNew=false;
-  newTitles.forEach(t=>{if(!prevUrgentTitles.has(t))hasNew=true;});
-  if(hasNew&&prevUrgentTitles.size>0){playPing(660,0.1);setTimeout(()=>playPing(880,0.08),300);}
-  prevUrgentTitles=newTitles;
-}
-
-// ─── MAIN REFRESH ─────────────────────────────────────────────────────────────
+// ── MAIN REFRESH ──────────────────────────────────────────────────────────────
 async function doRefresh(){
-  const btn=document.getElementById('refresh-btn'),ri=document.getElementById('ri'),rl=document.getElementById('rl'),led=document.getElementById('status-led');
+  const btn=document.getElementById('rbtn'),ri=document.getElementById('ri'),rl=document.getElementById('rl'),led=document.getElementById('sled');
   btn.disabled=true;ri.className='spinning';rl.textContent='Loading…';led.style.background='var(--gcc)';
   showSkel();
   try{
     const items=await fetchAll();
     allCards=buildCards(items);
-    checkNewUrgents(allCards);
+    checkSound(allCards);
     updateBadges(allCards);
     updateThreat(allCards);
     renderUAE(allCards);
-    renderDashboard(allCards);
-    // Animate map blip for top urgent item
-    const top=allCards.find(c=>c.urgent);
-    if(top)addMapBlip(28+Math.random()*4-2,48+Math.random()*4-2,top.cat==='UAE'?'#00c48c':top.cat==='GCC'?'#f5a623':'#e8354a');
-    document.getElementById('meta-source').textContent=workingFeeds.join(' · ');
-    document.getElementById('last-updated').textContent=fmtTime(Date.now());
+    buildDashboard(allCards);
+    if(window._mapBlip){const top=allCards.find(c=>c.urgent);if(top)window._mapBlip(27+Math.random()*4-2,50+Math.random()*4-2,top.cat==='UAE'?'#00c48c':top.cat==='GCC'?'#f5a623':'#e8354a');}
+    document.getElementById('msrc').textContent=workingFeeds.join(' · ');
+    document.getElementById('lupd').textContent=fmtT(Date.now());
     led.style.background='var(--uae)';
-    render();
-    startAuto();
+    render();startAuto();
   }catch(e){
     console.error(e);led.style.background='var(--urgent)';
-    document.getElementById('feed').innerHTML=`<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Feed Error</div><div class="empty-sub">${esc(e.message)}<br><br>Check network and tap Refresh.</div></div>`;
-  }finally{
-    btn.disabled=false;ri.className='';rl.textContent='Refresh';
-  }
+    document.getElementById('feed').innerHTML=`<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Feed Error</div><div class="empty-sub">${esc(e.message)}<br><br>Check network and tap Refresh.</div></div>`;
+  }finally{btn.disabled=false;ri.className='';rl.textContent='Refresh';}
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-setDayLabel();
+// ── INIT ──────────────────────────────────────────────────────────────────────
+setDay();
 renderTimeline();
 initMap();
-fetchBrent();
+buildBrent();
 doRefresh();
 </script>
 </body>
